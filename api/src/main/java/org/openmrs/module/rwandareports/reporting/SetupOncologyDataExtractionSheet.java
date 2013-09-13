@@ -274,6 +274,9 @@ public class SetupOncologyDataExtractionSheet {
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getStateOfPatientMatchingWithEncounter("encounterMatchdiagnosisStatus", oncologyProgram, diagnosisStatus, changeWorkFlowForms,null), new HashMap<String, Object>());
 		
+		
+		
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getStateOfPatient("diagnosisStatus", oncologyProgram, diagnosisStatus, null), new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getStateOfPatient("diagnosis", oncologyProgram, diagnosis, null), new HashMap<String, Object>());

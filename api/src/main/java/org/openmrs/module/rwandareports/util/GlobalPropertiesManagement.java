@@ -544,6 +544,12 @@ public class GlobalPropertiesManagement {
 	
 	public final static String CANCER_PROGRESSION_STATUS="reports.cancerProgressionStatus";
 	
+	public final static String MUTUELLE_RWANDA_INSURANCE="reports.mutuelle";
+	
+	public final static String MUTUELLE_LEVEL="reports.mutuelleLevel";
+	
+	
+	
 	
 	
 	//Primary Care Service concepts

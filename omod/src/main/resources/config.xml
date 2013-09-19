@@ -3079,4 +3079,19 @@
 		<defaultValue>Treatment Intent</defaultValue>
 		<description>Name of Treatment Intent program workflow</description>
 	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>reports.mutuelle</property>
+		<defaultValue>8da67e73-776c-43f6-9758-79d1f6786db3</defaultValue>
+		<description>Id of RWANDA INSURANCE TYPE concept</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>reports.mutuelleLevel</property>
+		<defaultValue>a9191adf-c999-422d-94e0-14de5f076127</defaultValue>
+		<description>Id of Mutuelle level concept</description>
+	</globalProperty>
+	
+	
 </module>

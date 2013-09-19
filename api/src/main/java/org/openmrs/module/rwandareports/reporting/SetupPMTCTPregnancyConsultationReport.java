@@ -8,6 +8,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.common.SortCriteria.SortDirection;
@@ -87,7 +88,18 @@ public class SetupPMTCTPregnancyConsultationReport {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName("HIV-PMTCT Pregnancy consultation sheet");
 		
-		reportDefinition.addParameter(new Parameter("location", "Location", Location.class));
+		reportDefinition.addParameter(new Parameter("location", "Location", Location.class));		
+		
+		
+
+		Properties stateProperties = new Properties();
+		stateProperties.setProperty("Program", pmtct.getName());
+		stateProperties.setProperty("Workflow", Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW));
+		reportDefinition.addParameter(new Parameter("state", "Group", ProgramWorkflowState.class, stateProperties));
+		
+		
+		
+		
 		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
 		    ParameterizableUtil.createParameterMappings("location=${location}"));
 		
@@ -102,6 +114,13 @@ public class SetupPMTCTPregnancyConsultationReport {
 		// Create new dataset definition 
 		RowPerPatientDataSetDefinition dataSetDefinition = new RowPerPatientDataSetDefinition();
 		dataSetDefinition.setName(reportDefinition.getName() + " Data Set");
+		
+		
+		dataSetDefinition.addParameter(new Parameter("state", "State", ProgramWorkflowState.class));
+		
+		dataSetDefinition.addFilter(Cohorts.createInCurrentStateParameterized("pmtctPreg group", "states"),
+		    ParameterizableUtil.createParameterMappings("states=${state},onDate=${now}"));
+		
 		
 		SortCriteria sortCriteria = new SortCriteria();
 		sortCriteria.addSortElement("nextRDV", SortDirection.ASC);
@@ -208,6 +227,7 @@ public class SetupPMTCTPregnancyConsultationReport {
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());
 		
 		Map<String, Object> mappings = new HashMap<String, Object>();
+		mappings.put("state", "${state}");
 		
 		reportDefinition.addDataSetDefinition("dataSet", dataSetDefinition, mappings);
 	}

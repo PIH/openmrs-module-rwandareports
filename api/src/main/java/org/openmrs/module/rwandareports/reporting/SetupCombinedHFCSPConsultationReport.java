@@ -1,14 +1,12 @@
 package org.openmrs.module.rwandareports.reporting;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.text.AsyncBoxView.ChildState;
-
 import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
@@ -29,10 +27,11 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfNext
 import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfObsAfterDateOfOtherDefinition;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.EvaluateDefinitionForOtherPersonData;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.MostRecentObservation;
-import org.openmrs.module.rowperpatientreports.patientdata.definition.RetrievePersonByRelationship;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.PatientProperty;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RetrievePersonByRelationshipAndByProgram;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.StateOfPatient;
 import org.openmrs.module.rwandareports.filter.BorFStateFilter;
-import org.openmrs.module.rwandareports.filter.HIVPositiveMotherOfChild;
+import org.openmrs.module.rwandareports.filter.GroupStateFilter;
 import org.openmrs.module.rwandareports.util.Cohorts;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
@@ -46,7 +45,11 @@ public class SetupCombinedHFCSPConsultationReport {
 	//Properties retrieved from global variables
 	private Program pmtctCombined;
 	
+	private Program pmtctCCMother;
+
 	private ProgramWorkflow feedingState;
+	
+	private ProgramWorkflow treatmentGroup;
 	
 	private Concept seroConcept;
 	
@@ -114,9 +117,6 @@ public class SetupCombinedHFCSPConsultationReport {
 		dataSetDefinition.addFilter(Cohorts.createInCurrentStateParameterized("ccInfant group", "states"),
 		    ParameterizableUtil.createParameterMappings("states=${state},onDate=${now}"));
 		
-		
-		
-		
 		SortCriteria sortCriteria = new SortCriteria();
 		sortCriteria.addSortElement("nextRDV", SortDirection.ASC);
 		dataSetDefinition.setSortCriteria(sortCriteria);
@@ -132,17 +132,21 @@ public class SetupCombinedHFCSPConsultationReport {
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getIMBId("InfantId"), new HashMap<String, Object>());
 		
-		//RetrievePersonByRelationship mother = RowPerPatientColumns.getMother();
+		StateOfPatient txGroup = RowPerPatientColumns.getStateOfPatient("infantGroup", pmtctCombined, treatmentGroup,
+			    new GroupStateFilter());
+		dataSetDefinition.addColumn(txGroup, new HashMap<String, Object>());
 		
-		RetrievePersonByRelationshipAndByProgram mother = RowPerPatientColumns.getMother(Context.getProgramWorkflowService().getProgram(17));
+	
+		RetrievePersonByRelationshipAndByProgram mother = RowPerPatientColumns.getMother(pmtctCCMother);
+	
+		PatientProperty firstName=RowPerPatientColumns.getFirstNameColumn("motherGivName");
+		PatientProperty givenName=RowPerPatientColumns.getFamilyNameColumn("motherFamName");
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMotherRelationship("MotherName"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getDefinitionForOtherPerson("motherFamilyName", mother, firstName), 
+			new HashMap<String, Object>());
 		
-		
-		/*EvaluateDefinitionForOtherPersonData MotherName = RowPerPatientColumns.getDefinitionForOtherPerson("MotherName", mother,
-				RowPerPatientColumns.getMotherRelationship("MotherNames"));
-		dataSetDefinition.addColumn(MotherName, new HashMap<String, Object>());
-		*/
+		dataSetDefinition.addColumn(RowPerPatientColumns.getDefinitionForOtherPerson("motherGivenName", mother,givenName), 
+				new HashMap<String, Object>());
 		
 		EvaluateDefinitionForOtherPersonData motherId = RowPerPatientColumns.getDefinitionForOtherPerson("MotherId", mother,
 		    RowPerPatientColumns.getIMBId("InfantId"));
@@ -228,13 +232,19 @@ public class SetupCombinedHFCSPConsultationReport {
 	private void setupProperties() {
 		pmtctCombined = gp.getProgram(GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
 		
+		pmtctCCMother=gp.getProgram(GlobalPropertiesManagement.PMTCT_COMBINED_MOTHER_PROGRAM);
+		
 		feedingState = gp.getProgramWorkflow(GlobalPropertiesManagement.FEEDING_GROUP_WORKFLOW,
 		    GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		
+		treatmentGroup = gp.getProgramWorkflow(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+			    GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
 		
 		seroConcept = gp.getConcept(GlobalPropertiesManagement.SERO_TEST);
 		
 		dbsConcept = gp.getConcept(GlobalPropertiesManagement.DBS_CONCEPT);
 		
 		childSerologyConcept = gp.getConcept(GlobalPropertiesManagement.CHILD_SEROLOGY_CONSTRUCT);
+		
 	}
 }

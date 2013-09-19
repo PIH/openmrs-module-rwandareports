@@ -732,6 +732,16 @@ public class RowPerPatientColumns {
 						.getRelationshipTypeId(), "A", accompagnateurFilter);
 	}
 
+	public static RetrievePersonByRelationshipAndByProgram getMotherRelationship(String name,Program program) {
+		RetrievePersonByRelationshipAndByProgram mother = new RetrievePersonByRelationshipAndByProgram();
+		mother.setRelationshipTypeId(gp.getRelationshipType(
+				GlobalPropertiesManagement.MOTHER_RELATIONSHIP)
+				.getRelationshipTypeId());
+		mother.setRetrievePersonAorB("A");
+		mother.setProgram(program);
+		return mother;
+	}
+	
 	public static PatientRelationship getMotherRelationship(String name) {
 		return getPatientRelationship(
 				name,
@@ -739,6 +749,7 @@ public class RowPerPatientColumns {
 						GlobalPropertiesManagement.MOTHER_RELATIONSHIP)
 						.getRelationshipTypeId(), "A", null);
 	}
+
 
 	public static CurrentOrdersRestrictedByConceptSet getCurrentARTOrders(
 			String name, String dateFormat, ResultFilter drugFilter) {
@@ -934,7 +945,7 @@ public class RowPerPatientColumns {
 		rel.setRetrievePersonAorB(side);
 		return rel;
 	}
-
+	
 	public static CurrentOrdersRestrictedByConceptSet getCurrentOrdersRestrictedByConceptSet(
 			String name, Concept drugConcept, String dateFormat,
 			ResultFilter drugFilter) {
@@ -1701,7 +1712,7 @@ public class RowPerPatientColumns {
 			String name, ResultFilter drugFilter) {
 		return getCurrentDrugOrders(name, drugFilter);
 	}
-
+	
 	public static MostRecentObservation getHIVDiagnosisDate(String name,
 			String dateFormat) {
 

@@ -240,6 +240,30 @@ public class GlobalPropertiesManagement {
 	
 	public final static String TRANSFERRED_OUT_STATE="reports.patienttransferedoutstate";
 	
+	public final static String INFANT_GROUP1="reports.infantgroup1";
+	
+	public final static String INFANT_GROUP2="reports.infantgroup2";
+	
+	public final static String INFANT_GROUP3="reports.infantgroup3";
+	
+	public final static String INFANT_GROUP4="reports.infantgroup4";
+	
+	public final static String INFANT_GROUP5="reports.infantgroup5";
+	
+	public final static String INFANT_GROUP6="reports.infantgroup6";
+	
+	public final static String INFANT_GROUP7="reports.infantgroup7";
+	
+	public final static String INFANT_GROUP8="reports.infantgroup8";
+	
+	public final static String PREGNANCY_GROUP1="reports.pregnancygroup1";
+	
+	public final static String PREGNANCY_GROUP2="reports.pregnancygroup2";
+	
+	public final static String PREGNANCY_GROUP3="reports.pregnancygroup3";
+	
+	public final static String PREGNANCY_GROUP4="reports.pregnancygroup4";
+	
 	//Identifiers
 	public final static String IMB_IDENTIFIER = "reports.imbIdIdentifier"; 
 	

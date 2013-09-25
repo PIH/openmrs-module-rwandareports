@@ -24,6 +24,7 @@ import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.PatientStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -77,11 +78,23 @@ public class SetupDataQualityIndicatorReport {
 	private ProgramWorkflowState diedInNutri;
 	private ProgramWorkflowState diedInPmtct;
 	private ProgramWorkflowState diedInPmtctgroup;
-	private ProgramWorkflowState diedInHf;
+	/*private ProgramWorkflowState diedInHf;
 	private ProgramWorkflowState diedInDiab;
 	private ProgramWorkflowState diedInChr;
 	private ProgramWorkflowState diedInHyp;
-	private ProgramWorkflowState diedInEpil;
+	private ProgramWorkflowState diedInEpil;*/
+	private ProgramWorkflowState infantGroup1;
+	private ProgramWorkflowState infantGroup2;
+	private ProgramWorkflowState infantGroup3;
+	private ProgramWorkflowState infantGroup4;
+	private ProgramWorkflowState infantGroup5;
+	private ProgramWorkflowState infantGroup6;
+	private ProgramWorkflowState infantGroup7;
+	private ProgramWorkflowState infantGroup8;
+	private ProgramWorkflowState motherPregGroup1;
+	private ProgramWorkflowState motherPregGroup2;
+	private ProgramWorkflowState motherPregGroup3;
+	private ProgramWorkflowState motherPregGroup4;
 	private List<Concept> tbFirstLineDrugsConcepts;
 	private List<Concept> tbSecondLineDrugsConcepts;
 	private Concept reasonForExitingCare;
@@ -560,11 +573,6 @@ public class SetupDataQualityIndicatorReport {
 		diedStates.add(diedInNutri);
 		diedStates.add(diedInPmtct);
 		diedStates.add(diedInPmtctgroup);
-		/*diedStates.add(diedInHf);
-		diedStates.add(diedInDiab);
-		diedStates.add(diedInChr);
-		diedStates.add(diedInHyp);
-		diedStates.add(diedInEpil);*/
 		InStateCohortDefinition diedStateInAllProgramsCohort = Cohorts
 				.createInCurrentState("diedState", diedStates);
 
@@ -860,14 +868,57 @@ public class SetupDataQualityIndicatorReport {
 		CohortIndicator infantsWithNoMotherAccIndicator = Indicators
 				.newCountIndicator("DQ:Number of invalid dates and forms",
 						infantsInPmtctClinicInfant, null);
-
+		
+		// =====================================================================================
+		// 22. PMTCT Infants without a treatment group
+		// =====================================================================================
+		List<ProgramWorkflowState> infantInGroups= new ArrayList<ProgramWorkflowState>();
+		infantInGroups.add(infantGroup1);
+		infantInGroups.add(infantGroup2);
+		infantInGroups.add(infantGroup3);
+		infantInGroups.add(infantGroup4);
+		infantInGroups.add(infantGroup5);
+		infantInGroups.add(infantGroup6);
+		infantInGroups.add(infantGroup7);
+		infantInGroups.add(infantGroup8);	
+		PatientStateCohortDefinition infantIngroupsEver = Cohorts.createPatientStateEverCohortDefinition("infantInGroupEver", infantInGroups); 
+		InProgramCohortDefinition infantProgram = Cohorts.createInProgramParameterizableByDate("DQ: infantProgram",
+						pmtctCombinedClinicInfant, "onDate");
+		CompositionCohortDefinition infantNotIngroupsEverComp= new CompositionCohortDefinition();
+		infantNotIngroupsEverComp.setName("DQ: Patients currently in exposed Infant Program not in Groups");
+		infantNotIngroupsEverComp.getSearches().put("1",new Mapped(infantProgram, 
+				 ParameterizableUtil.createParameterMappings("onDate=${now}")));
+		infantNotIngroupsEverComp.getSearches().put("2",new Mapped(infantIngroupsEver, null));
+		infantNotIngroupsEverComp.setCompositionString("1 AND (NOT 2)");
+        CohortIndicator infantNotIngroupsEverInd = Indicators.newCountIndicator("DQ:infantsWithNoTreatmentGroup",infantNotIngroupsEverComp, null);
+        
+     // =====================================================================================
+     // 23. PMTCT Pregnancy without a treatment group
+     // =====================================================================================
+        List<ProgramWorkflowState>pregnancyInGroups=new ArrayList<ProgramWorkflowState>();
+        pregnancyInGroups.add(motherPregGroup1);
+        pregnancyInGroups.add(motherPregGroup2);
+        pregnancyInGroups.add(motherPregGroup3);
+        pregnancyInGroups.add(motherPregGroup4);
+        PatientStateCohortDefinition pmtctPregIngroupsEver = Cohorts.createPatientStateEverCohortDefinition("pmtctPregInGroupEver", pregnancyInGroups); 
+        InProgramCohortDefinition pregnantMotherProgram = Cohorts.createInProgramParameterizableByDate("DQ: pregnantMotherProgram",
+				pmtctCombinedClinicMother, "onDate");
+        CompositionCohortDefinition pregMotherIngroupsEverComp= new CompositionCohortDefinition();
+        pregMotherIngroupsEverComp.setName("DQ: Patients currently in PMTCT Pregnancy Program not in Groups");
+        pregMotherIngroupsEverComp.getSearches().put("1",new Mapped(pregnantMotherProgram, 
+				 ParameterizableUtil.createParameterMappings("onDate=${now}")));
+        pregMotherIngroupsEverComp.getSearches().put("2",new Mapped(pmtctPregIngroupsEver, null));
+        pregMotherIngroupsEverComp.setCompositionString("1 AND (NOT 2)");
+		CohortIndicator ccMotherNotIngroupsEverInd=Indicators.newCountIndicator("DQ:cCMotherWithNotreatmentGroup", pregMotherIngroupsEverComp, null);
+		// =====================================================================================
+	
 		// end of DQ applied to all sites
 
 		// ======================================================================================
 		// Add global filters to the report
 		// ======================================================================================
 
-		dataSetDefinition.addColumn("1","patients who are in Pediatric or Adult HIV program AND on ART whose accompagnateur is not listed in EMR",
+		dataSetDefinition.addColumn("1","Patients who are in Pediatric or Adult HIV program AND on ART whose accompagnateur is not listed in EMR",
 			 new Mapped(patientsInHIVOnARTWithoutAccompIndicator,null),"");
 		dataSetDefinition.addColumn("2","Patients enrolled in PMTCT Pregnancy for more than 8 months and a half",
 			 new Mapped(patientsInPMTCTTooLongIndicator,null),"");
@@ -909,6 +960,8 @@ public class SetupDataQualityIndicatorReport {
 				new Mapped(patientsMissingprogramsEnrolStartDateindicator,null),"");
 		dataSetDefinition.addColumn("21","Patients currently enrolled in the PMTCT Combined Clinic Infant program who don't have a non-voided Mother/Child relationship",
 			new Mapped(infantsWithNoMotherAccIndicator,null),"");
+		dataSetDefinition.addColumn("22","Patient in Combined Clinic Infant  with no treatment group",new Mapped(infantNotIngroupsEverInd,null),"");
+		dataSetDefinition.addColumn("23","Patient in PMTCT Pregnancy program  with no treatment group",new Mapped(ccMotherNotIngroupsEverInd,null),"");
 		
 		return dataSetDefinition;
 
@@ -995,11 +1048,6 @@ public class SetupDataQualityIndicatorReport {
 				// ======================================================================================
 				
 				List<Program> inAllPrograms = new ArrayList<Program>();
-				/*inAllPrograms.add(pediHIV);
-				inAllPrograms.add(adultHIV);
-				inAllPrograms.add(tb);
-				inAllPrograms.add(nutritionpro);
-				inAllPrograms.add(pmtct);*/
 				inAllPrograms.add(heartFailure);
 				inAllPrograms.add(dmprogram);
 				inAllPrograms.add(chronicrespiratory);
@@ -1043,10 +1091,6 @@ public class SetupDataQualityIndicatorReport {
 				// ======================================================================================
 
 				List<Program> inPrograms = new ArrayList<Program>();
-				/*inPrograms.add(pediHIV);
-				inPrograms.add(adultHIV);
-				inPrograms.add(nutritionpro);
-				inPrograms.add(pmtct);*/
 				inPrograms.add(heartFailure);
 				inPrograms.add(dmprogram);
 				inPrograms.add(chronicrespiratory);
@@ -1167,7 +1211,6 @@ public class SetupDataQualityIndicatorReport {
 				dataSetDefinition.addColumn("9","Patients With Missing program enrollment start date",
 						new Mapped(patientsMissingprogramsEnrolStartDateindicator,null),"");
 				
-				
 				return dataSetDefinition;
 				
 
@@ -1237,6 +1280,43 @@ public class SetupDataQualityIndicatorReport {
 				GlobalPropertiesManagement.ON_ANTIRETROVIRALS_STATE,
 				GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,
 				GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
+		infantGroup1 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP1,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		infantGroup2 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP2,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		infantGroup3 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP3,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		infantGroup4 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP4,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		infantGroup5 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP5,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		infantGroup6 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP6,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		infantGroup7 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP7,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		infantGroup8 = gp.getProgramWorkflowState(GlobalPropertiesManagement.INFANT_GROUP8,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_COMBINED_CLINIC_PROGRAM);
+		motherPregGroup1= gp.getProgramWorkflowState(GlobalPropertiesManagement.PREGNANCY_GROUP1,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
+		motherPregGroup2 = gp.getProgramWorkflowState(GlobalPropertiesManagement.PREGNANCY_GROUP2,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
+		motherPregGroup3 = gp.getProgramWorkflowState(GlobalPropertiesManagement.PREGNANCY_GROUP3,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
+		motherPregGroup4 = gp.getProgramWorkflowState(GlobalPropertiesManagement.PREGNANCY_GROUP4,
+				GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+				GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
+		
 		tbFirstLineDrugsConcepts = gp.getConceptsByConceptSet(GlobalPropertiesManagement.TB_FIRST_LINE_DRUG_SET);
 		tbSecondLineDrugsConcepts = gp.getConceptsByConceptSet(GlobalPropertiesManagement.TB_SECOND_LINE_DRUG_SET);
 		reasonForExitingCare = gp.getConcept(GlobalPropertiesManagement.REASON_FOR_EXITING_CARE);
@@ -1273,7 +1353,7 @@ public class SetupDataQualityIndicatorReport {
 				GlobalPropertiesManagement.PATIENT_DIED_STATE,
 				GlobalPropertiesManagement.PREGNANCY_STATUS_WORKFLOW,
 				GlobalPropertiesManagement.PMTCT_PREGNANCY_PROGRAM);
-		diedInHf = gp.getProgramWorkflowState(
+		/*diedInHf = gp.getProgramWorkflowState(
 				GlobalPropertiesManagement.PATIENT_DIED_STATE,
 				GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,
 				GlobalPropertiesManagement.HEART_FAILURE_PROGRAM_NAME);
@@ -1292,7 +1372,7 @@ public class SetupDataQualityIndicatorReport {
 		diedInEpil = gp.getProgramWorkflowState(
 				GlobalPropertiesManagement.PATIENT_DIED_STATE,
 				GlobalPropertiesManagement.TREATMENT_STATUS_WORKFLOW,
-				GlobalPropertiesManagement.EPILEPSY_PROGRAM);
+				GlobalPropertiesManagement.EPILEPSY_PROGRAM);*/
 		height = gp.getConcept(GlobalPropertiesManagement.HEIGHT_CONCEPT);
 
 		weight = gp.getConcept(GlobalPropertiesManagement.WEIGHT_CONCEPT);

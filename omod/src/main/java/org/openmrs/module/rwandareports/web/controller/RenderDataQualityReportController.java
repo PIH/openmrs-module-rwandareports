@@ -404,6 +404,17 @@ private void getSavedKeys(List<String> savedColumnKeys) {
 	savedColumnKeys.add("10");
 	savedColumnKeys.add("11");
 	savedColumnKeys.add("12");
+	savedColumnKeys.add("13");
+	savedColumnKeys.add("14");
+	savedColumnKeys.add("15");
+	savedColumnKeys.add("16");
+	savedColumnKeys.add("17");
+	savedColumnKeys.add("18");
+	savedColumnKeys.add("19");
+	savedColumnKeys.add("20");
+	savedColumnKeys.add("21");
+	savedColumnKeys.add("22");
+	savedColumnKeys.add("23");
 	
 	
 }

@@ -46,10 +46,11 @@ public Object filter(Object value) {
 		}
     }
 	if(obNeeded!=null && obNeeded.getValueCoded()!=null){
-	obsValueCoded=obNeeded.getValueCoded().getName().toString();	
+	obsValueCoded=obNeeded.getValueCoded().getName().toString();
+	return obsValueCoded;
 	}
 	
-		return obsValueCoded;
+		return null;
 	}
 public Object filterWhenNull() {
 	// TODO Auto-generated method stub

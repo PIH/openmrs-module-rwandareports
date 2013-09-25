@@ -22,6 +22,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
@@ -111,6 +112,8 @@ public class SetupAsthmaQuarterlyAndMonthReport {
 	private List<Concept> asthmasClassificationAnswers = new ArrayList<Concept>();
 	
 	private List<Concept> asthmasMedicationsWithoutSalbutamol = new ArrayList<Concept>();
+	
+	private ProgramWorkflowState patientDied;
 	
 	public void setup() throws Exception {
 		
@@ -786,6 +789,47 @@ public class SetupAsthmaQuarterlyAndMonthReport {
 		            .createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
 		//=======================================================================
+		//E1Died: Of total active patients, % of patients died.
+		//==================================================================
+		
+		SqlCohortDefinition patientsInPatientDiedState = Cohorts.createPatientsInStateNotPredatingProgramEnrolment(patientDied);
+
+		CompositionCohortDefinition activePatientsInPatientDiedState = new CompositionCohortDefinition();
+		activePatientsInPatientDiedState.setName("activePatientsInPatientDiedState");
+		activePatientsInPatientDiedState.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		activePatientsInPatientDiedState.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		activePatientsInPatientDiedState.addParameter(new Parameter("endDate", "endDate", Date.class));
+		activePatientsInPatientDiedState.addParameter(new Parameter("startDate", "startDate", Date.class));
+		activePatientsInPatientDiedState.getSearches().put(
+		    "1",
+		    new Mapped<CohortDefinition>(patientsSeenComposition, ParameterizableUtil
+		            .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+		activePatientsInPatientDiedState.getSearches().put(
+		    "2",
+		    new Mapped<CohortDefinition>(patientsInPatientDiedState, ParameterizableUtil
+		            .createParameterMappings("onOrBefore=${endDate},onOrAfter=${startDate}")));
+		activePatientsInPatientDiedState.setCompositionString("1 AND 2");
+		
+		CohortIndicator activePatientsInPatientDiedStateInQuarterIndicator = Indicators
+        .newCountIndicator(
+            "activePatientsInPatientDiedStateInQuarterIndicator",
+            activePatientsInPatientDiedState,
+            ParameterizableUtil
+                    .createParameterMappings("endDate=${endDate},startDate=${endDate-3m+1d},onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
+
+		//========================================================
+		//        Adding columns to data set definition         //
+		//========================================================
+		
+		
+		dsd.addColumn(
+			    "E1DiedN",
+			    "Total active patients, number who Died in quarter",
+			    new Mapped(activePatientsInPatientDiedStateInQuarterIndicator, ParameterizableUtil
+			            .createParameterMappings("endDate=${endDate}")), "");
+			
+		
+		//=======================================================================
 		//E1: Of total active patients, % with documented hospitalization (in flowsheet) in the last quarter (exclude hospitalization on DDB)
 		//==================================================================
 		
@@ -1249,6 +1293,8 @@ public class SetupAsthmaQuarterlyAndMonthReport {
 		
 		returnVisitDate = gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE);
 		
-		
+		patientDied = gp.getProgramWorkflowState(GlobalPropertiesManagement.PATIENT_DIED_STATE,
+			    GlobalPropertiesManagement.CRD_TREATMENT_WORKFLOW,
+			    GlobalPropertiesManagement.CHRONIC_RESPIRATORY_PROGRAM);
 	}
 }

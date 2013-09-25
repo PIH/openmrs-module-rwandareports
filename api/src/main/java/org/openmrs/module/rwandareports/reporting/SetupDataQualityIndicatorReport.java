@@ -901,8 +901,7 @@ public class SetupDataQualityIndicatorReport {
         pregnancyInGroups.add(motherPregGroup3);
         pregnancyInGroups.add(motherPregGroup4);
         PatientStateCohortDefinition pmtctPregIngroupsEver = Cohorts.createPatientStateEverCohortDefinition("pmtctPregInGroupEver", pregnancyInGroups); 
-        InProgramCohortDefinition pregnantMotherProgram = Cohorts.createInProgramParameterizableByDate("DQ: pregnantMotherProgram",
-				pmtctCombinedClinicMother, "onDate");
+        InProgramCohortDefinition pregnantMotherProgram = Cohorts.createInProgramParameterizableByDate("DQ: pregnantMotherProgram",pmtct, "onDate");
         CompositionCohortDefinition pregMotherIngroupsEverComp= new CompositionCohortDefinition();
         pregMotherIngroupsEverComp.setName("DQ: Patients currently in PMTCT Pregnancy Program not in Groups");
         pregMotherIngroupsEverComp.getSearches().put("1",new Mapped(pregnantMotherProgram, 

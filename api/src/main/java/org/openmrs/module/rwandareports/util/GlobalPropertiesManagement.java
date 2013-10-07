@@ -572,7 +572,7 @@ public class GlobalPropertiesManagement {
 	
 	public final static String MUTUELLE_LEVEL="reports.mutuelleLevel";
 	
-	
+	public final static String PATIENT_PRESENTS_FOR_CHEMO = "reports.patientPresentsChemo";
 	
 	
 	

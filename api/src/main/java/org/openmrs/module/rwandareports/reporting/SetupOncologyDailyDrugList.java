@@ -8,7 +8,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.openmrs.Concept;
+import org.openmrs.api.PatientSetService.TimeModifier;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -17,6 +20,7 @@ import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.rwandareports.dataset.DrugOrderDataSetDefinition;
 import org.openmrs.module.rwandareports.dataset.DrugOrderTotalDataSetDefinition;
 import org.openmrs.module.rwandareports.definition.UpcomingChemotherapyCohortDefinition;
+import org.openmrs.module.rwandareports.util.Cohorts;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 
 public class SetupOncologyDailyDrugList {
@@ -36,6 +40,8 @@ public class SetupOncologyDailyDrugList {
 	
 	List<Concept> drugExclusions = new ArrayList<Concept>();
 	
+	private List<String> onOrAfterOnOrBeforeParamterNames = new ArrayList<String>();
+	
 	
 	public void setup() throws Exception {
 		
@@ -52,6 +58,7 @@ public class SetupOncologyDailyDrugList {
 		design.setProperties(props);
 		
 		h.saveReportDesign(design);
+	
 	}
 	
 	public void delete() {
@@ -68,13 +75,14 @@ public class SetupOncologyDailyDrugList {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName("ONC-Chemotherapy Daily Drug List");
-				
-		UpcomingChemotherapyCohortDefinition baseCohort = new UpcomingChemotherapyCohortDefinition();
-		baseCohort.setChemotherapyIndication(chemotherapy);
-		baseCohort.addParameter(new Parameter("asOfDate", "asOfDate", Date.class));
-		baseCohort.addParameter(new Parameter("untilDate", "untilDate", Date.class));
 		
-		reportDefinition.setBaseCohortDefinition(baseCohort,ParameterizableUtil.createParameterMappings("asOfDate=${endDate},untilDate=${endDate}"));
+		onOrAfterOnOrBeforeParamterNames.add("onOrAfter");
+		onOrAfterOnOrBeforeParamterNames.add("onOrBefore");
+				
+		CodedObsCohortDefinition baseCohort = Cohorts.createCodedObsCohortDefinition("registeredChemo",
+        		onOrAfterOnOrBeforeParamterNames, gp.getConcept(GlobalPropertiesManagement.PATIENT_PRESENTS_FOR_CHEMO),gp.getConcept(GlobalPropertiesManagement.YES), SetComparator.IN, TimeModifier.LAST);
+		
+		reportDefinition.setBaseCohortDefinition(baseCohort,ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate+1d}"));
 		reportDefinition.addParameter(new Parameter("endDate", "Date", Date.class));
 		createDataSetDefinition(reportDefinition);
 		

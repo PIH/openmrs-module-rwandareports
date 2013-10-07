@@ -164,9 +164,9 @@ public class DrugOrderDataSetEvaluator implements DataSetEvaluator {
 													calcDose = eDrO.getDrug().getMaximumDailyDose();
 												}
 												dosage = f.format(calcDose)
-												        + eDrO.getUnits().substring(0, eDrO.getUnits().indexOf("/"));
+												        + eDrO.getDrug().getUnits().substring(0, eDrO.getDrug().getUnits().indexOf("/"));
 											}
-										} else if (eDrO.getUnits().contains("/kg")) {
+										} else if (eDrO.getDrug().getUnits().contains("/kg")) {
 											
 											List<Obs> weightValues = Context.getObsService()
 											        .getObservationsByPersonAndConcept(patient, weight);
@@ -193,8 +193,13 @@ public class DrugOrderDataSetEvaluator implements DataSetEvaluator {
 											dosage = eDrO.getDose() + eDrO.getUnits();
 										}
 										
-										String drugString = eDrO.getDrug().getName() + " " + dosage + " "
-										        + eDrO.getRoute().getDisplayString();
+										String drugString = eDrO.getDrug().getName() + " " + dosage;
+										
+										if(eDrO.getDrug().getRoute() != null)
+										{
+											drugString = drugString + " " + eDrO.getDrug().getRoute().getDisplayString();
+										}
+										        
 										if (index == 1) {
 											dataSet.addColumnValue(pId, drug1, "R1 " + drugString);
 										} else if (index == 2) {

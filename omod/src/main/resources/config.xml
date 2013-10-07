@@ -3155,5 +3155,10 @@
 		<description>Id of Mutuelle level concept</description>
 	</globalProperty>
 	
+	<globalProperty>
+		<property>reports.patientPresentsChemo</property>
+		<defaultValue>1c4ae4e2-9551-49c4-8200-0b7d0abc26a1</defaultValue>
+		<description>Concept that denotes a patient has presented for Chemotherapy</description>
+	</globalProperty>
 	
 </module>

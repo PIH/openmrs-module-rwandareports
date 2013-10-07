@@ -167,7 +167,7 @@ public class DrugOrderTotalDataSetEvaluator implements DataSetEvaluator {
 										} else {
 											if (eDrO.getDrug().getDosageForm() != null
 											        && !eDrO.getDrug().getDosageForm().equals(tabs)
-											        && eDrO.getRoute().equals(oral)) {
+											        && eDrO.getDrug().getRoute().equals(oral)) {
 												
 												double units = eDrO.getDose() / eDrO.getDrug().getDoseStrength();
 												dosage = dosage + Math.ceil(units);

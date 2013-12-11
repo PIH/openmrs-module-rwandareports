@@ -13,31 +13,83 @@
  */
 package org.openmrs.module.rwandareports.reporting.builder.hiv;
 
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder;
+import java.util.Date;
+import java.util.Properties;
 
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.rwandareports.dataset.LocationHierachyIndicatorDataSetDefinition;
+import org.openmrs.module.rwandareports.reporting.Helper;
+import org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder;
+import org.openmrs.module.rwandareports.widget.AllLocation;
+import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 
 /**
  *
  */
 public class QuarterlyCrossSiteIndicatorByDistrictReportBuilder implements ReportBuilder {
-
+	
 	/**
-     * @see org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder#build()
-     */
-    @Override
-    public ReportDefinition build() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
+	 * @see org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder#build()
+	 */
+	@Override
+	public ReportDefinition build() {
+		// PIH Quarterly Cross Site Indicator Report
+		ReportDefinition rd = new ReportDefinition();
+		rd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		
+		Properties properties = new Properties();
+		properties.setProperty("hierarchyFields", "countyDistrict:District");
+		rd.addParameter(new Parameter("location", "Location", AllLocation.class, properties));
+		
+		rd.setName("PIH-Boston Indicators-Quarterly");
+		
+		rd.addDataSetDefinition(createDataSet(),
+		    ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
+		
+		Helper.saveReportDefinition(rd);
+		return null;
+	}
+	
 	/**
-     * @see org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder#delete()
-     */
-    @Override
-    public void delete() {
-	    // TODO Auto-generated method stub
-	    
-    }
-
+	 * @see org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder#delete()
+	 */
+	@Override
+	public void delete() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * Creates the LocationHierachyIndicatorDataSetDefinition dataset which has a
+	 * CohortIndicatorDataSetDefinition on it.
+	 * 
+	 * @return the dataset
+	 */
+	private DataSetDefinition createDataSet() {
+		
+		LocationHierachyIndicatorDataSetDefinition ldsd = new LocationHierachyIndicatorDataSetDefinition(createBaseDataSet());
+		ldsd.setName("PIH_Quarterly_Individual_District_Indicator Data Set");
+		ldsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		ldsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		ldsd.addParameter(new Parameter("location", "District", LocationHierarchy.class));
+		
+		return ldsd;
+	}
+	
+	/**
+	 * Creates a CohortIndicatorDataSetDefinition
+	 * 
+	 * @return the dataset
+	 */
+	private CohortIndicatorDataSetDefinition createBaseDataSet() {
+		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+		
+		return dsd;
+	}
+	
 }

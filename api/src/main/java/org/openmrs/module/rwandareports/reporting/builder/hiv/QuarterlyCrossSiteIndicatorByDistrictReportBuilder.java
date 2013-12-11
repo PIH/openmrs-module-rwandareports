@@ -16,11 +16,14 @@ package org.openmrs.module.rwandareports.reporting.builder.hiv;
 import java.util.Date;
 import java.util.Properties;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.rwandareports.dataset.LocationHierachyIndicatorDataSetDefinition;
 import org.openmrs.module.rwandareports.reporting.Helper;
 import org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder;
@@ -60,7 +63,15 @@ public class QuarterlyCrossSiteIndicatorByDistrictReportBuilder implements Repor
 	 */
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
+		
+		ReportService rs = Context.getService(ReportService.class);
+		for (ReportDesign rd : rs.getAllReportDesigns(false)) {
+			if ("PIH Quarterly Indicator Form (Excel)_".equals(rd.getName())
+			        || "PIH Quarterly Indicator Graph (Excel)_".equals(rd.getName())) {
+				rs.purgeReportDesign(rd);
+			}
+		}
+		Helper.purgeReportDefinition("PIH-Boston Indicators-Quarterly");
 		
 	}
 	

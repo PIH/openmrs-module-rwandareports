@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.rwandareports.reporting.library.shared.hiv;
 
+import org.springframework.stereotype.Component;
+
 
 /**
- *
+ * Library of HIV related indicator definitions.
  */
+@Component
 public class HivIndicatorLibrary {
 
 }

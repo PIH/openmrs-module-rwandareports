@@ -35,6 +35,7 @@
 		<rwandaPrimaryCareVersion>2.0.7-SNAPSHOT</rwandaPrimaryCareVersion>
 		<idgenVersion>2.2</idgenVersion>
 		<logicVersion>0.5.2</logicVersion>
+		<metadatadeployVersion>0.2</metadatadeployVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
@@ -198,6 +199,13 @@
 			<artifactId>mariaDB4j</artifactId>
 			<version>2.0-SNAPSHOT</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>metadatadeploy-api</artifactId>
+			<version>${metadatadeployVersion}</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>

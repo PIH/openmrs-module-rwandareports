@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.rwandareports.reporting.library.shared.common;
 
+import org.springframework.stereotype.Component;
+
 
 /**
- *
+ * Library of common indicator definitions.
  */
+@Component
 public class CommonIndicatorLibrary {
 
 }

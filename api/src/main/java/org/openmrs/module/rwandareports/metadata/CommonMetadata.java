@@ -11,15 +11,25 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.rwandareports.reporting.library.shared.hiv;
+package org.openmrs.module.rwandareports.metadata;
 
+import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
 
 
 /**
- * Library of HIV related cohort definitions
+ * Common metadata bundle
  */
 @Component
-public class HivCohortLibrary {
+public class CommonMetadata extends AbstractMetadataBundle {
+
+	/**
+     * @see org.openmrs.module.metadatadeploy.bundle.MetadataBundle#install()
+     */
+    @Override
+    public void install() {
+	    // TODO Auto-generated method stub
+	    
+    }
 
 }

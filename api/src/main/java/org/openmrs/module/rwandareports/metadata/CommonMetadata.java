@@ -16,20 +16,24 @@ package org.openmrs.module.rwandareports.metadata;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
 
-
 /**
  * Common metadata bundle
  */
 @Component
 public class CommonMetadata extends AbstractMetadataBundle {
-
+	
+	public static final class _Location {
+		
+		public static final String UNKNOWN = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
+	}
+	
 	/**
-     * @see org.openmrs.module.metadatadeploy.bundle.MetadataBundle#install()
-     */
-    @Override
-    public void install() {
-	    // TODO Auto-generated method stub
-	    
-    }
-
+	 * @see org.openmrs.module.metadatadeploy.bundle.MetadataBundle#install()
+	 */
+	@Override
+	public void install() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

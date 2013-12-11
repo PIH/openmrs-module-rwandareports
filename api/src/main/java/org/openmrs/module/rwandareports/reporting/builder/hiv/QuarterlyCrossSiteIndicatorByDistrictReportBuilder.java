@@ -27,13 +27,21 @@ import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.rwandareports.dataset.LocationHierachyIndicatorDataSetDefinition;
 import org.openmrs.module.rwandareports.reporting.Helper;
 import org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder;
+import org.openmrs.module.rwandareports.reporting.library.shared.hiv.HivIndicatorLibrary;
+import org.openmrs.module.rwandareports.util.ReportUtils;
 import org.openmrs.module.rwandareports.widget.AllLocation;
 import org.openmrs.module.rwandareports.widget.LocationHierarchy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
- *
+ * PIH-Boston Indicators-Quarterly
  */
+@Component
 public class QuarterlyCrossSiteIndicatorByDistrictReportBuilder implements ReportBuilder {
+	
+	@Autowired
+	private HivIndicatorLibrary hivIndicators;
 	
 	/**
 	 * @see org.openmrs.module.rwandareports.reporting.builder.common.ReportBuilder#build()
@@ -99,6 +107,13 @@ public class QuarterlyCrossSiteIndicatorByDistrictReportBuilder implements Repor
 	 */
 	private CohortIndicatorDataSetDefinition createBaseDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+		dsd.setName("PIH_Quarterly_Individual_District_Indicator Cohort Data Set");
+		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		
+		String indParams = "startDate=${startDate},endDate=${endDate}";
+		
+		dsd.addColumn("1", "In All HIV Programs Over 15", ReportUtils.map(hivIndicators.inAllHIVProgramsOver15(), indParams), "");
 		
 		return dsd;
 	}

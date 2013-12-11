@@ -15,7 +15,11 @@ package org.openmrs.module.rwandareports.metadata;
 
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.openmrs.module.metadatadeploy.bundle.Requires;
+import org.openmrs.module.rwandareports.Dictionary;
 import org.springframework.stereotype.Component;
+
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
+
 
 
 /**
@@ -25,12 +29,23 @@ import org.springframework.stereotype.Component;
 @Requires({ CommonMetadata.class })
 public class HivMetadata extends AbstractMetadataBundle {
 
+	public static final class _Program {
+		public final static String ADULT_HIV_PROGRAM = "cf7c0e30-2700-102b-80cb-0017a47871b2"; 
+		public final static String PEDI_HIV_PROGRAM = "cf7c16e6-2700-102b-80cb-0017a47871b2";
+		public final static String PMTCT_PREGNANCY_PROGRAM = "cf7c13da-2700-102b-80cb-0017a47871b2";
+		public final static String PMTCT_COMBINED_MOTHER_PROGRAM = "2f7506b4-21e6-445d-ba73-2c782a6ecbee";
+	}
+
 	/**
      * @see org.openmrs.module.metadatadeploy.bundle.MetadataBundle#install()
      */
     @Override
     public void install() {
-	    // TODO Auto-generated method stub
+    	
+    	install(program("Adult HIV program", "PIH Adult HIV program", Dictionary.ADULT_HIV_PROGRAM, _Program.ADULT_HIV_PROGRAM));
+    	install(program("Pedi HIV program", "PIH Pediatric HIV program", Dictionary.PEDI_HIV_PROGRAM, _Program.PEDI_HIV_PROGRAM));
+    	install(program("PMTCT Pregnancy program", "PIH PMTCT Pregnancy program", Dictionary.PMTCT_PREGNANCY_PROGRAM, _Program.PMTCT_PREGNANCY_PROGRAM));
+    	install(program("PMTCT Combined Mother program", "PIH PMTCT Combined Mother program", Dictionary.PMTCT_COMBINED_MOTHER_PROGRAM, _Program.PMTCT_COMBINED_MOTHER_PROGRAM));
 	    
     }
 

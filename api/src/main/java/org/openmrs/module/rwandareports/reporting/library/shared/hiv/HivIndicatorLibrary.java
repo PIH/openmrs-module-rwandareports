@@ -13,6 +13,11 @@
  */
 package org.openmrs.module.rwandareports.reporting.library.shared.hiv;
 
+import static org.openmrs.module.rwandareports.util.Indicators.newCountIndicator;
+
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -22,4 +27,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class HivIndicatorLibrary {
 
+	@Autowired
+	private HivCohortLibrary hivCohorts;
+
+	public CohortIndicator inAllHIVProgramsOver15() {
+	    return newCountIndicator("hivQD: In all programs over 15_", hivCohorts.inHIVOver15(),ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+    }
 }

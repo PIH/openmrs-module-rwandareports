@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.rowperpatientreports.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculationBasedOnMultiplePatientDataDefinitions;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.MostRecentObservation;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.HypertensionAlerts;
 import org.openmrs.module.rwandareports.filter.DateFormatFilter;
 import org.openmrs.module.rwandareports.filter.DrugDosageCurrentFilter;
@@ -46,6 +47,7 @@ public class SetupHypertensionConsultationSheet {
 	
 	private List<Form> DDBAndRendezvousForms=new ArrayList<Form>();
 	List<EncounterType> hypertensionEncounter;
+	private List<EncounterType> clinicalEnountersIncLab;
 	
 	public void setup() throws Exception {
 		
@@ -142,6 +144,8 @@ public class SetupHypertensionConsultationSheet {
 		
 		//AllObservationValues allDiastolicBP = RowPerPatientColumns.getAllObservationValues("diastolicLastTwo", diastolicBP, null, new LastTwoObsFilter(),
 		//    null);
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
+		
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -149,6 +153,7 @@ public class SetupHypertensionConsultationSheet {
 		alert.addPatientDataToBeEvaluated(diastolic, new HashMap<String, Object>());
 		//alert.addPatientDataToBeEvaluated(allSystolicBP, new HashMap<String, Object>());
 		//alert.addPatientDataToBeEvaluated(allDiastolicBP, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HypertensionAlerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());	
 		
@@ -176,6 +181,7 @@ public class SetupHypertensionConsultationSheet {
 		DDBAndRendezvousForms.add(hypertensionDDBForm);
 		DDBAndRendezvousForms.add(followUpForm);
 		hypertensionEncounter = gp.getEncounterTypeList(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER);
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 		
 	}
 }

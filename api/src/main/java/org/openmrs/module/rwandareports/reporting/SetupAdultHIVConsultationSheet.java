@@ -2,6 +2,7 @@ package org.openmrs.module.rwandareports.reporting;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -21,6 +22,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalc
 import org.openmrs.module.rowperpatientreports.patientdata.definition.FirstDrugOrderStartedRestrictedByConceptSet;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.MostRecentObservation;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ObservationInMostRecentEncounterOfType;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.BMI;
 import org.openmrs.module.rwandareports.customcalculator.DeclineHighestCD4;
 import org.openmrs.module.rwandareports.customcalculator.HIVAdultAlerts;
@@ -39,6 +41,8 @@ public class SetupAdultHIVConsultationSheet implements SetupReport {
 	private Program hivProgram;
 	
 	private EncounterType flowsheetAdult;
+	
+	private List<EncounterType> clinicalEnountersIncLab;
 	
 	public void setup() throws Exception {
 		
@@ -148,10 +152,10 @@ public class SetupAdultHIVConsultationSheet implements SetupReport {
 		ObservationInMostRecentEncounterOfType sideEffect = RowPerPatientColumns.getSideEffectInMostRecentEncounterOfType(
 		    "SideEffects", flowsheetAdult);
 		
-		AllObservationValues allCD4 = RowPerPatientColumns.getAllCD4Values("allCD4Obs", "ddMMMyy",
-		    null, null);
+		AllObservationValues viralLoadTest = RowPerPatientColumns.getAllViralLoadsValues("viralLoadTest", "ddMMMyy", 
+				new LastThreeObsFilter(), new ObservationFilter());	
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
-		FirstDrugOrderStartedRestrictedByConceptSet startArt = RowPerPatientColumns.getDrugOrderForStartOfART("StartART", "dd-MMM-yyyy");
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -160,6 +164,8 @@ public class SetupAdultHIVConsultationSheet implements SetupReport {
 		alert.addPatientDataToBeEvaluated(mostRecentHeight, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(io, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(sideEffect, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(viralLoadTest, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HIVAdultAlerts());
 		alert.addParameter(new Parameter("state", "State",Date.class));
 		dataSetDefinition.addColumn(alert,ParameterizableUtil.createParameterMappings("state=${state}"));
@@ -171,15 +177,6 @@ public class SetupAdultHIVConsultationSheet implements SetupReport {
 		bmi.setCalculator(new BMI());
 		dataSetDefinition.addColumn(bmi, new HashMap<String, Object>());
 		
-		CustomCalculationBasedOnMultiplePatientDataDefinitions cd4Decline = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
-		cd4Decline.setName("cd4Decline");
-		cd4Decline.addPatientDataToBeEvaluated(allCD4, new HashMap<String, Object>());
-		cd4Decline.addPatientDataToBeEvaluated(startArt, new HashMap<String, Object>());
-		DeclineHighestCD4 declineCD4 = new DeclineHighestCD4();
-		declineCD4.setInitiationArt("StartART");
-		cd4Decline.setCalculator(declineCD4);
-		dataSetDefinition.addColumn(cd4Decline, new HashMap<String, Object>());
-		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("state", "${state}");
 		
@@ -190,5 +187,7 @@ public class SetupAdultHIVConsultationSheet implements SetupReport {
 		hivProgram = gp.getProgram(GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
 		
 		flowsheetAdult = gp.getEncounterType(GlobalPropertiesManagement.ADULT_FLOWSHEET_ENCOUNTER);
+		
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 }

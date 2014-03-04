@@ -24,6 +24,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.FirstDrugO
 import org.openmrs.module.rowperpatientreports.patientdata.definition.MostRecentObservation;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ObservationInMostRecentEncounterOfType;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.PatientProperty;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.DeclineHighestCD4;
 import org.openmrs.module.rwandareports.customcalculator.HIVPediAlerts;
 import org.openmrs.module.rwandareports.customcalculator.NextCD4;
@@ -50,6 +51,8 @@ public class SetupPediHIVConsultationSheet {
 	private List<EncounterType> pediEncounters;
 	
 	private EncounterType pediFlowsheet;
+	
+	private List<EncounterType> clinicalEnountersIncLab;
 	
 	public void setup() throws Exception {
 		
@@ -92,12 +95,12 @@ public class SetupPediHIVConsultationSheet {
 				rs.purgeReportDesign(rd);
 			}
 		}
-		Helper.purgeReportDefinition("HIV-Pedi Consultation Sheet");
+		Helper.purgeReportDefinition("Pedi HIV Consultation Sheet");
 	}
 	
 	private ReportDefinition createReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
-		reportDefinition.setName("HIV-Pedi Consultation Sheet");
+		reportDefinition.setName("Pedi HIV Consultation Sheet");
 		
 		reportDefinition.addParameter(new Parameter("location", "Health Center", Location.class));
 		
@@ -211,8 +214,10 @@ public class SetupPediHIVConsultationSheet {
 		
 		ObservationInMostRecentEncounterOfType sideEffect = RowPerPatientColumns.getSideEffectInMostRecentEncounterOfType(
 		    "SideEffects", pediFlowsheet);
+		AllObservationValues viralLoadTest = RowPerPatientColumns.getAllViralLoadsValues("viralLoadTest", "ddMMMyy", null,null);	
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("AccompName"), new HashMap<String, Object>());
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -224,6 +229,8 @@ public class SetupPediHIVConsultationSheet {
 		alert.addPatientDataToBeEvaluated(height, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(weight, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(cd4Percent, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(viralLoadTest, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HIVPediAlerts());
 		alert.addParameter(new Parameter("state", "State",Date.class));
 		dataSetDefinition.addColumn(alert,ParameterizableUtil.createParameterMappings("state=${state}"));
@@ -255,6 +262,7 @@ public class SetupPediHIVConsultationSheet {
 		    GlobalPropertiesManagement.PEDI_HIV_PROGRAM);
 		
 		pediFlowsheet = gp.getEncounterType(GlobalPropertiesManagement.PEDI_FLOWSHEET_ENCOUNTER);
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 }

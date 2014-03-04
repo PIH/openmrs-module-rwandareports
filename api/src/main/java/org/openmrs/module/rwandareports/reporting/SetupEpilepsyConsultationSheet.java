@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.rowperpatientreports.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculationBasedOnMultiplePatientDataDefinitions;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ObservationInMostRecentEncounterOfType;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.EpilepsyAlerts;
 import org.openmrs.module.rwandareports.filter.DateFormatFilter;
 import org.openmrs.module.rwandareports.filter.DrugDosageCurrentFilter;
@@ -41,6 +42,7 @@ public class SetupEpilepsyConsultationSheet {
 	private List<Form> DDBAndRendezvousForms=new ArrayList<Form>();
 	private EncounterType epilepsyVisit;
 	List<EncounterType> epilepsyVisitEncounter;
+	private List<EncounterType> clinicalEnountersIncLab;
 	
 	public void setup() throws Exception {
 		
@@ -129,10 +131,12 @@ public class SetupEpilepsyConsultationSheet {
 		dataSetDefinition.addColumn(RowPerPatientColumns.getSeizureInMostRecentEncounterOfType(
 			    "seizure", epilepsyVisit, new ObservationInMostRecentEncounterOfType()), new HashMap<String, Object>());
 		
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
 		alert.addPatientDataToBeEvaluated(RowPerPatientColumns.getMostRecentSeizure("RecentSeizure", "dd-MMM-yy"), new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new EpilepsyAlerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());
 		
@@ -155,6 +159,7 @@ public class SetupEpilepsyConsultationSheet {
 		DDBAndRendezvousForms.add(followUpForm);
 		epilepsyVisit = gp.getEncounterType(GlobalPropertiesManagement.EPILEPSY_VISIT);
 		epilepsyVisitEncounter = gp.getEncounterTypeList(GlobalPropertiesManagement.EPILEPSY_VISIT);
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 }

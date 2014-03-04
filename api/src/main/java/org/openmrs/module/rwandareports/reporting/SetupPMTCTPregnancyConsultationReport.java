@@ -1,6 +1,7 @@
 package org.openmrs.module.rwandareports.reporting;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -23,6 +24,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.CurrentOrd
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculationBasedOnMultiplePatientDataDefinitions;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.MostRecentObservation;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ObservationInMostRecentEncounterOfType;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.Alerts;
 import org.openmrs.module.rwandareports.customcalculator.BreastFeedingOrFormula;
 import org.openmrs.module.rwandareports.customcalculator.DDR;
@@ -53,6 +55,8 @@ public class SetupPMTCTPregnancyConsultationReport {
 	private Concept dpaConcept;
 	
 	private EncounterType flowsheetEncounter;
+	
+	private List<EncounterType> clinicalEnountersIncLab;
 	
 	public void setup() throws Exception {
 		
@@ -203,14 +207,15 @@ public class SetupPMTCTPregnancyConsultationReport {
 		bOrF.setCalculator(new BreastFeedingOrFormula());
 		dataSetDefinition.addColumn(bOrF, new HashMap<String, Object>());
 		
-		AllObservationValues weight = RowPerPatientColumns.getAllWeightValues("weightObs", "ddMMMyy",
+		/*AllObservationValues weight = RowPerPatientColumns.getAllWeightValues("weightObs", "ddMMMyy",
 		    new LastThreeObsFilter(), new ObservationFilter());
 		
 		ObservationInMostRecentEncounterOfType io = RowPerPatientColumns.getIOInMostRecentEncounterOfType("IO",
 		    flowsheetEncounter);
 		
 		ObservationInMostRecentEncounterOfType sideEffect = RowPerPatientColumns.getSideEffectInMostRecentEncounterOfType(
-		    "SideEffects", flowsheetEncounter);
+		    "SideEffects", flowsheetEncounter);*/
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -219,7 +224,8 @@ public class SetupPMTCTPregnancyConsultationReport {
 		alert.addPatientDataToBeEvaluated(weight, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(sideEffect, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(io, new HashMap<String, Object>());
-		*/alert.setCalculator(new Alerts());
+		*/alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
+		alert.setCalculator(new Alerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());
 		
 		Map<String, Object> mappings = new HashMap<String, Object>();
@@ -241,6 +247,8 @@ public class SetupPMTCTPregnancyConsultationReport {
 		dpaConcept = gp.getConcept(GlobalPropertiesManagement.DPA);
 		
 		flowsheetEncounter = gp.getEncounterType(GlobalPropertiesManagement.ADULT_FLOWSHEET_ENCOUNTER);
+		
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 }

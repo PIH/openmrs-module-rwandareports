@@ -2,6 +2,7 @@ package org.openmrs.module.rwandareports.reporting;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,6 +21,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.AllObserva
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculationBasedOnMultiplePatientDataDefinitions;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.MostRecentObservation;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ObservationInMostRecentEncounterOfType;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.HIVAdultAlerts;
 import org.openmrs.module.rwandareports.filter.DrugNameFilter;
 import org.openmrs.module.rwandareports.filter.LastThreeObsFilter;
@@ -36,6 +38,9 @@ public class SetupTBConsultationSheet {
 	private Program tbProgram;
 	
 	private EncounterType flowsheetAdult;
+	
+	private List<EncounterType> clinicalEnountersIncLab;
+	
 	
 	public void setup() throws Exception {
 		
@@ -142,6 +147,7 @@ public class SetupTBConsultationSheet {
 		
 		ObservationInMostRecentEncounterOfType sideEffect = RowPerPatientColumns.getSideEffectInMostRecentEncounterOfType(
 		    "SideEffects", flowsheetAdult);
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -150,6 +156,7 @@ public class SetupTBConsultationSheet {
 		alert.addPatientDataToBeEvaluated(mostRecentHeight, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(io, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(sideEffect, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HIVAdultAlerts());
 		alert.addParameter(new Parameter("state", "State",Date.class));
 		dataSetDefinition.addColumn(alert,ParameterizableUtil.createParameterMappings("state=${state}"));
@@ -164,6 +171,8 @@ public class SetupTBConsultationSheet {
 		tbProgram = gp.getProgram(GlobalPropertiesManagement.TB_PROGRAM);
 		
 		flowsheetAdult = gp.getEncounterType(GlobalPropertiesManagement.ADULT_FLOWSHEET_ENCOUNTER);
+		
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 }

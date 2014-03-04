@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.rowperpatientreports.dataset.definition.RowPerPatientDataSetDefinition;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.AllObservationValues;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculationBasedOnMultiplePatientDataDefinitions;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.AsthmaClassificationAlerts;
 import org.openmrs.module.rwandareports.filter.DateFormatFilter;
 import org.openmrs.module.rwandareports.filter.DrugDosageCurrentFilter;
@@ -41,6 +42,7 @@ public class SetupAsthmaConsultationSheet {
 	private Form rendevousForm;
 	private Form asthmaDDBForm;
 	private Form followUpForm;
+	private List<EncounterType> clinicalEnountersIncLab;
 	
 	//private Concept returnVisitDate;
 	
@@ -140,11 +142,15 @@ public class SetupAsthmaConsultationSheet {
 		AllObservationValues asthmaClassification = RowPerPatientColumns.getAllAsthmaClassificationValues("asthmaClassification", null, new LastTwoObsFilter(),
 		    null);
 		
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
+		
+		
 		
 				
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
 		alert.addPatientDataToBeEvaluated(asthmaClassification, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new AsthmaClassificationAlerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());	
 		
@@ -166,6 +172,7 @@ public class SetupAsthmaConsultationSheet {
 		DDBAndRendezvousForms.add(rendevousForm);
 		DDBAndRendezvousForms.add(asthmaDDBForm);
 		DDBAndRendezvousForms.add(followUpForm);
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 	/*

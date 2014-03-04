@@ -23,6 +23,7 @@ import org.openmrs.module.rowperpatientreports.dataset.definition.RowPerPatientD
 import org.openmrs.module.rowperpatientreports.patientdata.definition.AllObservationValues;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculationBasedOnMultiplePatientDataDefinitions;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.MostRecentObservation;
+import org.openmrs.module.rowperpatientreports.patientdata.definition.RecentEncounterType;
 import org.openmrs.module.rwandareports.customcalculator.HeartFailureAlerts;
 import org.openmrs.module.rwandareports.filter.DateFormatFilter;
 import org.openmrs.module.rwandareports.filter.DrugDosageCurrentFilter;
@@ -43,6 +44,7 @@ public class SetupHeartFailureConsultSheet {
 	private Form followUpForm;
 	private List<Form> DDBAndRendezvousForms=new ArrayList<Form>();
 	List<EncounterType> heartFailureEncounter;
+	private List<EncounterType> clinicalEnountersIncLab;
 	
 	public void setup() throws Exception {
 		
@@ -150,8 +152,7 @@ public class SetupHeartFailureConsultSheet {
 		dataSetDefinition.addColumn(lastINR, new HashMap<String, Object>());
 		
 		MostRecentObservation mostRecentHeight = RowPerPatientColumns.getMostRecentHeight("RecentHeight", null);
-		
-		
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -161,6 +162,7 @@ public class SetupHeartFailureConsultSheet {
 		alert.addPatientDataToBeEvaluated(lastINR, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(twoLastweight, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(mostRecentHeight, new HashMap<String, Object>());
+		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HeartFailureAlerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());	
 		
@@ -183,6 +185,7 @@ public class SetupHeartFailureConsultSheet {
 		DDBAndRendezvousForms.add(heartFailureDDBForm);
 		DDBAndRendezvousForms.add(followUpForm);
 		heartFailureEncounter = gp.getEncounterTypeList(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTER);
+		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 		
 		
 	}

@@ -10,6 +10,7 @@ import org.openmrs.Obs;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculation;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AllObservationValuesResult;
+import org.openmrs.module.rowperpatientreports.patientdata.result.DateValueResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttributeResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
@@ -121,6 +122,21 @@ public class Alerts implements CustomCalculation{
 			{
 				alerts.append("Side effects reported last visit: " + result.getValue() + "\n");
 			}
+			
+			if(result.getName().equals("lastEncInMonth"))
+			  {
+				DateValueResult encinmonths = (DateValueResult)result;
+				if(encinmonths.getValue() != null)
+				{
+				Date dateVl =encinmonths.getDateOfObservation();
+				Date date = Calendar.getInstance().getTime();
+				int diff = calculateMonthsDifference(date, dateVl);
+				if(diff > 12){
+				alerts.append("LTFU determine status.\n");
+				     }
+				  } 	
+			  }
+			
 		}
 		
 		alert.setValue(alerts.toString());

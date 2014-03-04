@@ -11,6 +11,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculation;
+import org.openmrs.module.rowperpatientreports.patientdata.result.DateValueResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttributeResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
@@ -65,7 +66,20 @@ public class DiabetesAlerts implements CustomCalculation {
 				if (patientHasDiabetesDDBForm(result) == false) {
 					alerts.append("no DDB\n");
 				}
-			}				
+			}
+			if(result.getName().equals("lastEncInMonth"))
+			  {
+				DateValueResult encinmonths = (DateValueResult)result;
+				if(encinmonths.getValue() != null)
+				{
+				Date dateVl =encinmonths.getDateOfObservation();
+				Date date = Calendar.getInstance().getTime();
+				int diff = calculateMonthsDifference(date, dateVl);
+				if(diff > 12){
+				alerts.append("LTFU determine status.\n");
+				     }
+				  } 	
+			  }
 		}
 		
 		alert.setValue(alerts.toString());
@@ -90,6 +104,25 @@ public class DiabetesAlerts implements CustomCalculation {
 		}
 			
 		return false;
+	}
+	private int calculateMonthsDifference(Date observation, Date startingDate)
+	{
+		int diff = 0;
+	
+		Calendar obsDate = Calendar.getInstance();	
+		obsDate.setTime(observation);
+	
+		Calendar startDate = Calendar.getInstance();
+		startDate.setTime(startingDate);
+	
+		//find out if there is any difference in years first
+		diff = obsDate.get(Calendar.YEAR) - startDate.get(Calendar.YEAR);
+		diff = diff * 12;
+	
+		int monthDiff = obsDate.get(Calendar.MONTH) - startDate.get(Calendar.MONTH);
+		diff = diff + monthDiff;
+	
+		return diff;
 	}
 
 }

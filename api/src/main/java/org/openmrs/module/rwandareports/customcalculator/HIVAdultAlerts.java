@@ -12,6 +12,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculation;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AllObservationValuesResult;
+import org.openmrs.module.rowperpatientreports.patientdata.result.DateValueResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttributeResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
@@ -42,7 +43,7 @@ public class HIVAdultAlerts implements CustomCalculation{
 				{
 					int decline = calculateDecline(cd4.getValue());
 					
-					if(decline > 50 && state.toString().contains("GROUP"))
+					if(decline > 50 && (state.toString().contains("GROUP") || state.toString().contains("FOLLOWING")))
 					{
 						alerts.append("CD4 decline(");
 						alerts.append(decline);
@@ -71,19 +72,58 @@ public class HIVAdultAlerts implements CustomCalculation{
 						{
 							alerts.append("Very late CD4(" + diff + " months ago).\n");
 						}
-						else if(diff > 6)
+						else if((diff > 6) && state.toString().contains("FOLLOWING"))
 						{
 							alerts.append("Late CD4(" + diff + " months ago).\n");
 						}
 						
-						if(state.toString().contains("FOLLOWING") && lastCd4.getValueNumeric() != null && lastCd4.getValueNumeric() < 350)
+						if(state.toString().contains("FOLLOWING") && lastCd4.getValueNumeric() != null && lastCd4.getValueNumeric() < 500)
 						{
 							alerts.append("Eligible for Treatment.\n");
 						}
 					}
 				}	
 			}
-			
+			if(result.getName().equals("viralLoadTest"))
+			{
+				AllObservationValuesResult viraload = (AllObservationValuesResult)result;
+				
+				if(viraload.getValue() != null)
+				{
+					Obs lastviraload = null;
+					
+					if(viraload.getValue().size() > 0)
+					{
+						lastviraload = viraload.getValue().get(viraload.getValue().size()-1);
+					}
+					
+					if(state.toString().contains("GROUP") && (lastviraload == null))
+					{
+						alerts.append("No VL recorded.\n");
+					}
+					else
+					{  
+					 try{
+						Date dateVl = lastviraload.getObsDatetime();
+						Date date = Calendar.getInstance().getTime();
+						
+						int diff = calculateMonthsDifference(date, dateVl);
+						
+						if(state.toString().contains("GROUP")){
+							if(diff > 12){
+							alerts.append("Late VL(" + diff + " months ago).\n");
+						}
+						
+						if(lastviraload.getValueNumeric() != null && lastviraload.getValueNumeric() > 1000)
+						{
+							alerts.append("VL Failure "+lastviraload.getValueNumeric()+".\n");
+						}
+					  }
+						}
+						catch(Exception e){}
+					}
+				}	
+			}
 			if(result.getName().equals("weightObs"))
 			{
 				AllObservationValuesResult wt = (AllObservationValuesResult)result;
@@ -125,8 +165,23 @@ public class HIVAdultAlerts implements CustomCalculation{
 				else
 				{
 					height = Double.parseDouble(heightOb.getValue());
+					
 				}
 			}
+			
+			if(result.getName().equals("lastEncInMonth"))
+			  {
+				DateValueResult encinmonths = (DateValueResult)result;
+				if(encinmonths.getValue() != null)
+				{
+				Date dateVl =encinmonths.getDateOfObservation();
+				Date date = Calendar.getInstance().getTime();
+				int diff = calculateMonthsDifference(date, dateVl);
+				if(diff > 12){
+				alerts.append("LTFU determine status.\n");
+				     }
+				  } 	
+			  }
 			
 			if(result.getName().equals("IO") && result.getValue() != null)
 			{

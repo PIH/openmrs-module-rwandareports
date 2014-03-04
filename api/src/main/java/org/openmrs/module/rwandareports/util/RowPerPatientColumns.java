@@ -72,11 +72,13 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.StateOfPat
 import org.openmrs.module.rowperpatientreports.patientdata.definition.SystemIdentifier;
 import org.openmrs.module.rowperpatientreports.patientdata.evaluator.DatesOfVisitsByStartDateAndEndDateEvaluator;
 import org.openmrs.module.rwandareports.customcalculator.BooleanCalculation;
+import org.openmrs.module.rwandareports.definition.AllMotherObservationValues;
 import org.openmrs.module.rwandareports.definition.ArtSwitch;
 import org.openmrs.module.rwandareports.definition.ArtSwitchDate;
 import org.openmrs.module.rwandareports.definition.CurrentPatientDrugOrder;
 import org.openmrs.module.rwandareports.definition.CurrentPatientProgram;
 import org.openmrs.module.rwandareports.definition.DrugRegimenInformation;
+import org.openmrs.module.rwandareports.definition.EvaluateMotherDefinition;
 import org.openmrs.module.rwandareports.definition.HIVOutcome;
 import org.openmrs.module.rwandareports.definition.LastWeekMostRecentObservation;
 import org.openmrs.module.rwandareports.definition.RegimenDateInformation;
@@ -554,6 +556,20 @@ public class RowPerPatientColumns {
 				dateFormat);
 
 	}
+	
+	public static MostRecentObservation getMostRecentIO(String name,
+			String dateFormat) {
+		return getMostRecent(name,
+				gp.getConcept(GlobalPropertiesManagement.OPPORTUNISTIC_INFECTIONS),
+				dateFormat);
+	}
+	
+	public static MostRecentObservation getMostRecenSideEffect(String name,
+			String dateFormat) {
+		return getMostRecent(name,
+				gp.getConcept(GlobalPropertiesManagement.ADVERSE_EFFECT_CONCEPT),
+				dateFormat);
+	}
 
 	public static MostRecentObservation getMostRecentHeight(String name,
 			String dateFormat, ResultFilter resultFilter) {
@@ -673,6 +689,30 @@ public class RowPerPatientColumns {
 				gp.getConcept(GlobalPropertiesManagement.CD4_TEST), dateFormat,
 				resultFilter, outputFilter);
 	}
+	public static AllObservationValues getAllViralLoadsValues(String name,
+			String dateFormat, ResultFilter resultFilter,
+			ResultFilter outputFilter) {
+		return getAllObservationValues(name,
+				gp.getConcept(GlobalPropertiesManagement.VIRAL_LOAD_TEST), dateFormat,
+				resultFilter, outputFilter);
+	}
+	
+	public static AllMotherObservationValues getAllCD4ValuesM(String name,
+			String dateFormat, ResultFilter resultFilter,
+			ResultFilter outputFilter) {
+		return getAllObservationValuesM(name,
+				gp.getConcept(GlobalPropertiesManagement.CD4_TEST), dateFormat,
+				resultFilter, outputFilter);
+	}
+	
+	public static AllMotherObservationValues getAllWeightValuesM(String name,
+			String dateFormat, ResultFilter resultFilter,
+			ResultFilter outputFilter) {
+		return getAllObservationValuesM(name,
+				gp.getConcept(GlobalPropertiesManagement.WEIGHT_CONCEPT), dateFormat,
+				resultFilter, outputFilter);
+	}
+
 
 	public static AllObservationValues getAllAsthmaClassificationValues(
 			String name, String dateFormat, ResultFilter resultFilter,
@@ -872,6 +912,24 @@ public class RowPerPatientColumns {
 		return allObs;
 	}
 
+	public static AllMotherObservationValues getAllObservationValuesM(String name,
+			Concept concept, String dateFormat, ResultFilter resultFilter,
+			ResultFilter outputFilter) {
+		AllMotherObservationValues allObs = new AllMotherObservationValues();
+		allObs.setConcept(concept);
+		allObs.setName(name);
+		if (resultFilter != null) {
+			allObs.setFilter(resultFilter);
+		}
+		if (dateFormat != null) {
+			allObs.setDateFormat(dateFormat);
+		}
+		if (outputFilter != null) {
+			allObs.setOutputFilter(outputFilter);
+		}
+		return allObs;
+	}
+
 	public static AllObservationValues getAllObservationValuesBeforeEndDate(
 			String name, Concept concept, int minResults, String dateFormat,
 			ResultFilter resultFilter, ResultFilter outputFilter) {
@@ -999,6 +1057,42 @@ public class RowPerPatientColumns {
 		return otherDef;
 	}
 
+	public static EvaluateMotherDefinition getDefinitionForOtherPersonObs(
+			String name, PersonData person, RowPerPatientData definition) {
+		EvaluateMotherDefinition otherDef = new EvaluateMotherDefinition();
+		otherDef.setPersonData(person, new HashMap<String, Object>());
+		otherDef.setDefinition(definition, new HashMap<String, Object>());
+		otherDef.setName(name);
+		return otherDef;
+	}
+	
+	
+	public static AllObservationValues getAllCD4ValuesObs(String name,String dateFormat, 
+			 ResultFilter resultFilter, ResultFilter outputFilter,RowPerPatientData definition) {
+		return getAllObservationValuesObs(name,
+				gp.getConcept(GlobalPropertiesManagement.CD4_TEST), dateFormat,
+				resultFilter, outputFilter,definition);
+	}
+	
+	public static AllObservationValues getAllObservationValuesObs(String name,
+			Concept concept, String dateFormat, ResultFilter resultFilter,
+			ResultFilter outputFilter,RowPerPatientData definition) {
+		AllObservationValues allObs = new AllObservationValues();
+		allObs.setConcept(concept);
+		allObs.setName(name);
+		allObs.setDefinition(definition, new HashMap<String, Object>());
+		if (resultFilter != null) {
+			allObs.setFilter(resultFilter);
+		}
+		if (dateFormat != null) {
+			allObs.setDateFormat(dateFormat);
+		}
+		if (outputFilter != null) {
+			allObs.setOutputFilter(outputFilter);
+		}
+		return allObs;
+	}
+	
 	public static ObsValueAfterDateOfOtherDefinition getObsValueAfterDateOfOtherDefinition(
 			String name, Concept concept, DateOfPatientData patientData,
 			String dateFormat) {

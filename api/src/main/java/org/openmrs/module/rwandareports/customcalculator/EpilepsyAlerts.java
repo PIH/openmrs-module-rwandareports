@@ -51,7 +51,7 @@ public class EpilepsyAlerts implements CustomCalculation {
 				uncontrolledAlert = true;
 			}
 			
-			if(result.getName().equals("lastEncInMonth"))
+			/*if(result.getName().equals("lastEncInMonth"))
 			  {
 				DateValueResult encinmonths = (DateValueResult)result;
 				if(encinmonths.getValue() != null)
@@ -63,7 +63,7 @@ public class EpilepsyAlerts implements CustomCalculation {
 				alerts.append("LTFU determine status.\n");
 				     }
 				  } 	
-			  }
+			  }*/
 			
 			//TODO: finish off alerts
 		}

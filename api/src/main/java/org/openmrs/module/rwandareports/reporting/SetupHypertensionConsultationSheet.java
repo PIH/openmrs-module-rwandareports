@@ -47,7 +47,7 @@ public class SetupHypertensionConsultationSheet {
 	
 	private List<Form> DDBAndRendezvousForms=new ArrayList<Form>();
 	List<EncounterType> hypertensionEncounter;
-	private List<EncounterType> clinicalEnountersIncLab;
+	//private List<EncounterType> clinicalEnountersIncLab;
 	
 	public void setup() throws Exception {
 		
@@ -144,7 +144,7 @@ public class SetupHypertensionConsultationSheet {
 		
 		//AllObservationValues allDiastolicBP = RowPerPatientColumns.getAllObservationValues("diastolicLastTwo", diastolicBP, null, new LastTwoObsFilter(),
 		//    null);
-		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
+		//RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
@@ -153,7 +153,7 @@ public class SetupHypertensionConsultationSheet {
 		alert.addPatientDataToBeEvaluated(diastolic, new HashMap<String, Object>());
 		//alert.addPatientDataToBeEvaluated(allSystolicBP, new HashMap<String, Object>());
 		//alert.addPatientDataToBeEvaluated(allDiastolicBP, new HashMap<String, Object>());
-		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
+		//alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HypertensionAlerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());	
 		
@@ -181,7 +181,7 @@ public class SetupHypertensionConsultationSheet {
 		DDBAndRendezvousForms.add(hypertensionDDBForm);
 		DDBAndRendezvousForms.add(followUpForm);
 		hypertensionEncounter = gp.getEncounterTypeList(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER);
-		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
+		//clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 		
 	}
 }

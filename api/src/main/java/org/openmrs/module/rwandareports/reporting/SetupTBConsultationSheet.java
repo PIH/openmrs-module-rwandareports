@@ -39,7 +39,7 @@ public class SetupTBConsultationSheet {
 	
 	private EncounterType flowsheetAdult;
 	
-	private List<EncounterType> clinicalEnountersIncLab;
+	//private List<EncounterType> clinicalEnountersIncLab;
 	
 	
 	public void setup() throws Exception {
@@ -147,7 +147,7 @@ public class SetupTBConsultationSheet {
 		
 		ObservationInMostRecentEncounterOfType sideEffect = RowPerPatientColumns.getSideEffectInMostRecentEncounterOfType(
 		    "SideEffects", flowsheetAdult);
-		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
+		//RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -156,7 +156,7 @@ public class SetupTBConsultationSheet {
 		alert.addPatientDataToBeEvaluated(mostRecentHeight, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(io, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(sideEffect, new HashMap<String, Object>());
-		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
+		//alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HIVAdultAlerts());
 		alert.addParameter(new Parameter("state", "State",Date.class));
 		dataSetDefinition.addColumn(alert,ParameterizableUtil.createParameterMappings("state=${state}"));
@@ -172,7 +172,7 @@ public class SetupTBConsultationSheet {
 		
 		flowsheetAdult = gp.getEncounterType(GlobalPropertiesManagement.ADULT_FLOWSHEET_ENCOUNTER);
 		
-		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
+		//clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 }

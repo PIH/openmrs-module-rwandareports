@@ -42,7 +42,7 @@ public class SetupAsthmaConsultationSheet {
 	private Form rendevousForm;
 	private Form asthmaDDBForm;
 	private Form followUpForm;
-	private List<EncounterType> clinicalEnountersIncLab;
+	//private List<EncounterType> clinicalEnountersIncLab;
 	
 	//private Concept returnVisitDate;
 	
@@ -142,7 +142,7 @@ public class SetupAsthmaConsultationSheet {
 		AllObservationValues asthmaClassification = RowPerPatientColumns.getAllAsthmaClassificationValues("asthmaClassification", null, new LastTwoObsFilter(),
 		    null);
 		
-		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
+		//RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		
 		
@@ -150,7 +150,7 @@ public class SetupAsthmaConsultationSheet {
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
 		alert.addPatientDataToBeEvaluated(asthmaClassification, new HashMap<String, Object>());
-		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
+		//alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new AsthmaClassificationAlerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());	
 		
@@ -172,7 +172,7 @@ public class SetupAsthmaConsultationSheet {
 		DDBAndRendezvousForms.add(rendevousForm);
 		DDBAndRendezvousForms.add(asthmaDDBForm);
 		DDBAndRendezvousForms.add(followUpForm);
-		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
+		//clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 	/*

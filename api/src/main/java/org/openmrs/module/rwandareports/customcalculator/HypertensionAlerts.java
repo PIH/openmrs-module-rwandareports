@@ -103,7 +103,7 @@ public class HypertensionAlerts implements CustomCalculation {
 //					}
 //				}
 //			}
-			if(result.getName().equals("lastEncInMonth"))
+			/*if(result.getName().equals("lastEncInMonth"))
 			  {
 				DateValueResult encinmonths = (DateValueResult)result;
 				if(encinmonths.getValue() != null)
@@ -115,7 +115,7 @@ public class HypertensionAlerts implements CustomCalculation {
 				alerts.append("LTFU determine status.\n");
 				     }
 				  } 	
-			  }
+			  }*/
 		}
 		
 		alert.setValue(alerts.toString().trim());

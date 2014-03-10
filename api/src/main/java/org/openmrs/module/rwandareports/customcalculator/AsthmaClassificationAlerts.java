@@ -57,7 +57,7 @@ public class AsthmaClassificationAlerts implements CustomCalculation{
 				}	
 			}
 			
-			if(result.getName().equals("lastEncInMonth"))
+			/*if(result.getName().equals("lastEncInMonth"))
 			  {
 				DateValueResult encinmonths = (DateValueResult)result;
 				System.out.println("------first if ltfu------"+encinmonths.getValue());
@@ -75,7 +75,7 @@ public class AsthmaClassificationAlerts implements CustomCalculation{
 					  } 	
 			       }
 			
-			
+			*/
 			
 		}
 		

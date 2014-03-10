@@ -44,7 +44,7 @@ public class SetupDiabetesConsultAndLTFU {
 	//properties retrieved from global variables
 	private Program diabetesProgram;
 	private List<EncounterType> diabetesEncouters;
-	private List<EncounterType> clinicalEnountersIncLab;
+	//private List<EncounterType> clinicalEnountersIncLab;
 		
 	public void setup() throws Exception {
 		setupPrograms();
@@ -134,7 +134,7 @@ public class SetupDiabetesConsultAndLTFU {
 				new HashMap<String, Object>());
 		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("Has accompagnateur", new AccompagnateurStatusFilter()), new HashMap<String, Object>());
 		
-		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
+		//RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
 		
 		//Calculation definitions
 				
@@ -143,7 +143,7 @@ public class SetupDiabetesConsultAndLTFU {
 		alert.addPatientDataToBeEvaluated(RowPerPatientColumns.getMostRecentHbA1c("RecentHbA1c", "dd-MMM-yy"), new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(RowPerPatientColumns.getMostRecentCreatinine("RecentCreatinine", "@ddMMMyy"), new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(RowPerPatientColumns.getMostRecentSBP("RecentSBP", "dd-MMM-yy"), new HashMap<String, Object>());
-		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
+		//alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new DiabetesAlerts());
 		alert.addParameter(new Parameter("endDate","endDate",Date.class));
 		dataSetDefinition.addColumn(alert,ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
@@ -218,7 +218,7 @@ public class SetupDiabetesConsultAndLTFU {
 		diabetesRendezvousForms.add(gp.getForm(GlobalPropertiesManagement.NCD_FOLLOWUP_FORM));
 		diabetesProgram = gp.getProgram(GlobalPropertiesManagement.DM_PROGRAM);
 		diabetesEncouters = gp.getEncounterTypeList(GlobalPropertiesManagement.DIABETES_VISIT);
-		clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
+		//clinicalEnountersIncLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES);
 	}
 	
 	//Add common columns for the two datasets

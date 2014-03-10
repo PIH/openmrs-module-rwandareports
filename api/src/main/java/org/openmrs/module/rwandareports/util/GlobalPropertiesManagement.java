@@ -52,7 +52,7 @@ public class GlobalPropertiesManagement {
 		Concept c = MetadataLookup.getConcept(globalProperty);
 		return Context.getConceptService().getConceptsByConceptSet(c);
 	}
-
+	
 	public Form getForm(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
 		return MetadataLookup.getForm(globalProperty);
@@ -105,6 +105,18 @@ public class GlobalPropertiesManagement {
 		String stateGp = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
 		return MetadataLookup.getProgramWorkflowState(programGp, workflowGp, stateGp);
 
+	}
+	
+	public List<ProgramWorkflowState> getProgramWorkflowStateList(String globalPropertyName) {
+		String programGp = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
+		return MetadataLookup.getProgramWorkflowstateList(programGp);
+
+	}
+	
+	public List<Concept> getConceptsByConceptSets(String globalPropertyName) {
+		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
+		Concept c = MetadataLookup.getConcept(globalProperty);
+		return Context.getConceptService().getConceptsByConceptSet(c);
 	}
 	
 	public Map<Concept, Double> getVialSizes() {
@@ -239,31 +251,7 @@ public class GlobalPropertiesManagement {
 	public final static String HEART_FAILURE_PATIENT_DIED_STATE="reports.heartFailurePatientDiedState";
 	
 	public final static String TRANSFERRED_OUT_STATE="reports.patienttransferedoutstate";
-	
-	public final static String INFANT_GROUP1="reports.infantgroup1";
-	
-	public final static String INFANT_GROUP2="reports.infantgroup2";
-	
-	public final static String INFANT_GROUP3="reports.infantgroup3";
-	
-	public final static String INFANT_GROUP4="reports.infantgroup4";
-	
-	public final static String INFANT_GROUP5="reports.infantgroup5";
-	
-	public final static String INFANT_GROUP6="reports.infantgroup6";
-	
-	public final static String INFANT_GROUP7="reports.infantgroup7";
-	
-	public final static String INFANT_GROUP8="reports.infantgroup8";
-	
-	public final static String PREGNANCY_GROUP1="reports.pregnancygroup1";
-	
-	public final static String PREGNANCY_GROUP2="reports.pregnancygroup2";
-	
-	public final static String PREGNANCY_GROUP3="reports.pregnancygroup3";
-	
-	public final static String PREGNANCY_GROUP4="reports.pregnancygroup4";
-	
+		
 	public final static String SUSPECTED_STATE="reports.suspectedstate";
 	
     public final static String NOT_CANCER_STATE="reports.notcancerstate";
@@ -307,6 +295,10 @@ public class GlobalPropertiesManagement {
 	public final static String PROSTATE_CANCER_STATE="reports.prostatecancer";
 	
 	public final static String STOMACH_CANCER_STATE="reports.stomachcancer";
+	
+	public final static String PMTCT_MOTHER_GROUP_STATES="reports.pmtctmotherstates";
+	
+	public final static String EXPOSED_INFANT_GROUP_STATES="reports.exposedInfantstates";
 	
 	//Identifiers
 	public final static String IMB_IDENTIFIER = "reports.imbIdIdentifier"; 

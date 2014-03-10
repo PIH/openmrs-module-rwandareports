@@ -140,72 +140,7 @@
 		<property>reports.tbworkflowgroup</property>
 		<defaultValue>TUBERCULOSIS TREATMENT GROUP</defaultValue>
 		<description>The workflow group for patients in TB program</description>
-	</globalProperty>
-
-  <globalProperty>
-		<property>reports.infantgroup1</property>
-		<defaultValue>GROUP 1</defaultValue>
-		<description>The state group 1 for infants in Combined Clinic program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.infantgroup2</property>
-		<defaultValue>GROUP 2</defaultValue>
-		<description>The state group 2 in Combined Clinic program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.infantgroup3</property>
-		<defaultValue>GROUP 3</defaultValue>
-		<description>The state group 3 in Combined Clinic program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.infantgroup4</property>
-		<defaultValue>GROUP 4</defaultValue>
-		<description>The state 4 group in Combined Clinic program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.infantgroup5</property>
-		<defaultValue>GROUP 5</defaultValue>
-		<description>The state group  5 in Combined Clinic program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.infantgroup6</property>
-		<defaultValue>GROUP 6</defaultValue>
-		<description>The state group 6 in Combined Clinic program</description>
-	</globalProperty>  
-	
-	 <globalProperty>
-		<property>reports.infantgroup7</property>
-		<defaultValue>GROUP 7</defaultValue>
-		<description>The state group 7 in Combined Clinic program</description>
-	</globalProperty> 
-	
-	 <globalProperty>
-		<property>reports.infantgroup8</property>
-		<defaultValue>GROUP 8</defaultValue>
-		<description>The state 8 group in Combined Clinic program</description>
-	</globalProperty> 
-	
-	<globalProperty>
-		<property>reports.pregnancygroup1</property>
-		<defaultValue>GROUP 1</defaultValue>
-		<description>The state group 1 in PMTCT Pregnancy program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.pregnancygroup2</property>
-		<defaultValue>GROUP 2</defaultValue>
-		<description>The state group 2 in PMTCT Pregnancy program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.pregnancygroup3</property>
-		<defaultValue>GROUP 3</defaultValue>
-		<description>The state group 3 in PMTCT Pregnancy program</description>
-	</globalProperty>
-	<globalProperty>
-		<property>reports.pregnancygroup4</property>
-		<defaultValue>GROUP 4</defaultValue>
-		<description>The state 4 group in PMTCT Pregnancy program</description>
-	</globalProperty>
-	
+	</globalProperty>	
 	<globalProperty>
 		<property>reports.hivworkflowstatusinformed</property>
 		<defaultValue>INFORMED STATUS</defaultValue>
@@ -3294,6 +3229,19 @@
 		<property>reports.stomachcancer</property>
 		<defaultValue>Stomach cancer</defaultValue>
 		<description>The current state for Stomach cancer type</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>reports.exposedInfantstates</property>
+		<defaultValue>640,641,642,643,644,710,711,712</defaultValue>
+		<description>The current states for Exposed Infant program</description>
+	</globalProperty>
+	
+	<globalProperty>
+	<property>reports.pmtctmotherstates</property>
+		<defaultValue>645,646,647,648</defaultValue>
+		<description>The current states for PMTCT mother program</description>
 	</globalProperty>
 	
 	<globalProperty>

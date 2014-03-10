@@ -107,6 +107,20 @@ public class MetadataLookup {
 		}
 		return s;
 	}
+	
+	public static List<ProgramWorkflowState> getProgramWorkflowstateList(String lookup) {
+		List<ProgramWorkflowState> l = new ArrayList<ProgramWorkflowState>();
+		if (ObjectUtil.notNull(lookup)) {
+			String[] split = lookup.split(",");
+			for (String s : split) {
+				//l.add(MetadataLookup.getConcept(s));
+				int state=Integer.parseInt(s);
+				l.add(Context.getProgramWorkflowService().getState(state));
+				System.out.println("heheheheh--"+l);
+			}
+		}
+		return l;
+	}
 
 	/**
 	 * @return the PatientIdentifier that matches the passed uuid, name, or primary key id

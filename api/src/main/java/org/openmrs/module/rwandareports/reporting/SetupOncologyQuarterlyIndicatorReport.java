@@ -132,8 +132,7 @@ public class SetupOncologyQuarterlyIndicatorReport {
 
 		Properties properties = new Properties();
 		properties.setProperty("hierarchyFields", "countyDistrict:District");
-		rd.addParameter(new Parameter("location", "Location",
-				AllLocation.class, properties));
+		rd.addParameter(new Parameter("location", "Location",AllLocation.class, properties));
 
 		rd.setName("ONC-Indicator Report-Quarterly");
 
@@ -173,8 +172,7 @@ public class SetupOncologyQuarterlyIndicatorReport {
 		ldsd.setName("Encounter Quarterly Data Set");
 		ldsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		ldsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		ldsd.addParameter(new Parameter("location", "District",
-				LocationHierarchy.class));
+		ldsd.addParameter(new Parameter("location", "District",LocationHierarchy.class));
 
 		return ldsd;
 	}
@@ -186,7 +184,6 @@ public class SetupOncologyQuarterlyIndicatorReport {
 		eidsd.setName("eidsd");
 		eidsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		eidsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-
 		createQuarterlyIndicators(eidsd);
 		return eidsd;
 	}
@@ -199,18 +196,22 @@ public class SetupOncologyQuarterlyIndicatorReport {
 		 //clinic visits
 		SqlEncounterQuery pediOncClinicVisits=new SqlEncounterQuery();
 		pediOncClinicVisits.setName("pediOncClinicVisits");
-		pediOncClinicVisits.setQuery("select e.encounter_id from encounter e, person p where e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+") and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) <= 5475 and form_id in ("+outpatientclinicvisitform.getFormId()+","+inpatientOncForm.getFormId()+","+outpatientOncForm.getFormId()+") and e.voided=0 and p.voided=0");
+		pediOncClinicVisits.setQuery("SELECT e.encounter_id FROM encounter e, person p WHERE e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+") " +
+				"AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate AND p.person_id = e.patient_id " +
+				"AND DATEDIFF(:endDate , p.birthdate) <= 5475 " +
+				"AND form_id in ("+outpatientclinicvisitform.getFormId()+","+inpatientOncForm.getFormId()+","+outpatientOncForm.getFormId()+") " +
+				"AND e.voided=0 AND p.voided=0 ");
 		pediOncClinicVisits.addParameter(new Parameter("startDate", "startDate", Date.class));
 		pediOncClinicVisits.addParameter(new Parameter("endDate", "endDate", Date.class));
-        
-        EncounterIndicator pedOncClinicVisitInd = new EncounterIndicator();
-        pedOncClinicVisitInd.setName("pedOncClinicVisitInd");
-        pedOncClinicVisitInd.setEncounterQuery(new Mapped<EncounterQuery>(pediOncClinicVisits,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		
+		EncounterIndicator pedOncClinicVisitInd= new EncounterIndicator();
+		pedOncClinicVisitInd.setName("pedOncClinicVisitInd");
+		pedOncClinicVisitInd.setEncounterQuery(new Mapped<EncounterQuery>(pediOncClinicVisits,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
         dsd.addColumn(pedOncClinicVisitInd);  
-        
+      
         SqlEncounterQuery adultOncVisits=new SqlEncounterQuery();
         adultOncVisits.setName("adultOncVisits");
-        adultOncVisits.setQuery("select e.encounter_id from encounter e, person p where e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+") and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) > 5475 and form_id in ("+outpatientclinicvisitform.getFormId()+","+inpatientOncForm.getFormId()+","+outpatientOncForm.getFormId()+")  and e.voided=0 and p.voided=0");
+        adultOncVisits.setQuery("SELECT e.encounter_id FROM encounter e, person p WHERE e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+") AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate AND p.person_id = e.patient_id AND DATEDIFF(:endDate , p.birthdate) > 5475 AND form_id in ("+outpatientclinicvisitform.getFormId()+","+inpatientOncForm.getFormId()+","+outpatientOncForm.getFormId()+")  AND e.voided=0 AND p.voided=0");
         adultOncVisits.addParameter(new Parameter("startDate", "startDate", Date.class));
         adultOncVisits.addParameter(new Parameter("endDate", "endDate", Date.class));
         
@@ -223,7 +224,7 @@ public class SetupOncologyQuarterlyIndicatorReport {
         //unscheduled clinic visits
         SqlEncounterQuery pediOncVisitsUnsched=new SqlEncounterQuery();
         pediOncVisitsUnsched.setName("pediOncVisitsUnsched");
-        pediOncVisitsUnsched.setQuery("select e.encounter_id from encounter e,obs o, person p where e.encounter_id=o.encounter_id and o.concept_id="+visitType.getConceptId()+" and o.value_coded="+unscheduledVisitType.getConceptId()+" and e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+") and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) <= 5475 and e.voided=0 and p.voided=0");
+        pediOncVisitsUnsched.setQuery("SELECT e.encounter_id FROM encounter e, obs o, person p WHERE e.encounter_id=o.encounter_id AND o.concept_id="+visitType.getConceptId()+" AND o.value_coded="+unscheduledVisitType.getConceptId()+" AND e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+") AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate AND p.person_id = e.patient_id AND DATEDIFF(:endDate , p.birthdate) <= 5475 AND e.voided=0 AND p.voided=0");
         pediOncVisitsUnsched.addParameter(new Parameter("startDate", "startDate", Date.class));
         pediOncVisitsUnsched.addParameter(new Parameter("endDate", "endDate", Date.class));
         
@@ -234,7 +235,7 @@ public class SetupOncologyQuarterlyIndicatorReport {
         
         SqlEncounterQuery adultOncVisitsUnsched=new SqlEncounterQuery();
         adultOncVisitsUnsched.setName("adultOncVisitsUnsched");
-        adultOncVisitsUnsched.setQuery("select e.encounter_id from encounter e,obs o, person p where e.encounter_id=o.encounter_id and o.concept_id="+visitType.getConceptId()+" and o.value_coded="+unscheduledVisitType.getConceptId()+" and e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+")and e.encounter_datetime >= :startDate and e.encounter_datetime <= :endDate and p.person_id = e.patient_id and DATEDIFF(:endDate , p.birthdate) > 5475 and e.voided=0 and p.voided=0 and o.voided=0");
+        adultOncVisitsUnsched.setQuery("SELECT e.encounter_id FROM encounter e, obs o, person p WHERE e.encounter_id=o.encounter_id AND o.concept_id="+visitType.getConceptId()+" AND o.value_coded="+unscheduledVisitType.getConceptId()+" AND e.encounter_type in ("+outpatientOncEncounterType.getEncounterTypeId()+","+inpatientOncologyEncounter.getEncounterTypeId()+") AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate AND p.person_id = e.patient_id AND DATEDIFF(:endDate , p.birthdate) > 5475 AND e.voided=0 AND p.voided=0 AND o.voided=0");
         adultOncVisitsUnsched.addParameter(new Parameter("startDate", "startDate", Date.class));
         adultOncVisitsUnsched.addParameter(new Parameter("endDate", "endDate", Date.class));
         

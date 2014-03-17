@@ -58,6 +58,7 @@ import org.openmrs.module.rwandareports.reporting.SetupOncologyExternalBiopsyCon
 import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientAppointmentList;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientClinicMissedVisit;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyOutpatientClinicPatientList;
+import org.openmrs.module.rwandareports.reporting.SetupOncologyQuarterlyIndicatorReport;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyTestPatientList;
 import org.openmrs.module.rwandareports.reporting.SetupOncologyTreatmentAdministrationPlan;
 import org.openmrs.module.rwandareports.reporting.SetupPMTCTCombinedClinicMotherMonthlyReport;
@@ -202,6 +203,7 @@ public class CleanReportingTablesAndRegisterAllReports {
 			new SetupOncologyOutpatientAppointmentList().setup();
 			new SetupOncologyTestPatientList().setup();
 			new SetupOncologyExternalBiopsyContactList().setup();
+			new SetupOncologyQuarterlyIndicatorReport().setup();
     }
 	public static void registerCHWReports() {
 	    

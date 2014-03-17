@@ -1,35 +1,21 @@
 package org.openmrs.module.rwandareports.customcalculator;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mozilla.javascript.tools.shell.Global;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.ProgramWorkflowState;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalculation;
-import org.openmrs.module.rowperpatientreports.patientdata.definition.EvaluateDefinitionForOtherPersonData;
 import org.openmrs.module.rowperpatientreports.patientdata.result.AgeResult;
-import org.openmrs.module.rowperpatientreports.patientdata.result.AllObservationValuesResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DateValueResult;
-import org.openmrs.module.rowperpatientreports.patientdata.result.EncounterResult;
-import org.openmrs.module.rowperpatientreports.patientdata.result.EvaluateForOtherPatientDataResult;
-import org.openmrs.module.rowperpatientreports.patientdata.result.NumberResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttributeResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rwandareports.definition.result.EvaluateMotherDefinitionResult;
-import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 
 public class CombinedHFCSPAlerts implements CustomCalculation{
 
@@ -40,8 +26,6 @@ public class CombinedHFCSPAlerts implements CustomCalculation{
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
 		PatientAttributeResult alert = new PatientAttributeResult(null, null);
-		
-		//ProgramWorkflowState state = (ProgramWorkflowState)context.getParameterValue("state");
 		
 		StringBuffer alerts = new StringBuffer();
 		

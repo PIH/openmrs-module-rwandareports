@@ -1066,33 +1066,6 @@ public class RowPerPatientColumns {
 		return otherDef;
 	}
 	
-	
-	public static AllObservationValues getAllCD4ValuesObs(String name,String dateFormat, 
-			 ResultFilter resultFilter, ResultFilter outputFilter,RowPerPatientData definition) {
-		return getAllObservationValuesObs(name,
-				gp.getConcept(GlobalPropertiesManagement.CD4_TEST), dateFormat,
-				resultFilter, outputFilter,definition);
-	}
-	
-	public static AllObservationValues getAllObservationValuesObs(String name,
-			Concept concept, String dateFormat, ResultFilter resultFilter,
-			ResultFilter outputFilter,RowPerPatientData definition) {
-		AllObservationValues allObs = new AllObservationValues();
-		allObs.setConcept(concept);
-		allObs.setName(name);
-		allObs.setDefinition(definition, new HashMap<String, Object>());
-		if (resultFilter != null) {
-			allObs.setFilter(resultFilter);
-		}
-		if (dateFormat != null) {
-			allObs.setDateFormat(dateFormat);
-		}
-		if (outputFilter != null) {
-			allObs.setOutputFilter(outputFilter);
-		}
-		return allObs;
-	}
-	
 	public static ObsValueAfterDateOfOtherDefinition getObsValueAfterDateOfOtherDefinition(
 			String name, Concept concept, DateOfPatientData patientData,
 			String dateFormat) {

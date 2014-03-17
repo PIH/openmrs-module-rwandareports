@@ -124,6 +124,9 @@ public class LocationHierachyIndicatorDataSetEvaluator implements DataSetEvaluat
 				}
 			}
 		}
+		else if(location == null){
+			addIteration(ret, null, null, context, lhdsd.getBaseDefinition());
+		}
 		
 		return ret;
 	}

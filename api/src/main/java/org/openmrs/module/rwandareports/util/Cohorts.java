@@ -1915,7 +1915,7 @@ public class Cohorts {
 		Concept nextVisit = gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE);
 		sql.append(nextVisit.getConceptId());
 		
-		sql.append(" and DATEDIFF(:endDate,o.value_datetime)>7 and (not last_Visit.encounter_datetime > o.value_datetime) and last_Visit.patient_id=o.person_id");
+		sql.append(" and DATEDIFF(:endDate,o.value_datetime)>6 and (not last_Visit.encounter_datetime > o.value_datetime) and last_Visit.patient_id=o.person_id");
 		
 		SqlCohortDefinition lateVisit = new SqlCohortDefinition(sql.toString());
 		lateVisit.addParameter(new Parameter("endDate", "endDate", Date.class));

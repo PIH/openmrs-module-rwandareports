@@ -190,8 +190,8 @@ private void createDataSetDefinition(ReportDefinition reportDefinition) {
 		
 		
 		//dataSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(visitForms,ChemotherapyInfusionCenterVisit), ParameterizableUtil.createParameterMappings("end=${endDate+7d},start=${endDate}"));
-        dataSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(visitForms,ChemotherapyInfusionCenterVisit), ParameterizableUtil.createParameterMappings("end=${endDate},start=${endDate}"));
-        baseSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(visitForms,ChemotherapyInfusionCenterVisit), ParameterizableUtil.createParameterMappings("end=${endDate},start=${endDate}"));
+        dataSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(visitForms,ChemotherapyInfusionCenterVisit), ParameterizableUtil.createParameterMappings("end=${endDate},start=${endDate+1d}"));
+        baseSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(visitForms,ChemotherapyInfusionCenterVisit), ParameterizableUtil.createParameterMappings("end=${endDate},start=${endDate+1d}"));
 		
 		
 		

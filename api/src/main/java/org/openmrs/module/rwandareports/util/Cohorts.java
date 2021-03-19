@@ -6,14 +6,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
-import org.openmrs.Drug;
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
-import org.openmrs.Location;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.Program;
-import org.openmrs.ProgramWorkflowState;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
@@ -40,6 +33,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfBirt
 import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfBirthShowingEstimation;
 import org.openmrs.module.rwandareports.definition.DrugsActiveCohortDefinition;
 import org.openmrs.module.rwandareports.definition.PatientCohortDefinition;
+import org.openmrs.module.rwandareports.widget.AllProvider;
 
 public class Cohorts {
 	
@@ -2482,6 +2476,19 @@ public class Cohorts {
 		programEnrollmentCohortDefinition.setPrograms(programs);
 		return programEnrollmentCohortDefinition;
 	}
+	public static ProgramEnrollmentCohortDefinition createProgramCompletedInPeriod(String name, Program program) {
+
+		ProgramEnrollmentCohortDefinition programEnrollmentCohortDefinition = new ProgramEnrollmentCohortDefinition();
+		programEnrollmentCohortDefinition.setName(name);
+		programEnrollmentCohortDefinition.addParameter(new Parameter("completedOnOrBefore","completedOnOrBefore",Date.class));
+		programEnrollmentCohortDefinition.addParameter(new Parameter("completedOnOrAfter","completedOnOrAfter",Date.class));
+
+		List<Program> programs = new ArrayList<Program>();
+		programs.add(program);
+
+		programEnrollmentCohortDefinition.setPrograms(programs);
+		return programEnrollmentCohortDefinition;
+	}
 	public static ProgramEnrollmentCohortDefinition createProgramEnrollmentEverByEndDate(String name,
 																									   Program program) {
 
@@ -2641,6 +2648,35 @@ public class Cohorts {
 		}
 
 		return birthdate;
+	}
+	public static SqlCohortDefinition getEncountersByProvider(String name){
+		SqlCohortDefinition EncountersByProvider = new SqlCohortDefinition();
+		StringBuilder query = new StringBuilder("select patient_id as person_id \n" +
+				" from encounter \n" +
+				" where voided=0 \n" +
+				" and encounter_datetime>= :startDate \n" +
+				" and encounter_datetime<= :endDate \n" +
+				" and  encounter_id in (\n" +
+				"	select encounter_id \n" +
+				"		from encounter_provider \n" +
+				"		where voided=0 \n" +
+				"		and provider_id in (\n" +
+				"			select provider_id \n" +
+				"				from provider \n" +
+				"				where voided=0 \n" +
+				"				and person_id in (\n" +
+				"					select person_id \n" +
+				"						from person_name \n" +
+				"						where CONCAT(COALESCE(given_name,''),' ',COALESCE(middle_name,''),' ',COALESCE(family_name,'')) = :provider\n" +
+				" )))");
+		EncountersByProvider.setQuery(query.toString());
+		EncountersByProvider.setName(name);
+		EncountersByProvider.addParameter(new Parameter("startDate", "startDate", Date.class));
+		EncountersByProvider.addParameter(new Parameter("endDate", "endDate", Date.class));
+		EncountersByProvider.addParameter(new Parameter("provider", "provider", AllProvider.class));
+
+		return EncountersByProvider;
+
 	}
 
 }

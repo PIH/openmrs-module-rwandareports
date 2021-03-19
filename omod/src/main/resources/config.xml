@@ -4430,5 +4430,56 @@
 		<description>IDs for Hospitals location separated by ','.</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>reports.PDCProgramEndReasons</property>
+		<defaultValue>PDC Program End Reasons</defaultValue>
+		<description>PDC outcome End Reasons</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>reports.DeathCauseSevereDehydration</property>
+		<defaultValue>Death: Cause - Severe Dehydration</defaultValue>
+		<description>Death: Cause - Severe Dehydration as a PDC outcome End Reason</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>reports.DeathCauseHypoglycemia</property>
+		<defaultValue>Death: Cause - Hypoglycemia</defaultValue>
+		<description>Death: Cause - Hypoglycemia as a PDC outcome End Reason</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>reports.DeathCauseRespiratoryDistress</property>
+		<defaultValue>Death: Cause - Respiratory Distress</defaultValue>
+		<description>Death: Cause - Respiratory Distress as a PDC outcome End Reason</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>reports.DeathCauseSevereInfection</property>
+		<defaultValue>Death: Cause - Severe Infection (Cerebral Malaria, Meningitis, Sepsis)</defaultValue>
+		<description>Death: Cause - Severe Infection (Cerebral Malaria, Meningitis, Sepsis) as a PDC outcome End Reason</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>reports.DeathUnknownCause</property>
+		<defaultValue>Death: Unknown Cause</defaultValue>
+		<description>Death: Unknown Cause as a PDC outcome End Reason</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>reports.whenToStartTreatmentCoded</property>
+		<defaultValue>0ea50937-bad3-471a-b9cd-bfd61e0948d1</defaultValue>
+		<description>concept: when to start treatment(coded)</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>reports.StartToday</property>
+		<defaultValue>e2f2c8fc-42f5-4b40-a916-39635153ce78</defaultValue>
+		<description>concept:Start today</description>
+	</globalProperty>
+
+
+
+
 
 </module>

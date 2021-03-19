@@ -174,6 +174,10 @@ public class GlobalPropertiesManagement {
 	public final static String MENTAL_HEALTH_PROGRAM = "reports.mentalhealthprogram";
 
 	public final static String NON_CLINICAL_ENCOUNTER = "reports.NonClinicalEncounterType";
+
+	public final static String  WHENTOSTARTTREATMENTCODED = "reports.whenToStartTreatmentCoded";
+
+	public final static String  STARTTODAY = "reports.StartToday";
 	
 	//ProgramWorkflow
 	public final static String TREATMENT_STATUS_WORKFLOW = "reports.hivworkflowstatus";
@@ -890,6 +894,13 @@ public class GlobalPropertiesManagement {
 	public final static String OPD_VISIT="reports.OPDEncounterType";
 
 	public final static String PHARMACY_VISIT="reports.PHARMACYEncounterType";
+
+	public final static String PDC_PROGRAM_END_REASONS = "reports.PDCProgramEndReasons";
+	public final static String Death_Cause_Severe_Dehydration_Outcome = "reports.DeathCauseSevereDehydration";
+	public final static String Death_Cause_Hypoglycemia_Outcome =  "reports.DeathCauseHypoglycemia";
+	public final static String Death_Cause_Respiratory_Distress_Outcome = "reports.DeathCauseRespiratoryDistress";
+	public final static String Death_Cause_Severe_Infection_Outcome = "reports.DeathCauseSevereInfection";
+	public final static String Death_Unknown_Cause_Outcome = "reports.DeathUnknownCause";
 
 
 

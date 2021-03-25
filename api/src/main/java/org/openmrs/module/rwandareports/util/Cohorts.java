@@ -30,10 +30,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfBirth;
-import org.openmrs.module.rowperpatientreports.patientdata.definition.DateOfBirthShowingEstimation;
 import org.openmrs.module.rwandareports.definition.DrugsActiveCohortDefinition;
 import org.openmrs.module.rwandareports.definition.PatientCohortDefinition;
-import org.openmrs.module.rwandareports.widget.AllProvider;
 
 public class Cohorts {
 	
@@ -2649,31 +2647,27 @@ public class Cohorts {
 
 		return birthdate;
 	}
-	public static SqlCohortDefinition getEncountersByProvider(String name){
+	public static SqlCohortDefinition getEncountersByProvider(String name,EncounterType encounterType){
 		SqlCohortDefinition EncountersByProvider = new SqlCohortDefinition();
-		StringBuilder query = new StringBuilder("select patient_id as person_id \n" +
-				" from encounter \n" +
-				" where voided=0 \n" +
-				" and encounter_datetime>= :startDate \n" +
-				" and encounter_datetime<= :endDate \n" +
-				" and  encounter_id in (\n" +
-				"	select encounter_id \n" +
-				"		from encounter_provider \n" +
-				"		where voided=0 \n" +
-				"		and provider_id in (\n" +
-				"			select provider_id \n" +
-				"				from provider \n" +
-				"				where voided=0 \n" +
-				"				and person_id in (\n" +
-				"					select person_id \n" +
-				"						from person_name \n" +
-				"						where CONCAT(COALESCE(given_name,''),' ',COALESCE(middle_name,''),' ',COALESCE(family_name,'')) = :provider\n" +
-				" )))");
+		StringBuilder query = new StringBuilder("select distinct patient_id as person_id \n" +
+				"       from encounter\n" +
+				"       where encounter.voided=0 \n" +
+				"       and encounter_datetime>= :startDate \n" +
+				"       and encounter_datetime<= :endDate \n" +
+				"       and encounter_type= " + encounterType.getEncounterTypeId() +
+				"       and  IF(:provider is not null, \n" +
+				" 		encounter.encounter_id in (\n" +
+				"        select encounter_id \n" +
+				"           from encounter_provider \n" +
+				"           where voided=0 \n" +
+				"           and provider_id = :provider) \n" +
+				" 		 , true) ");
+
 		EncountersByProvider.setQuery(query.toString());
 		EncountersByProvider.setName(name);
 		EncountersByProvider.addParameter(new Parameter("startDate", "startDate", Date.class));
 		EncountersByProvider.addParameter(new Parameter("endDate", "endDate", Date.class));
-		EncountersByProvider.addParameter(new Parameter("provider", "provider", AllProvider.class));
+		EncountersByProvider.addParameter(new Parameter("provider", "provider", Provider.class));
 
 		return EncountersByProvider;
 

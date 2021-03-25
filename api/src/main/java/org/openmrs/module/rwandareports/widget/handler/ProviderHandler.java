@@ -8,12 +8,11 @@ import org.openmrs.module.htmlwidgets.web.WidgetConfig;
 import org.openmrs.module.htmlwidgets.web.handler.CodedHandler;
 import org.openmrs.module.htmlwidgets.web.html.CodedWidget;
 import org.openmrs.module.htmlwidgets.web.html.Option;
-import org.openmrs.module.rwandareports.widget.AllProvider;
 
 
 import java.util.List;
 
-@Handler(supports={AllProvider.class}, order=1)
+@Handler(supports={Provider.class}, order=1)
 public class ProviderHandler extends CodedHandler {
 
     /**
@@ -25,7 +24,8 @@ public class ProviderHandler extends CodedHandler {
         List<Provider> providers = Context.getProviderService().getProviders(null,null,null,null,false);
 
         for(Provider p:providers){
-            widget.addOption(new Option(p.getName(),p.getName(),p.getName(),p.getName()),config);
+            widget.addOption(new Option(p.getUuid(),p.getName(),null,null),config);
+
 
         }
     }
@@ -36,8 +36,7 @@ public class ProviderHandler extends CodedHandler {
     @Override
     public Object parse(String input, Class<?> type) {
         if(StringUtils.isNotBlank(input)){
-            AllProvider provider = new AllProvider();
-            provider.setName(input);
+            Provider provider = Context.getProviderService().getProviderByUuid(input);
             return provider;
         }
 

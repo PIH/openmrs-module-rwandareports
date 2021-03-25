@@ -19,7 +19,7 @@
 		<openMRSVersion>1.9.9</openMRSVersion>
 		<reportingVersion>0.11.0</reportingVersion>
 		<rowperpatientsVersion>1.6.0</rowperpatientsVersion>
-		<orderextensionVersion>2.0-SNAPSHOT</orderextensionVersion>
+		<orderextensionVersion>2.0.0</orderextensionVersion>
 		<reportingobjectgroupVersion>1.1</reportingobjectgroupVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<serializationVersion>0.2.7</serializationVersion>

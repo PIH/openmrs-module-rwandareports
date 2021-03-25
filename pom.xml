@@ -17,13 +17,13 @@
 
 	<properties>
 		<openMRSVersion>1.9.9</openMRSVersion>
-		<reportingVersion>0.10.0</reportingVersion>
-		<rowperpatientsVersion>1.5.6-SNAPSHOT</rowperpatientsVersion>
+		<reportingVersion>0.11.0</reportingVersion>
+		<rowperpatientsVersion>1.6.0</rowperpatientsVersion>
 		<orderextensionVersion>2.0-SNAPSHOT</orderextensionVersion>
 		<reportingobjectgroupVersion>1.1</reportingobjectgroupVersion>
 		<htmlwidgetsVersion>1.6.4</htmlwidgetsVersion>
 		<serializationVersion>0.2.7</serializationVersion>
-		<heightweighttrackerVersion>1.0.4-SNAPSHOT</heightweighttrackerVersion>
+		<heightweighttrackerVersion>1.0.3</heightweighttrackerVersion>
 		<calculationVersion>1.0</calculationVersion>
 		<logicVersion>0.5.2</logicVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

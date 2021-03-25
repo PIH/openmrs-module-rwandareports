@@ -729,7 +729,17 @@ public class Cohorts {
 		programEnrollmentCohortDefinition.setPrograms(programs);
 		return programEnrollmentCohortDefinition;
 	}
-	
+
+	public static ProgramEnrollmentCohortDefinition createProgramEnrollment(String name, List<Program> programs) {
+
+		ProgramEnrollmentCohortDefinition programEnrollmentCohortDefinition = new ProgramEnrollmentCohortDefinition();
+		programEnrollmentCohortDefinition.setName(name);
+
+		programEnrollmentCohortDefinition.setPrograms(programs);
+		return programEnrollmentCohortDefinition;
+	}
+
+
 	public static CompositionCohortDefinition createEnrolledInProgramDuringPeriod(String name, Program program) {
 		ProgramEnrollmentCohortDefinition enrolledBefore = createProgramEnrollment(name, program);
 		enrolledBefore.addParameter(new Parameter("enrolledOnOrBefore", "enrolledOnOrBefore", Date.class));
@@ -2491,6 +2501,14 @@ public class Cohorts {
 																									   Program program) {
 
 		ProgramEnrollmentCohortDefinition programEnrollmentCohortDefinition = createProgramEnrollment(name, program);
+		programEnrollmentCohortDefinition
+				.addParameter(new Parameter("enrolledOnOrBefore", "enrolledOnOrBefore", Date.class));
+		return programEnrollmentCohortDefinition;
+	}
+	public static ProgramEnrollmentCohortDefinition createProgramEnrollmentEverByEndDate(String name,
+																						 List<Program> programs) {
+
+		ProgramEnrollmentCohortDefinition programEnrollmentCohortDefinition = createProgramEnrollment(name, programs);
 		programEnrollmentCohortDefinition
 				.addParameter(new Parameter("enrolledOnOrBefore", "enrolledOnOrBefore", Date.class));
 		return programEnrollmentCohortDefinition;

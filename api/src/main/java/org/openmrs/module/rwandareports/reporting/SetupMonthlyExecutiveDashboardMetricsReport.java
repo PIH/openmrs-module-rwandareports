@@ -1002,7 +1002,7 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         CohortIndicator hospitalNCDpatientsSeenMonthlyIndicator = Indicators.newCountIndicator("hospitalNCDpatientsSeenMonthlyIndicator",
                 hospitalNCDpatientsSeenComposition,
                 ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m+1d},onOrBefore=${endDate}"));
-        dsd.addColumn("hosptitalNCDpatientsSeenInaYear", "# of hospital NCD patients Seen In a Year", new Mapped(hospitalNCDpatientsSeenMonthlyIndicator,
+        dsd.addColumn("hospitalNCDpatientsSeenInaYear", "# of hospital NCD patients Seen In a Year", new Mapped(hospitalNCDpatientsSeenMonthlyIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 
 
@@ -1337,7 +1337,8 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
                 new Mapped<CohortDefinition>(inpdcProgram, ParameterizableUtil
 
                         .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
-        inpdcProgramComposition.setCompositionString("1");
+        inpdcProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(hospitalPatients, null));
+        inpdcProgramComposition.setCompositionString("1 AND NOT 2");
 
         CohortIndicator inpdcProgramMonthlyIndicator = Indicators.newCountIndicator("inpdcProgramMonthlyIndicator",
                 inpdcProgramComposition,
@@ -1367,46 +1368,252 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         dsd.addColumn("femaleNumberOfPatientsinPDCProgram", "# of PDC female patients currently in care", new Mapped(femaleinpdcProgramMonthlyIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
 
+
+
+        CompositionCohortDefinition hospitalPatientinpdcProgramComposition = new CompositionCohortDefinition();
+        hospitalPatientinpdcProgramComposition.setName("hospitalPatientinpdcProgramComposition");
+        hospitalPatientinpdcProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalPatientinpdcProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+//
+        hospitalPatientinpdcProgramComposition.getSearches().put("1",
+                new Mapped<CohortDefinition>(inpdcProgram, ParameterizableUtil
+
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalPatientinpdcProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(hospitalPatients, null));
+        hospitalPatientinpdcProgramComposition.setCompositionString("1 AND 2");
+
+        CohortIndicator hospitalPatientinpdcProgramCompositionIndicator = Indicators.newCountIndicator("hospitalPatientinpdcProgramCompositionIndicator",
+                hospitalPatientinpdcProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalNumberOfPatientsinPDCProgram", "# of PDC patients currently in care ", new Mapped(hospitalPatientinpdcProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+        // female number
+        CompositionCohortDefinition hospitalPatientfemaleinpdcProgramComposition = new CompositionCohortDefinition();
+        hospitalPatientfemaleinpdcProgramComposition.setName("hospitalPatientfemaleinpdcProgramComposition");
+        hospitalPatientfemaleinpdcProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalPatientfemaleinpdcProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        hospitalPatientfemaleinpdcProgramComposition.getSearches().put(
+                "1",
+                new Mapped<CohortDefinition>(hospitalPatientinpdcProgramComposition, ParameterizableUtil
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalPatientfemaleinpdcProgramComposition.getSearches().put(
+                "2",
+                new Mapped<CohortDefinition>(femaleCohort, null));
+        hospitalPatientfemaleinpdcProgramComposition.setCompositionString("1 AND 2");
+
+        CohortIndicator hospitalPatientfemaleinpdcProgramCompositionIndicator = Indicators.newCountIndicator("hospitalPatientinpdcProgramCompositionIndicator",
+                hospitalPatientfemaleinpdcProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleNumberOfPatientsinPDCProgram", "# of PDC female patients currently in care", new Mapped(hospitalPatientfemaleinpdcProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
+
         //HIV
+
+
+        EncounterCohortDefinition HIVnPatientsSeenInPeriod = Cohorts.createEncounterParameterizedByDate("HIV Patients seen",
+                onOrAfterOnOrBefore, hivencounterTypeIds);
+
+        InProgramCohortDefinition inHIVProgram = Cohorts.createInProgramParameterizableByStartEndDate("inHIVProgram",
+                HIVPrograms);
 
         //=========================================================================
         // D1: # of patients currently enrolled in HIV program                   //
         //=========================================================================
 
 
-        InProgramCohortDefinition inHIVProgram = Cohorts.createInProgramParameterizableByStartEndDate("inHIVProgram",
-                HIVPrograms);
 
-        CompositionCohortDefinition inHIVProgramComposition = new CompositionCohortDefinition();
-        inHIVProgramComposition.setName("inHIVProgramComposition");
-        inHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-        inHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-//
-        inHIVProgramComposition.getSearches().put(
-                "1",
-                new Mapped<CohortDefinition>(inHIVProgram, ParameterizableUtil
 
-                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
-        inHIVProgramComposition.setCompositionString("1");
+        CompositionCohortDefinition patientSeenWithinThreemonthsinHIVProgramComposition = new CompositionCohortDefinition();
+        patientSeenWithinThreemonthsinHIVProgramComposition.setName("patientSeenWithinThreemonthsinHIVProgramComposition");
+        patientSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        patientSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));//
+        patientSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("1",new Mapped<CohortDefinition>(inHIVProgram, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        patientSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(HIVnPatientsSeenInPeriod, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter-3m}")));
+        patientSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        patientSeenWithinThreemonthsinHIVProgramComposition.setCompositionString("1 and 2 and not 3");
 
-        CohortIndicator inHIVProgramMonthlyIndicator = Indicators.newCountIndicator("inHIVProgramMonthlyIndicator",
-                inHIVProgramComposition,
+        CohortIndicator patientSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("patientSeenWithinThreemonthsinHIVProgramCompositionIndicator",
+                patientSeenWithinThreemonthsinHIVProgramComposition,
                 ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
-        dsd.addColumn("NumberOfPatientsinHIVProgram", "# of patients currently enrolled in HIV program  ", new Mapped(inHIVProgramMonthlyIndicator,
+        dsd.addColumn("NumberOfPatientsSeenWithinThreeMonthsinHIVProgram", "# of patients currently enrolled in HIV program  ", new Mapped(patientSeenWithinThreemonthsinHIVProgramCompositionIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
         //female
-        CohortIndicator femaleInHIVProgramMonthlyIndicator = Indicators.newCountIndicator("femaleInHIVProgramMonthlyIndicator",
-                femaleComposition(inHIVProgramComposition,femaleCohort),
+        CohortIndicator femalepatientSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("femaleInHIVProgramMonthlyIndicator",
+                femaleComposition(patientSeenWithinThreemonthsinHIVProgramComposition,femaleCohort),
                 ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
-        dsd.addColumn("femaleNumberOfPatientsinHIVProgram", "# of female patients currently enrolled in HIV program  ", new Mapped(femaleInHIVProgramMonthlyIndicator,
+        dsd.addColumn("femaleNumberOfPatientsSeenWithinThreeMonthsinHIVProgram", "# of female patients currently enrolled in HIV program  ", new Mapped(femalepatientSeenWithinThreemonthsinHIVProgramCompositionIndicator,
                 ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        CompositionCohortDefinition patientNotSeenWithinThreemonthsinHIVProgramComposition = new CompositionCohortDefinition();
+        patientNotSeenWithinThreemonthsinHIVProgramComposition.setName("patientSeenWithinThreemonthsinHIVProgramComposition");
+        patientNotSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        patientNotSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));//
+        patientNotSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("1",new Mapped<CohortDefinition>(inHIVProgram, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        patientNotSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(HIVnPatientsSeenInPeriod, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter-3m}")));
+        patientNotSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        patientNotSeenWithinThreemonthsinHIVProgramComposition.setCompositionString("1 and not 2 and not 3");
+
+        CohortIndicator patientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("patientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator",
+                patientNotSeenWithinThreemonthsinHIVProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("NumberOfPatientsNotSeenWithinThreeMonthsinHIVProgram", "# of patients currently enrolled in HIV program  ", new Mapped(patientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+        //female
+        CohortIndicator femalepatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("femaleInHIVProgramMonthlyIndicator",
+                femaleComposition(patientNotSeenWithinThreemonthsinHIVProgramComposition,femaleCohort),
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("femaleNumberOfPatientsNotSeenWithinThreeMonthsinHIVProgram", "# of female patients currently enrolled in HIV program  ", new Mapped(femalepatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+            // Hospital
+
+
+        CompositionCohortDefinition hospitalpatientSeenWithinThreemonthsinHIVProgramComposition = new CompositionCohortDefinition();
+        hospitalpatientSeenWithinThreemonthsinHIVProgramComposition.setName("patientSeenWithinThreemonthsinHIVProgramComposition");
+        hospitalpatientSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalpatientSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));//
+        hospitalpatientSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("1",new Mapped<CohortDefinition>(inHIVProgram, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalpatientSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(HIVnPatientsSeenInPeriod, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter-3m}")));
+        hospitalpatientSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        hospitalpatientSeenWithinThreemonthsinHIVProgramComposition.setCompositionString("1 and 2 and 3");
+
+        CohortIndicator hospitalpatientSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("hospitalpatientSeenWithinThreemonthsinHIVProgramCompositionIndicator",
+                hospitalpatientSeenWithinThreemonthsinHIVProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalNumberOfPatientsSeenWithinThreeMonthsinHIVProgram", "# of patients currently enrolled in HIV program  ", new Mapped(hospitalpatientSeenWithinThreemonthsinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+        //female
+        CohortIndicator hospitalfemalepatientSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("hospitalfemalepatientSeenWithinThreemonthsinHIVProgramCompositionIndicator",
+                femaleComposition(hospitalpatientSeenWithinThreemonthsinHIVProgramComposition,femaleCohort),
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleNumberOfPatientsSeenWithinThreeMonthsinHIVProgram", "# of female patients currently enrolled in HIV program  ", new Mapped(hospitalfemalepatientSeenWithinThreemonthsinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        CompositionCohortDefinition hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition = new CompositionCohortDefinition();
+        hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition.setName("patientSeenWithinThreemonthsinHIVProgramComposition");
+        hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));//
+        hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("1",new Mapped<CohortDefinition>(inHIVProgram, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(HIVnPatientsSeenInPeriod, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter-3m}")));
+        hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition.setCompositionString("1 and not 2 and 3");
+
+        CohortIndicator hospitalpatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("hospitalpatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator",
+                hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalNumberOfPatientsNotSeenWithinThreeMonthsinHIVProgram", "# of patients currently enrolled in HIV program  ", new Mapped(hospitalpatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+        //female
+        CohortIndicator hospitalfemalepatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator = Indicators.newCountIndicator("hospitalfemalepatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator",
+                femaleComposition(hospitalpatientNotSeenWithinThreemonthsinHIVProgramComposition,femaleCohort),
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleNumberOfPatientsNotSeenWithinThreeMonthsinHIVProgram", "# of female patients currently enrolled in HIV program  ", new Mapped(hospitalfemalepatientNotSeenWithinThreemonthsinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+        //=========================================================================
+        // # of HIV patients newly enrolled                           //
+        //=========================================================================
+
+        ProgramEnrollmentCohortDefinition HivenrollmentByEndDate=Cohorts.createProgramEnrollmentEverByEndDate("HivenrollmentByEndDate",HIVPrograms);
+
+
+
+        CompositionCohortDefinition patientNewlyEnroledinHIVProgramComposition = new CompositionCohortDefinition();
+        patientNewlyEnroledinHIVProgramComposition.setName("patientNewlyEnroledinHIVProgramComposition");
+        patientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        patientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        patientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("enrolledOnOrBefore", "enrolledOnOrBefore", Date.class));
+        patientNewlyEnroledinHIVProgramComposition.getSearches().put("1",new Mapped<CohortDefinition>(inHIVProgram, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        patientNewlyEnroledinHIVProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(HivenrollmentByEndDate, ParameterizableUtil.createParameterMappings("enrolledOnOrBefore=${enrolledOnOrBefore-1m}")));
+        patientNewlyEnroledinHIVProgramComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        patientNewlyEnroledinHIVProgramComposition.setCompositionString("1 and not 2 and not 3");
+
+        CohortIndicator patientNewlyEnroledinHIVProgramCompositionIndicator = Indicators.newCountIndicator("patientNewlyEnroledinHIVProgramCompositionIndicator",
+                patientNewlyEnroledinHIVProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate},enrolledOnOrBefore=${endDate}"));
+        dsd.addColumn("NumberOfPatientsNewlyEnroledinHIVProgram", "# of patients currently enrolled in HIV program  ", new Mapped(patientNewlyEnroledinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+        //female
+
+        CompositionCohortDefinition femalepatientNewlyEnroledinHIVProgramComposition = new CompositionCohortDefinition();
+        femalepatientNewlyEnroledinHIVProgramComposition.setName("femalepatientNewlyEnroledinHIVProgramComposition");
+        femalepatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        femalepatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        femalepatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("enrolledOnOrBefore", "enrolledOnOrBefore", Date.class));
+        femalepatientNewlyEnroledinHIVProgramComposition.getSearches().put(
+                "1",
+                new Mapped<CohortDefinition>(patientNewlyEnroledinHIVProgramComposition, ParameterizableUtil
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},enrolledOnOrBefore=${enrolledOnOrBefore}")));
+        femalepatientNewlyEnroledinHIVProgramComposition.getSearches().put(
+                "2",
+                new Mapped<CohortDefinition>(femaleCohort, null));
+        femalepatientNewlyEnroledinHIVProgramComposition.setCompositionString("1 AND 2");
+
+
+
+        CohortIndicator femalepatientNewlyEnroledinHIVProgramCompositionIndicator = Indicators.newCountIndicator("femalepatientNewlyEnroledinHIVProgramCompositionIndicator",femalepatientNewlyEnroledinHIVProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate},enrolledOnOrBefore=${endDate}"));
+        dsd.addColumn("femaleNumberOfPatientsNewlyEnroledinHIVProgram", "# of female patients currently enrolled in HIV program  ", new Mapped(femalepatientNewlyEnroledinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+// Hospital
+        CompositionCohortDefinition hospitalpatientNewlyEnroledinHIVProgramComposition = new CompositionCohortDefinition();
+        hospitalpatientNewlyEnroledinHIVProgramComposition.setName("hospitalpatientNewlyEnroledinHIVProgramComposition");
+        hospitalpatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalpatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        hospitalpatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("enrolledOnOrBefore", "enrolledOnOrBefore", Date.class));
+        hospitalpatientNewlyEnroledinHIVProgramComposition.getSearches().put("1",new Mapped<CohortDefinition>(inHIVProgram, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        hospitalpatientNewlyEnroledinHIVProgramComposition.getSearches().put("2",new Mapped<CohortDefinition>(HivenrollmentByEndDate, ParameterizableUtil.createParameterMappings("enrolledOnOrBefore=${enrolledOnOrBefore-1m}")));
+        hospitalpatientNewlyEnroledinHIVProgramComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        hospitalpatientNewlyEnroledinHIVProgramComposition.setCompositionString("1 and not 2 and 3");
+
+        CohortIndicator hospitalpatientNewlyEnroledinHIVProgramCompositionIndicator = Indicators.newCountIndicator("hospitalpatientNewlyEnroledinHIVProgramCompositionIndicator",
+                hospitalpatientNewlyEnroledinHIVProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate},enrolledOnOrBefore=${endDate}"));
+        dsd.addColumn("hospitalNumberOfPatientsNewlyEnroledinHIVProgram", "# of patients currently enrolled in HIV program  ", new Mapped(hospitalpatientNewlyEnroledinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+        //female
+
+        CompositionCohortDefinition hospitalfemalepatientNewlyEnroledinHIVProgramComposition = new CompositionCohortDefinition();
+        hospitalfemalepatientNewlyEnroledinHIVProgramComposition.setName("hospitalfemalepatientNewlyEnroledinHIVProgramComposition");
+        hospitalfemalepatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        hospitalfemalepatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        hospitalfemalepatientNewlyEnroledinHIVProgramComposition.addParameter(new Parameter("enrolledOnOrBefore", "enrolledOnOrBefore", Date.class));
+        hospitalfemalepatientNewlyEnroledinHIVProgramComposition.getSearches().put(
+                "1",
+                new Mapped<CohortDefinition>(patientNewlyEnroledinHIVProgramComposition, ParameterizableUtil
+                        .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},enrolledOnOrBefore=${enrolledOnOrBefore}")));
+        hospitalfemalepatientNewlyEnroledinHIVProgramComposition.getSearches().put(
+                "2",
+                new Mapped<CohortDefinition>(femaleCohort, null));
+        hospitalfemalepatientNewlyEnroledinHIVProgramComposition.setCompositionString("1 AND 2");
+
+
+
+        CohortIndicator hospitalfemalepatientNewlyEnroledinHIVProgramCompositionIndicator = Indicators.newCountIndicator("hospitalfemalepatientNewlyEnroledinHIVProgramCompositionIndicator",hospitalfemalepatientNewlyEnroledinHIVProgramComposition,
+                ParameterizableUtil.createParameterMappings("onOrAfter=${endDate},onOrBefore=${endDate},enrolledOnOrBefore=${endDate}"));
+        dsd.addColumn("hospitalfemaleNumberOfPatientsNewlyEnroledinHIVProgram", "# of female patients currently enrolled in HIV program  ", new Mapped(hospitalfemalepatientNewlyEnroledinHIVProgramCompositionIndicator,
+                ParameterizableUtil.createParameterMappings("endDate=${endDate}")), "");
+
+
+
+
 
         //=========================================================================
         // D2: # of HIV patients enrolled with a visit                           //
         //=========================================================================
 
-        EncounterCohortDefinition HIVnPatientsSeenInPeriod = Cohorts.createEncounterParameterizedByDate("HIV Patients seen",
-                onOrAfterOnOrBefore, hivencounterTypeIds);
 
         CompositionCohortDefinition inHIVProgramAndVisitsComposition = new CompositionCohortDefinition();
         inHIVProgramAndVisitsComposition.setName("inHIVProgramAndVisitsComposition");
@@ -1469,31 +1676,82 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         // D4: # of HIV patients LTFU                                            //
         //=========================================================================
 
-        dsd.addColumn("HIVLTFUPatients", "# of HIV LTFU Patients ", new Mapped(patientExitReason(inHIVProgram,patientdefaulted),
+        dsd.addColumn("HIVLTFUPatients", "# of HIV LTFU Patients ", new Mapped(patientExitReason(inHIVProgram,hospitalPatients,patientdefaulted),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
-        dsd.addColumn("femaleHIVLTFUPatients", "# of HIV LTFU female Patients Transferred out", new Mapped(femaleExitReason(inHIVProgram,femaleCohort,patientdefaulted),
+        dsd.addColumn("femaleHIVLTFUPatients", "# of HIV LTFU female Patients Transferred out", new Mapped(femaleExitReason(inHIVProgram,hospitalPatients,femaleCohort,patientdefaulted),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+
+        dsd.addColumn("hospitalHIVLTFUPatients", "# of HIV LTFU Patients ", new Mapped(hospitalPatientExitReason(inHIVProgram,hospitalPatients,patientdefaulted),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleHIVLTFUPatients", "# of HIV LTFU female Patients Transferred out", new Mapped(hospitalFemaleExitReason(inHIVProgram,hospitalPatients,femaleCohort,patientdefaulted),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
 
         //=========================================================================
         // D4: # of HIV patients transferred out                                 //
         //=========================================================================
 
-        dsd.addColumn("HIVPatientsTransferredOut", "# of HIV Patients Transferred out", new Mapped(patientExitReason(inHIVProgram,patienttransferedoutstate),
+        dsd.addColumn("HIVPatientsTransferredOut", "# of HIV Patients Transferred out", new Mapped(patientExitReason(inHIVProgram,hospitalPatients,patienttransferedoutstate),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
-        dsd.addColumn("femaleHIVPatientsTransferredOut", "# of HIV female Patients Transferred out", new Mapped(femaleExitReason(inHIVProgram,femaleCohort,patienttransferedoutstate),
+        dsd.addColumn("femaleHIVPatientsTransferredOut", "# of HIV female Patients Transferred out", new Mapped(femaleExitReason(inHIVProgram,hospitalPatients,femaleCohort,patienttransferedoutstate),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalHIVPatientsTransferredOut", "# of HIV Patients Transferred out", new Mapped(hospitalPatientExitReason(inHIVProgram,hospitalPatients,patienttransferedoutstate),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleHIVPatientsTransferredOut", "# of HIV female Patients Transferred out", new Mapped(hospitalFemaleExitReason(inHIVProgram,hospitalPatients,femaleCohort,patienttransferedoutstate),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
         //=========================================================================
         // D4: # of HIV patients deceased                                        //
         //=========================================================================
 
-        dsd.addColumn("HIVPatientsdeceased", "# of HIV Patients deceased", new Mapped(patientExitReason(inHIVProgram,patientDied),
+        dsd.addColumn("HIVPatientsdeceased", "# of HIV Patients deceased", new Mapped(patientExitReason(inHIVProgram,hospitalPatients,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
 
-        dsd.addColumn("femaleHIVPatientsdeceased", "# of HIV female Patients deceased", new Mapped(femaleExitReason(inHIVProgram,femaleCohort,patientDied),
+        dsd.addColumn("femaleHIVPatientsdeceased", "# of HIV female Patients deceased", new Mapped(femaleExitReason(inHIVProgram,hospitalPatients,femaleCohort,patientDied),
                 ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalHIVPatientsdeceased", "# of HIV Patients deceased", new Mapped(hospitalPatientExitReason(inHIVProgram,hospitalPatients,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemaleHIVPatientsdeceased", "# of HIV female Patients deceased", new Mapped(hospitalFemaleExitReason(inHIVProgram,hospitalPatients,femaleCohort,patientDied),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+
+        //=========================================================================
+        // D4: # of HIV patients stopped treatment                             //
+        //=========================================================================
+            List<ProgramWorkflowState> states=new ArrayList<ProgramWorkflowState>();
+        states.add(Context.getProgramWorkflowService().getWorkflow(adulthivprogramname,"TREATMENT STATUS").getState("TREATMENT STOPPED"));
+        states.add(Context.getProgramWorkflowService().getWorkflow(adulthivprogramname,"TREATMENT STATUS").getState("TREATMENT STOPPED - SIDE EFFECTS"));
+        states.add(Context.getProgramWorkflowService().getWorkflow(adulthivprogramname,"TREATMENT STATUS").getState("TREATMENT STOPPED - PATIENT REFUSED"));
+        states.add(Context.getProgramWorkflowService().getWorkflow(pedihivprogramname,"TREATMENT STATUS").getState("TREATMENT STOPPED"));
+        states.add(Context.getProgramWorkflowService().getWorkflow(pedihivprogramname,"TREATMENT STATUS").getState("TREATMENT STOPPED - PATIENT REFUSED"));
+        states.add(Context.getProgramWorkflowService().getWorkflow(pmtctprogramname,"TREATMENT STATUS").getState("TREATMENT STOPPED - SIDE EFFECTS"));
+        states.add(Context.getProgramWorkflowService().getWorkflow(pmtctprogramname,"TREATMENT STATUS").getState("TREATMENT STOPPED - PATIENT REFUSED"));
+
+
+        dsd.addColumn("patientInStateStopped", "# of HIV Patients deceased", new Mapped(patientInState(inHIVProgram,hospitalPatients,states),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("femalepatientInStateStopped", "# of HIV female Patients deceased", new Mapped(femalePatientInState(inHIVProgram,hospitalPatients,femaleCohort,states),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalpatientInStateStopped", "# of HIV Patients deceased", new Mapped(hospitalPatientInState(inHIVProgram,hospitalPatients,states),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+        dsd.addColumn("hospitalfemalepatientInStateStopped", "# of HIV female Patients deceased", new Mapped(hospitalFemalePatientInState(inHIVProgram,hospitalPatients,femaleCohort,states),
+                ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")), "");
+
+
+
+
+
 
         //=============================================================================
         // D5: % of active eligible patients with a viral load results within a year //
@@ -1638,6 +1896,103 @@ public class SetupMonthlyExecutiveDashboardMetricsReport {
         return femalepatientsWithProgramOutcomeMonthlyIndicator;
 
     }
+
+    private CohortIndicator patientInState(InProgramCohortDefinition inProgram, SqlCohortDefinition hospitalPatients, List<ProgramWorkflowState> states){
+
+        InStateCohortDefinition patientInState = Cohorts.createInCurrentState("patientInState", states);
+
+        CompositionCohortDefinition patientInStateComposition = new CompositionCohortDefinition();
+        patientInStateComposition.setName("exitedfromcarewithreasons");
+        patientInStateComposition.addParameter(new Parameter("startDate", "startDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("endDate", "endDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onDate", "onDate", Date.class));
+        patientInStateComposition.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        patientInStateComposition.getSearches().put("2",new Mapped<CohortDefinition>(patientInState,
+                ParameterizableUtil.createParameterMappings("onDate=${onDate}")));
+        patientInStateComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        patientInStateComposition.setCompositionString("1 AND 2 AND NOT 3");
+        CohortIndicator patientInStateCompositionIndicator = Indicators.newCountIndicator("exitedfromcarewithreasonsMonthlyIndicator",
+                patientInStateComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate},onDate=${endDate}"));
+
+
+        return patientInStateCompositionIndicator;
+    }
+    private CohortIndicator femalePatientInState(InProgramCohortDefinition inProgram, SqlCohortDefinition hospitalPatients,GenderCohortDefinition female,List<ProgramWorkflowState> states){
+
+        InStateCohortDefinition patientInState = Cohorts.createInCurrentState("patientInState", states);
+
+        CompositionCohortDefinition patientInStateComposition = new CompositionCohortDefinition();
+        patientInStateComposition.setName("exitedfromcarewithreasons");
+        patientInStateComposition.addParameter(new Parameter("startDate", "startDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("endDate", "endDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onDate", "onDate", Date.class));
+        patientInStateComposition.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        patientInStateComposition.getSearches().put("2",new Mapped<CohortDefinition>(patientInState,
+                ParameterizableUtil.createParameterMappings("onDate=${onDate}")));
+        patientInStateComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        patientInStateComposition.getSearches().put("4",new Mapped<CohortDefinition>(female, null));
+        patientInStateComposition.setCompositionString("1 AND 2 AND 4 AND NOT 3");
+        CohortIndicator patientInStateCompositionIndicator = Indicators.newCountIndicator("exitedfromcarewithreasonsMonthlyIndicator",
+                patientInStateComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate},onDate=${endDate}"));
+
+
+        return patientInStateCompositionIndicator;
+    }
+
+    private CohortIndicator hospitalPatientInState(InProgramCohortDefinition inProgram, SqlCohortDefinition hospitalPatients, List<ProgramWorkflowState> states){
+
+        InStateCohortDefinition patientInState = Cohorts.createInCurrentState("patientInState", states);
+
+        CompositionCohortDefinition patientInStateComposition = new CompositionCohortDefinition();
+        patientInStateComposition.setName("exitedfromcarewithreasons");
+        patientInStateComposition.addParameter(new Parameter("startDate", "startDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("endDate", "endDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onDate", "onDate", Date.class));
+        patientInStateComposition.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        patientInStateComposition.getSearches().put("2",new Mapped<CohortDefinition>(patientInState,
+                ParameterizableUtil.createParameterMappings("onDate=${onDate}")));
+        patientInStateComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        patientInStateComposition.setCompositionString("1 AND 2 AND NOT 3");
+        CohortIndicator patientInStateCompositionIndicator = Indicators.newCountIndicator("exitedfromcarewithreasonsMonthlyIndicator",
+                patientInStateComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate},onDate=${endDate}"));
+
+
+        return patientInStateCompositionIndicator;
+    }
+    private CohortIndicator hospitalFemalePatientInState(InProgramCohortDefinition inProgram, SqlCohortDefinition hospitalPatients,GenderCohortDefinition female,List<ProgramWorkflowState> states){
+
+        InStateCohortDefinition patientInState = Cohorts.createInCurrentState("patientInState", states);
+
+        CompositionCohortDefinition patientInStateComposition = new CompositionCohortDefinition();
+        patientInStateComposition.setName("exitedfromcarewithreasons");
+        patientInStateComposition.addParameter(new Parameter("startDate", "startDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("endDate", "endDate", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+        patientInStateComposition.addParameter(new Parameter("onDate", "onDate", Date.class));
+        patientInStateComposition.getSearches().put("1",new Mapped<CohortDefinition>(inProgram, ParameterizableUtil
+                .createParameterMappings("onOrBefore=${onOrBefore},onOrAfter=${onOrAfter}")));
+        patientInStateComposition.getSearches().put("2",new Mapped<CohortDefinition>(patientInState,
+                ParameterizableUtil.createParameterMappings("onDate=${onDate}")));
+        patientInStateComposition.getSearches().put("3",new Mapped<CohortDefinition>(hospitalPatients, null));
+        patientInStateComposition.getSearches().put("4",new Mapped<CohortDefinition>(female, null));
+        patientInStateComposition.setCompositionString("1 AND 2 AND 4 AND 3");
+        CohortIndicator patientInStateCompositionIndicator = Indicators.newCountIndicator("exitedfromcarewithreasonsMonthlyIndicator",
+                patientInStateComposition,ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},startDate=${startDate},endDate=${endDate},onDate=${endDate}"));
+
+
+        return patientInStateCompositionIndicator;
+    }
+
     private CohortIndicator patientExitReason(InProgramCohortDefinition inProgram, Concept patientExitReason){
 
         CodedObsCohortDefinition exitedpatient = Cohorts.createCodedObsCohortDefinition("exitedpatient", onOrAfterOnOrBefore,reasonForExitingCare, patientExitReason, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);

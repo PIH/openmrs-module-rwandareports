@@ -34,6 +34,7 @@ public class SetupCKDMissedvisitReport {
     private Program CKDProgram;
 
     private EncounterType CKDflowsheet;
+    private EncounterType HFHTNCKDEncounterType;
 
     private List<EncounterType> CKDencounterTypes=new ArrayList<EncounterType>();
 
@@ -141,7 +142,7 @@ public class SetupCKDMissedvisitReport {
 //        MostRecentObservation diastolic = RowPerPatientColumns.getMostRecentDiastolicPB("diastolic", "@ddMMMyy");
 //        dataSetDefinition1.addColumn(diastolic, new HashMap<String, Object>());
 
-        dataSetDefinition1.addColumn(RowPerPatientColumns.getPatientCurrentlyActiveOnDrugOrder("Regimen",new DrugDosageCurrentFilter(CKDencounterTypes)),new HashMap<String, Object>());
+        dataSetDefinition1.addColumn(RowPerPatientColumns.getPatientCurrentlyActiveOnDrugOrder("Regimen",null),new HashMap<String, Object>());
 
         PatientAddress address1 = RowPerPatientColumns.getPatientAddress("Address", true, true, true, true);
         dataSetDefinition1.addColumn(address1, new HashMap<String, Object>());
@@ -169,8 +170,10 @@ public class SetupCKDMissedvisitReport {
         CKDProgram = gp.getProgram(GlobalPropertiesManagement.CKD_PROGRAM);
 
         CKDflowsheet=gp.getEncounterType(GlobalPropertiesManagement.CKD_ENCOUNTER_TYPE);
+        HFHTNCKDEncounterType = gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE);
 
         CKDencounterTypes.add(CKDflowsheet);
+        CKDencounterTypes.add(HFHTNCKDEncounterType);
 
         CKDRDVForm = gp.getForm(GlobalPropertiesManagement.CKD_RDV_FORM);
 

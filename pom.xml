@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>rwandareports</artifactId>
-	<version>2.7.6-SNAPSHOT</version>
+	<version>2.7.6</version>
 	<packaging>pom</packaging>
 	<name>Rwanda Reports</name>
 	<description>Rwanda Reports Module</description>
@@ -372,7 +372,7 @@
 			<url>https://openmrs.jfrog.io/artifactory/modules-pih/</url>
 		</repository>
 		<snapshotRepository>
-			<id>openmrs-repo-modules-pih-snapshots</id>
+			<id>openmrs-repo-modules-pih</id>
 			<name>OpenMRS PIH Module Snapshots</name>
 			<url>https://openmrs.jfrog.io/artifactory/modules-pih-snapshots/</url>
 		</snapshotRepository>

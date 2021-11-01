@@ -121,7 +121,7 @@ public class SetupPathologyRequestReport implements SetupReport {
                 " and patient.voided=0 " +
                 " and IF( :location IS NULL, true, healthcenter.location_id= :location) " +
                 " group by enc.encounter_id " +
-                " order by enc.encounter_id limit 20 ");
+                " order by enc.encounter_id  ");
 
         sqldsd.addParameter(new Parameter("location", "Location", Location.class));
 

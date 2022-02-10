@@ -111,9 +111,10 @@ public class SetupLabResultReports {
 				"(select (TIMESTAMPDIFF(YEAR,birthdate,ods.start_date)) from person where person_id=o.person_id and voided=0) as 'Age'," +
 				"(select gender from person where person_id=o.person_id and voided=0) as 'Gender'," +
 				"(select l.name from person_attribute pa, location l where person_attribute_type_id="+healthFacilityAttributeType.getPersonAttributeTypeId()+" and  voided=0 and pa.value=l.location_id and pa.person_id=o.person_id limit 1) as 'Patient Location', " +
-				"(select name from location where location_id=o.location_id) as 'Result done at', " +
+				"(select name from location where location_id=o.location_id) as 'Result done at', " +				   
 				"ods.start_date as 'Sample date'," +
 				"ods.accession_number as 'Sample Code'," +
+				"(select concat(family_name," ",given_name) from person_name pn, users u where u.user_id=ods.orderer and u.person_id=pn.person_id and pn.voided=0 limit 1 ) as orderer,"+   
 				"o.obs_datetime as 'Date of result' ," +
 				"(select name from concept_name where concept_id=ods.concept_id limit 1) as 'Name'," +
 				"CONCAT_WS(',',o.value_boolean,(select name from concept_name where concept_id=o.value_coded limit 1),o.value_numeric,o.value_text) as 'Result'" +
@@ -158,6 +159,7 @@ public class SetupLabResultReports {
 				"(select name from location where location_id=o.location_id) as 'Result done at', " +
 				"ods.start_date as 'Sample date'," +
 				"ods.accession_number as 'Sample Code'," +
+				"(select concat(family_name," ",given_name) from person_name pn, users u where u.user_id=ods.orderer and u.person_id=pn.person_id and pn.voided=0 limit 1 ) as orderer,"+   
 				"o.obs_datetime as 'Date of result' ," +
 				"(select name from concept_name where concept_id=ods.concept_id limit 1) as 'Name'," +
 				"CONCAT_WS(',',o.value_boolean,(select name from concept_name where concept_id=o.value_coded limit 1),o.value_numeric,o.value_text) as 'Result'" +

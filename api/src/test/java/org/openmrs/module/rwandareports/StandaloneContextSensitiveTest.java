@@ -1,16 +1,38 @@
 package org.openmrs.module.rwandareports;
 
-import java.util.Properties;
-
 import org.junit.Before;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
-import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(locations = {"classpath:openmrs-servlet.xml"}, inheritLocations = true)
+import java.io.FileInputStream;
+import java.util.Properties;
+
 @SkipBaseSetup
 public abstract class StandaloneContextSensitiveTest extends BaseModuleContextSensitiveTest {
+
+	static Properties props = null;
+
+	static {
+		String propFile = System.getProperty("runtime-properties-file");
+		if (propFile != null) {
+			props = new Properties();
+			try {
+				props.load(new FileInputStream(propFile));
+			} catch (Exception e) {
+				System.out.println("Error loading properties from " + propFile + ": " + e.getMessage());
+			}
+		}
+
+		if (props != null && !props.isEmpty()) {
+			System.setProperty("databaseUrl", props.getProperty("connection.url"));
+			System.setProperty("databaseUsername", props.getProperty("connection.username"));
+			System.setProperty("databasePassword", props.getProperty("connection.password"));
+			System.setProperty("databaseDriver", props.getProperty("connection.driver_class"));
+			System.setProperty("databaseDialect", "org.hibernate.dialect.MySQLDialect");
+			System.setProperty("useInMemoryDatabase", "false");
+		}
+	}
 
 	@Override
 	public Boolean useInMemoryDatabase() {
@@ -23,11 +45,7 @@ public abstract class StandaloneContextSensitiveTest extends BaseModuleContextSe
 	@Override
 	public Properties getRuntimeProperties() {
 		Properties p = super.getRuntimeProperties();
-        p.setProperty("connection.url", "jdbc:mysql://localhost:3306/openmrs_rwink?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8");
-        p.setProperty("connection.username", "root");
-        p.setProperty("connection.password", "root");
-        p.setProperty("junit.username", "admin");
-        p.setProperty("junit.password", "Admin123");
+		p.putAll(props);
 		return p;
 	}
 

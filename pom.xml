@@ -128,6 +128,12 @@
 
             <dependency>
                 <groupId>org.openmrs.module</groupId>
+                <artifactId>ohrimamba-core-omod</artifactId>
+                <version>${mambaETLCoreVersion}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
                 <artifactId>mamba-core-api</artifactId>
                 <version>${mambaETLCoreVersion}</version>
                 <type>jar</type>
@@ -460,7 +466,7 @@
                                     <argument>-d kibagabaga</argument>
 
                                     <!-- The target or analysis Database where the ETL data is stored -->
-                                    <argument>-a kibagabaga</argument>
+                                    <argument>-a analysis_db</argument>
 
                                     <!-- File with a list of all files with stored procedures -->
                                     <!-- Remove this argument after automating core to auto-read this -->
@@ -475,9 +481,6 @@
 
                                     <!-- Set 1 to recompile/build the scripts else 0 - not to. If 1 - don't forget to change the liquibase changeset ID -->
                                     <argument>-b 1</argument>
-
-                                    <!-- Set the concepts locale here -->
-                                    <argument>-l en</argument>
 
                                     <argument/>
 

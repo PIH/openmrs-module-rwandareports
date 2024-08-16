@@ -19,7 +19,7 @@ BEGIN
     INTO @insurance_report_columns
     FROM mamba_dim_billing_report_columns
     WHERE report_type = 'INSURANCE'
-      AND (group_column_name IS NULL OR group_column_name = '');
+      AND group_column_name = 'INSURANCE';
 
     -- Imaging Columns TODO: improve this area
     SELECT (GROUP_CONCAT(DISTINCT CONCAT('IFNULL (bill.`', hop_service_id, '`, 0)') ORDER BY

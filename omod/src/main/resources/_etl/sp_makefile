@@ -7,6 +7,7 @@
 ############################ derived folder SPs  ############################
 #############################################################################
 derived/billing/sp_mamba_data_processing_derived_billing.sql
+derived/billing/sp_mamba_drop_all_billing_tables.sql
 
 #############################################################################
 ##### A single SP that CALLs all SPs inside the derived & base folders ######

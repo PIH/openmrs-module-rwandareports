@@ -36,5 +36,6 @@ public class RwandaReportsModuleActivator extends BaseModuleActivator {
 	@Override
 	public void stopped() {
 		log.info("Stopped Rwanda Report Module");
+		Context.getService(FlattenDatabaseService.class).shutdownEtlThread();
 	}
 }

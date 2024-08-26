@@ -19,11 +19,14 @@ CALL sp_mamba_dim_patient_bill;
 CALL sp_mamba_dim_patient_service_bill;
 CALL sp_mamba_dim_service_category;
 CALL sp_mamba_dim_third_party_bill;
-CALL sp_mamba_dim_thirdparty;
+CALL sp_mamba_dim_third_party;
 CALL sp_mamba_dim_billing_report_columns;
 
 -- Facts
 CALL sp_mamba_fact_patient_service_bill;
 CALL sp_mamba_fact_patient_service_bill_flat;
+
+-- Create View
+CALL sp_mamba_view_fact_insurance_report;
 
 -- $END

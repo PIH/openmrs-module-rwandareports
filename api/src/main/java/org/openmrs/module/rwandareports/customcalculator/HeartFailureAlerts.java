@@ -20,38 +20,39 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataRes
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 
 public class HeartFailureAlerts implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
+	
 	GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
+	
 	@SuppressWarnings("unused")
-	public PatientDataResult calculateResult(List<PatientDataResult> results,
-			EvaluationContext context) {
-
+	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
+		
 		PatientAttributeResult alert = new PatientAttributeResult(null, null);
-
+		
 		StringBuffer alerts = new StringBuffer();
 		double height = 0;
 		
 		for (PatientDataResult result : results) {
 			boolean uncontrolledAlert = false;
 			
-			if(!uncontrolledAlert)
-			 {
-			if (result.getName().equals("systolic")) {
-				ObservationResult systolic = (ObservationResult)result;
-				
-				if(systolic.getValue() != null && systolic.getObs() != null && systolic.getObs().getValueNumeric() > 140 && !alerts.toString().contains("BP is above goal"))
-					alerts.append("BP is above goal \n");
-				//uncontrolledAlert = true;
-			}
-			
-			if (result.getName().equals("diastolic")) {
-					ObservationResult diastolic = (ObservationResult)result;
+			if (!uncontrolledAlert) {
+				if (result.getName().equals("systolic")) {
+					ObservationResult systolic = (ObservationResult) result;
 					
-					if((diastolic.getValue() != null && diastolic.getObs() != null && diastolic.getObs().getValueNumeric() > 90) && !alerts.toString().contains("BP is above goal"))
-					{
-						if(alerts.length() > 0)
-						{
-						//	alerts.append(", ");
+					if (systolic.getValue() != null && systolic.getObs() != null
+					        && systolic.getObs().getValueNumeric() > 140 && !alerts.toString().contains("BP is above goal"))
+						alerts.append("BP is above goal \n");
+					//uncontrolledAlert = true;
+				}
+				
+				if (result.getName().equals("diastolic")) {
+					ObservationResult diastolic = (ObservationResult) result;
+					
+					if ((diastolic.getValue() != null && diastolic.getObs() != null && diastolic.getObs().getValueNumeric() > 90)
+					        && !alerts.toString().contains("BP is above goal")) {
+						if (alerts.length() > 0) {
+							//	alerts.append(", ");
 						}
 						alerts.append("BP is above goal \n");
 					}
@@ -59,94 +60,82 @@ public class HeartFailureAlerts implements CustomCalculation {
 				}
 			}
 			
-			if(!uncontrolledAlert)
-			 {
-			if (result.getName().equals("systolic")) {
-				ObservationResult systolic = (ObservationResult)result;
-				
-				if(systolic.getValue() != null && systolic.getObs() != null && systolic.getObs().getValueNumeric() < 90 && !alerts.toString().contains("BP is below goal"))
-				//uncontrolledAlert = true;
-
-					alerts.append("BP is below goal \n");
-			}
-			
-			if (result.getName().equals("diastolic")) {
-					ObservationResult diastolic = (ObservationResult)result;
+			if (!uncontrolledAlert) {
+				if (result.getName().equals("systolic")) {
+					ObservationResult systolic = (ObservationResult) result;
 					
-					if(diastolic.getValue() != null && diastolic.getObs() != null && diastolic.getObs().getValueNumeric() < 60 && !alerts.toString().contains("BP is below goal"))
-					{
-						if(alerts.length() > 0)
-						{
-						//	alerts.append(", ");
+					if (systolic.getValue() != null && systolic.getObs() != null && systolic.getObs().getValueNumeric() < 90
+					        && !alerts.toString().contains("BP is below goal"))
+						//uncontrolledAlert = true;
+						
+						alerts.append("BP is below goal \n");
+				}
+				
+				if (result.getName().equals("diastolic")) {
+					ObservationResult diastolic = (ObservationResult) result;
+					
+					if (diastolic.getValue() != null && diastolic.getObs() != null
+					        && diastolic.getObs().getValueNumeric() < 60 && !alerts.toString().contains("BP is below goal")) {
+						if (alerts.length() > 0) {
+							//	alerts.append(", ");
 						}
 						alerts.append("BP is below goal \n");
 					}
 				}
 			}
-		
-			 if(result.getName().equals("creatinine"))
-			{
-				ObservationResult creatinine = (ObservationResult)result;
-				if(creatinine.getDateOfObservation() != null)
-				{
-					Date dateCreatinine= creatinine.getDateOfObservation();
+			
+			if (result.getName().equals("creatinine")) {
+				ObservationResult creatinine = (ObservationResult) result;
+				if (creatinine.getDateOfObservation() != null) {
+					Date dateCreatinine = creatinine.getDateOfObservation();
 					Date date = new Date();
 					
 					int diff = calculateMonthsDifference(date, dateCreatinine);
 					
-					if(diff > 6)
-					{
-						if(alerts.length() > 0)
-						{
+					if (diff > 6) {
+						if (alerts.length() > 0) {
 							//alerts.append(", ");
 						}
 						alerts.append("No Serum checked in over 6 months\n");
 					}
 				}
 			}
-			 
+			
 			if (result.getName().equals("lastINRobs")) {
-				ObservationResult lastINRobs = (ObservationResult)result;
+				ObservationResult lastINRobs = (ObservationResult) result;
 				
-				if(lastINRobs.getValue() != null && lastINRobs.getObs() != null && lastINRobs.getObs().getValueNumeric() > 3)
-				{
-					if(alerts.length() > 0)
-					alerts.append("Last INR > 3\n");
+				if (lastINRobs.getValue() != null && lastINRobs.getObs() != null
+				        && lastINRobs.getObs().getValueNumeric() > 3) {
+					if (alerts.length() > 0)
+						alerts.append("Last INR > 3\n");
 				}
 			}
 			
-			if(result.getName().equals("weightLastTwo"))
-			 {
-			 	AllObservationValuesResult lastTwoWeight = (AllObservationValuesResult)result;
+			if (result.getName().equals("weightLastTwo")) {
+				AllObservationValuesResult lastTwoWeight = (AllObservationValuesResult) result;
 				
-				if(lastTwoWeight.getValue() != null && lastTwoWeight.getValue().size() > 1)
-				{
+				if (lastTwoWeight.getValue() != null && lastTwoWeight.getValue().size() > 1) {
 					int increase = increaseBetweenTwoObs(lastTwoWeight.getValue());
-					if(increase > 3)
-				     {
-					 if(alerts.length() > 0)
-						alerts.append("Significant change between the last two weight\n");
+					if (increase > 3) {
+						if (alerts.length() > 0)
+							alerts.append("Significant change between the last two weight\n");
 					}
 				}
 			}
 			
-			if(result.getName().equals("RecentHeight"))
-			{
-				ObservationResult heightOb = (ObservationResult)result;
+			if (result.getName().equals("RecentHeight")) {
+				ObservationResult heightOb = (ObservationResult) result;
 				
-				if(heightOb.getValue() == null || heightOb.getValue().trim().length() == 0)
-				{
+				if (heightOb.getValue() == null || heightOb.getValue().trim().length() == 0) {
 					alerts.append("No height ever\n");
-				}
-				else
-				{
+				} else {
 					height = Double.parseDouble(heightOb.getValue());
 				}
-			//just put this in here to make sure it is executed only once
-			if (patientHasHeartFailureDDBForm(result) == false) {
-				alerts.append("no Enrollment form \n");
+				//just put this in here to make sure it is executed only once
+				if (patientHasHeartFailureDDBForm(result) == false) {
+					alerts.append("no Enrollment form \n");
+				}
 			}
-		  }
 			
 		}
 		
@@ -154,38 +143,36 @@ public class HeartFailureAlerts implements CustomCalculation {
 		return alert;
 	}
 	
-	private boolean patientHasHeartFailureDDBForm(PatientDataResult result){
+	private boolean patientHasHeartFailureDDBForm(PatientDataResult result) {
 		try {
 			//int formId = gp.getForm(GlobalPropertiesManagement.HEARTFAILURE_DDB).getFormId();
-			List<Form> forms=gp.getFormList(GlobalPropertiesManagement.HF_DDBs);
+			List<Form> forms = gp.getFormList(GlobalPropertiesManagement.HF_DDBs);
 			Patient p = result.getPatientData().getPatient();
-			List<Encounter> patientEncounters =Context.getEncounterService().getEncountersByPatient(p);
+			List<Encounter> patientEncounters = Context.getEncounterService().getEncountersByPatient(p);
 			
-		    for (Encounter encounter : patientEncounters) {
-				if (encounter != null && encounter.getForm() !=null) {
-					for (Form f:forms) {
+			for (Encounter encounter : patientEncounters) {
+				if (encounter != null && encounter.getForm() != null) {
+					for (Form f : forms) {
 						if (encounter.getForm().getFormId() == f.getFormId()) {
 							return true;
 						}
 					}
 				}
 			}
-		} catch (NumberFormatException e) {
-			 log.error("Could not parse value of "+ GlobalPropertiesManagement.HF_DDBs+ "to integer");
 		}
-			
+		catch (NumberFormatException e) {
+			log.error("Could not parse value of " + GlobalPropertiesManagement.HF_DDBs + "to integer");
+		}
+		
 		return false;
 	}
 	
-	private int increaseBetweenTwoObs(List<Obs> obs)
-	{
+	private int increaseBetweenTwoObs(List<Obs> obs) {
 		Obs one = obs.get(0);
 		Obs two = obs.get(1);
 		
-		if(one.getValueNumeric() != null && two.getValueNumeric() != null)
-		{
-			if(one.getObsDatetime().after(two.getObsDatetime()))
-			{
+		if (one.getValueNumeric() != null && two.getValueNumeric() != null) {
+			if (one.getObsDatetime().after(two.getObsDatetime())) {
 				return one.getValueNumeric().intValue() - two.getValueNumeric().intValue();
 			}
 			
@@ -195,24 +182,23 @@ public class HeartFailureAlerts implements CustomCalculation {
 		return 0;
 	}
 	
-	private int calculateMonthsDifference(Date observation, Date startingDate)
-	{
+	private int calculateMonthsDifference(Date observation, Date startingDate) {
 		int diff = 0;
-	
-		Calendar obsDate = Calendar.getInstance();	
+		
+		Calendar obsDate = Calendar.getInstance();
 		obsDate.setTime(observation);
-	
+		
 		Calendar startDate = Calendar.getInstance();
 		startDate.setTime(startingDate);
-	
+		
 		//find out if there is any difference in years first
 		diff = obsDate.get(Calendar.YEAR) - startDate.get(Calendar.YEAR);
 		diff = diff * 12;
-	
+		
 		int monthDiff = obsDate.get(Calendar.MONTH) - startDate.get(Calendar.MONTH);
 		diff = diff + monthDiff;
-	
+		
 		return diff;
 	}
-
+	
 }

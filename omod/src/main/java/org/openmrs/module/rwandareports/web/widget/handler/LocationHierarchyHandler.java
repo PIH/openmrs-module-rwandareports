@@ -30,37 +30,35 @@ import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 /**
  * FieldGenHandler for Enumerated Types
  */
-@Handler(supports={LocationHierarchy.class}, order=1)
+@Handler(supports = { LocationHierarchy.class }, order = 1)
 public class LocationHierarchyHandler extends CodedHandler {
 	
 	private String hierarchy = null;
-	/** 
+	
+	/**
 	 * @see CodedHandler#populateOptions(WidgetConfig, CodedWidget)
 	 */
 	@Override
-public void populateOptions(WidgetConfig config, CodedWidget widget) {
+	public void populateOptions(WidgetConfig config, CodedWidget widget) {
 		
 		List<String> usedLocations = new ArrayList<String>();
 		
 		hierarchy = config.getAttributeValue("hierarchyField");
 		
-		if(hierarchy != null && hierarchy.trim().length() > 0)
-		{
+		if (hierarchy != null && hierarchy.trim().length() > 0) {
 			List<Location> locations = Context.getLocationService().getAllLocations(false);
 			
-			for(Location l: locations)
-			{
-				String hierarchyValue = (String)ReflectionUtil.getPropertyValue(l, hierarchy);
-				if(hierarchyValue != null && hierarchyValue.trim().length() > 0 && !usedLocations.contains(hierarchyValue))
-				{
+			for (Location l : locations) {
+				String hierarchyValue = (String) ReflectionUtil.getPropertyValue(l, hierarchy);
+				if (hierarchyValue != null && hierarchyValue.trim().length() > 0 && !usedLocations.contains(hierarchyValue)) {
 					widget.addOption(new Option(hierarchyValue, hierarchyValue, null, hierarchyValue), config);
 					usedLocations.add(hierarchyValue);
 				}
-			}	
+			}
 		}
 	}
 	
-	/** 
+	/**
 	 * @see WidgetHandler#parse(String, Class<?>)
 	 */
 	@Override

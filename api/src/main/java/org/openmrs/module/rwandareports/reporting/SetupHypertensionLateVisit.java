@@ -32,28 +32,33 @@ import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 public class SetupHypertensionLateVisit extends SingleSetupReport {
 	
 	protected final static Log log = LogFactory.getLog(SetupHypertensionLateVisit.class);
-
+	
 	//Properties retrieved from global variables
 	private Program hypertensionProgram;
-   
-    private EncounterType hypertensionflowsheet;
-    private Form hypertensionRDVForm;
-    private Form hypertensionDDBForm;
-    private Form followUpForm;
-    private EncounterType hFHTNCKDENCOUNTERTYPE;
-    private List<EncounterType> HypertensionEncountersList = new ArrayList<EncounterType>();
-
+	
+	private EncounterType hypertensionflowsheet;
+	
+	private Form hypertensionRDVForm;
+	
+	private Form hypertensionDDBForm;
+	
+	private Form followUpForm;
+	
+	private EncounterType hFHTNCKDENCOUNTERTYPE;
+	
+	private List<EncounterType> HypertensionEncountersList = new ArrayList<EncounterType>();
+	
 	RelationshipType HBCP;
-    
-    private List<Form> hypertensionForms = new ArrayList<Form>();
-
+	
+	private List<Form> hypertensionForms = new ArrayList<Form>();
+	
 	@Override
 	public String getReportName() {
 		return "NCD-Hypertension Late Visit";
 	}
 	
-    public void setup() throws Exception {
-	    log.info("Setting up report: " + getReportName());
+	public void setup() throws Exception {
+		log.info("Setting up report: " + getReportName());
 		setupProperties();
 		
 		ReportDefinition rd = createReportDefinition();
@@ -61,10 +66,8 @@ public class SetupHypertensionLateVisit extends SingleSetupReport {
 		    "XLSHypertensionLateVisit", null);
 		
 		Properties props = new Properties();
-		props.put(
-		    "repeatingSections",
-		    "sheet:1,row:8,dataset:dataSet");
-		props.put("sortWeight","5000");
+		props.put("repeatingSections", "sheet:1,row:8,dataset:dataSet");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
@@ -86,99 +89,104 @@ public class SetupHypertensionLateVisit extends SingleSetupReport {
 	}
 	
 	private void createDataSetDefinition(ReportDefinition reportDefinition) {
-	   
+		
 		DateFormatFilter dateFilter = new DateFormatFilter();
 		dateFilter.setFinalDateFormat("yyyy/MM/dd");
-	
+		
 		RowPerPatientDataSetDefinition dataSetDefinition1 = new RowPerPatientDataSetDefinition();
 		dataSetDefinition1.setName("LateVisit");
-	
-		dataSetDefinition1.addFilter(Cohorts.createInProgramParameterizableByDate("Patients in " + hypertensionProgram.getName(), hypertensionProgram), ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
-	                
-	    dataSetDefinition1.addFilter(Cohorts.createPatientsLateForVisitINDifferentEncounterTypes(hypertensionForms, HypertensionEncountersList), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
-	  
-	     //==================================================================
-        //                 Columns of report settings
-        //==================================================================
-	      
-        MultiplePatientDataDefinitions imbType = RowPerPatientColumns.getIMBId("IMB ID");
-        dataSetDefinition1.addColumn(imbType, new HashMap<String, Object>());
-    
-        PatientProperty givenName = RowPerPatientColumns.getFirstNameColumn("familyName");
-        dataSetDefinition1.addColumn(givenName, new HashMap<String, Object>());
-        
-        PatientProperty familyName = RowPerPatientColumns.getFamilyNameColumn("givenName");
-        dataSetDefinition1.addColumn(familyName, new HashMap<String, Object>());
-        
-        MostRecentObservation lastphonenumber = RowPerPatientColumns.getMostRecentPatientPhoneNumber("telephone", null);
-		dataSetDefinition1.addColumn(lastphonenumber, new HashMap<String, Object>());
-
-        PatientProperty gender = RowPerPatientColumns.getGender("Sex");
-        dataSetDefinition1.addColumn(gender, new HashMap<String, Object>());
-        
-        DateOfBirthShowingEstimation birthdate = RowPerPatientColumns.getDateOfBirth("Date of Birth", null, null);
-        dataSetDefinition1.addColumn(birthdate, new HashMap<String, Object>());
-        
-        dataSetDefinition1.addColumn(RowPerPatientColumns.getNextVisitMostRecentEncounterOfTheTypes("nextVisit",HypertensionEncountersList,
-						new ObservationInMostRecentEncounterOfType(),null),new HashMap<String, Object>());
 		
-        CustomCalculationBasedOnMultiplePatientDataDefinitions numberofdaysLate = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
-        numberofdaysLate.addPatientDataToBeEvaluated(RowPerPatientColumns.getNextVisitMostRecentEncounterOfTheTypes("nextVisit",HypertensionEncountersList,
-				new ObservationInMostRecentEncounterOfType(),dateFilter),new HashMap<String, Object>());
-        numberofdaysLate.setName("numberofdaysLate");
-        numberofdaysLate.setCalculator(new DaysLate());
-        numberofdaysLate.addParameter(new Parameter("endDate","endDate",Date.class));
-		dataSetDefinition1.addColumn(numberofdaysLate,ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		dataSetDefinition1.addFilter(Cohorts.createInProgramParameterizableByDate(
+		    "Patients in " + hypertensionProgram.getName(), hypertensionProgram), ParameterizableUtil
+		        .createParameterMappings("onDate=${endDate}"));
+		
+		dataSetDefinition1.addFilter(
+		    Cohorts.createPatientsLateForVisitINDifferentEncounterTypes(hypertensionForms, HypertensionEncountersList),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		
+		//==================================================================
+		//                 Columns of report settings
+		//==================================================================
+		
+		MultiplePatientDataDefinitions imbType = RowPerPatientColumns.getIMBId("IMB ID");
+		dataSetDefinition1.addColumn(imbType, new HashMap<String, Object>());
+		
+		PatientProperty givenName = RowPerPatientColumns.getFirstNameColumn("familyName");
+		dataSetDefinition1.addColumn(givenName, new HashMap<String, Object>());
+		
+		PatientProperty familyName = RowPerPatientColumns.getFamilyNameColumn("givenName");
+		dataSetDefinition1.addColumn(familyName, new HashMap<String, Object>());
+		
+		MostRecentObservation lastphonenumber = RowPerPatientColumns.getMostRecentPatientPhoneNumber("telephone", null);
+		dataSetDefinition1.addColumn(lastphonenumber, new HashMap<String, Object>());
+		
+		PatientProperty gender = RowPerPatientColumns.getGender("Sex");
+		dataSetDefinition1.addColumn(gender, new HashMap<String, Object>());
+		
+		DateOfBirthShowingEstimation birthdate = RowPerPatientColumns.getDateOfBirth("Date of Birth", null, null);
+		dataSetDefinition1.addColumn(birthdate, new HashMap<String, Object>());
+		
+		dataSetDefinition1.addColumn(RowPerPatientColumns.getNextVisitMostRecentEncounterOfTheTypes("nextVisit",
+		    HypertensionEncountersList, new ObservationInMostRecentEncounterOfType(), null), new HashMap<String, Object>());
+		
+		CustomCalculationBasedOnMultiplePatientDataDefinitions numberofdaysLate = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
+		numberofdaysLate.addPatientDataToBeEvaluated(RowPerPatientColumns.getNextVisitMostRecentEncounterOfTheTypes(
+		    "nextVisit", HypertensionEncountersList, new ObservationInMostRecentEncounterOfType(), dateFilter),
+		    new HashMap<String, Object>());
+		numberofdaysLate.setName("numberofdaysLate");
+		numberofdaysLate.setCalculator(new DaysLate());
+		numberofdaysLate.addParameter(new Parameter("endDate", "endDate", Date.class));
+		dataSetDefinition1.addColumn(numberofdaysLate, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
 		MostRecentObservation systolic = RowPerPatientColumns.getMostRecentSystolicPB("systolic", "@ddMMMyy");
 		dataSetDefinition1.addColumn(systolic, new HashMap<String, Object>());
 		
 		MostRecentObservation diastolic = RowPerPatientColumns.getMostRecentDiastolicPB("diastolic", "@ddMMMyy");
 		dataSetDefinition1.addColumn(diastolic, new HashMap<String, Object>());
-
-        PatientAddress address1 = RowPerPatientColumns.getPatientAddress("Address", true, true, true, true);
-        dataSetDefinition1.addColumn(address1, new HashMap<String, Object>());
-        
-        dataSetDefinition1.addColumn(RowPerPatientColumns.getAccompRelationship("AccompName", 
-        		new AccompagnateurDisplayFilter()), new HashMap<String, Object>());
-
-		dataSetDefinition1.addColumn(RowPerPatientColumns.getPatientRelationship("HBCP",HBCP.getRelationshipTypeId(),"A",null), new HashMap<String, Object>());
-
-
-
-		dataSetDefinition1.addParameter(new Parameter("location", "Location", Location.class));
-        dataSetDefinition1.addParameter(new Parameter("endDate", "End Date", Date.class));
-        
-        Map<String, Object> mappings = new HashMap<String, Object>();
-        mappings.put("location", "${location}");
-        mappings.put("endDate", "${endDate}");
 		
-        reportDefinition.addDataSetDefinition("dataSet", dataSetDefinition1, mappings);
+		PatientAddress address1 = RowPerPatientColumns.getPatientAddress("Address", true, true, true, true);
+		dataSetDefinition1.addColumn(address1, new HashMap<String, Object>());
+		
+		dataSetDefinition1.addColumn(
+		    RowPerPatientColumns.getAccompRelationship("AccompName", new AccompagnateurDisplayFilter()),
+		    new HashMap<String, Object>());
+		
+		dataSetDefinition1.addColumn(
+		    RowPerPatientColumns.getPatientRelationship("HBCP", HBCP.getRelationshipTypeId(), "A", null),
+		    new HashMap<String, Object>());
+		
+		dataSetDefinition1.addParameter(new Parameter("location", "Location", Location.class));
+		dataSetDefinition1.addParameter(new Parameter("endDate", "End Date", Date.class));
+		
+		Map<String, Object> mappings = new HashMap<String, Object>();
+		mappings.put("location", "${location}");
+		mappings.put("endDate", "${endDate}");
+		
+		reportDefinition.addDataSetDefinition("dataSet", dataSetDefinition1, mappings);
 		
 	}
 	
 	private void setupProperties() {
 		
 		hypertensionProgram = gp.getProgram(GlobalPropertiesManagement.HYPERTENSION_PROGRAM);
-        
+		
 		hypertensionflowsheet = gp.getEncounterType(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER);
-        
-        hypertensionRDVForm = gp.getForm(GlobalPropertiesManagement.HYPERTENSION_FLOW_VISIT);
-
-        hypertensionDDBForm = gp.getForm(GlobalPropertiesManagement.HYPERTENSION_DDB);
-        
-        //followUpForm=gp.getForm(GlobalPropertiesManagement.NCD_FOLLOWUP_FORM);
-        
-       // hypertensionForms.add(hypertensionDDBForm);
-       // hypertensionForms.add(hypertensionRDVForm);
-        //hypertensionForms.add(followUpForm);
-
-		hypertensionForms=gp.getFormList(GlobalPropertiesManagement.HYPERTENSION_DDB_FLOW_VISIT);
+		
+		hypertensionRDVForm = gp.getForm(GlobalPropertiesManagement.HYPERTENSION_FLOW_VISIT);
+		
+		hypertensionDDBForm = gp.getForm(GlobalPropertiesManagement.HYPERTENSION_DDB);
+		
+		//followUpForm=gp.getForm(GlobalPropertiesManagement.NCD_FOLLOWUP_FORM);
+		
+		// hypertensionForms.add(hypertensionDDBForm);
+		// hypertensionForms.add(hypertensionRDVForm);
+		//hypertensionForms.add(followUpForm);
+		
+		hypertensionForms = gp.getFormList(GlobalPropertiesManagement.HYPERTENSION_DDB_FLOW_VISIT);
 		hFHTNCKDENCOUNTERTYPE = gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE);
 		HypertensionEncountersList.add(hypertensionflowsheet);
 		HypertensionEncountersList.add(hFHTNCKDENCOUNTERTYPE);
-
-
-		HBCP=gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
-	}	
+		
+		HBCP = gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
+	}
 }

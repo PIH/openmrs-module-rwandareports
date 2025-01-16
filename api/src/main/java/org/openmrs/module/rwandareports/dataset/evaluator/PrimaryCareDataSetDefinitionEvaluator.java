@@ -93,16 +93,15 @@ public class PrimaryCareDataSetDefinitionEvaluator implements DataSetEvaluator {
 		
 		List<Encounter> encounters = getEncounters(context);
 		
-		for(Encounter e: encounters)
-		{
-			addEncounterValues(e, ret, pcId, imbId, visitDate, service, dob, gender, calcAge, insurance, province, district, sector, cell, umudugudu);
+		for (Encounter e : encounters) {
+			addEncounterValues(e, ret, pcId, imbId, visitDate, service, dob, gender, calcAge, insurance, province, district,
+			    sector, cell, umudugudu);
 		}
 		
 		return ret;
 	}
 	
 	private List<Encounter> getEncounters(EvaluationContext context) throws EvaluationException {
-		
 		
 		EncounterType registrationEncounter = gp.getEncounterType(GlobalPropertiesManagement.PRIMARY_CARE_REGISTRATION);
 		
@@ -121,10 +120,10 @@ public class PrimaryCareDataSetDefinitionEvaluator implements DataSetEvaluator {
 		return encs;
 	}
 	
-	
-	private void addEncounterValues(Encounter encounter, SimpleDataSet dataSet, DataSetColumn pcId, DataSetColumn imbId, DataSetColumn visitDate, DataSetColumn service, DataSetColumn dob, 
-	                                DataSetColumn gender, DataSetColumn calcAge, DataSetColumn insurance, DataSetColumn province, DataSetColumn district, DataSetColumn sector, DataSetColumn cell, DataSetColumn umudugudu) 
-	{
+	private void addEncounterValues(Encounter encounter, SimpleDataSet dataSet, DataSetColumn pcId, DataSetColumn imbId,
+	        DataSetColumn visitDate, DataSetColumn service, DataSetColumn dob, DataSetColumn gender, DataSetColumn calcAge,
+	        DataSetColumn insurance, DataSetColumn province, DataSetColumn district, DataSetColumn sector,
+	        DataSetColumn cell, DataSetColumn umudugudu) {
 		DataSetRow row = new DataSetRow();
 		
 		Patient patient = encounter.getPatient();
@@ -132,20 +131,16 @@ public class PrimaryCareDataSetDefinitionEvaluator implements DataSetEvaluator {
 		PatientIdentifierType pcType = gp.getPatientIdentifier(GlobalPropertiesManagement.PC_IDENTIFIER);
 		PatientIdentifier pc = patient.getPatientIdentifier(pcType);
 		
-		if(pc != null)
-		{
+		if (pc != null) {
 			row.addColumnValue(pcId, pc.getIdentifier());
 		}
 		
 		PatientIdentifierType imbType = gp.getPatientIdentifier(GlobalPropertiesManagement.IMB_IDENTIFIER);
 		PatientIdentifier imb = patient.getPatientIdentifier(imbType);
 		
-		if(imb != null)
-		{
+		if (imb != null) {
 			row.addColumnValue(imbId, imb.getIdentifier());
-		}
-		else
-		{
+		} else {
 			row.addColumnValue(imbId, "");
 		}
 		
@@ -158,27 +153,22 @@ public class PrimaryCareDataSetDefinitionEvaluator implements DataSetEvaluator {
 		
 		boolean serviceFound = false;
 		boolean insuranceFound = false;
-		for(Obs o: allObs)
-		{
-			if(!o.isVoided() && o.getConcept().equals(serviceConcept))
-			{
+		for (Obs o : allObs) {
+			if (!o.isVoided() && o.getConcept().equals(serviceConcept)) {
 				row.addColumnValue(service, o.getValueCoded().getDisplayString());
 				serviceFound = true;
 			}
 			
-			if(!o.isVoided() && o.getConcept().equals(insuranceConcept))
-			{
+			if (!o.isVoided() && o.getConcept().equals(insuranceConcept)) {
 				row.addColumnValue(insurance, o.getValueCoded().getDisplayString());
 				insuranceFound = true;
 			}
 		}
 		
-		if(!serviceFound)
-		{
+		if (!serviceFound) {
 			row.addColumnValue(service, "");
 		}
-		if(!insuranceFound)
-		{
+		if (!insuranceFound) {
 			row.addColumnValue(insurance, "");
 		}
 		
@@ -189,37 +179,29 @@ public class PrimaryCareDataSetDefinitionEvaluator implements DataSetEvaluator {
 		Set<PersonAddress> addresses = patient.getAddresses();
 		
 		PersonAddress preferred = null;
-		for(PersonAddress a: addresses)
-		{
-			if(a.isPreferred())
-			{
+		for (PersonAddress a : addresses) {
+			if (a.isPreferred()) {
 				preferred = a;
 				break;
 			}
 		}
 		
-		if(preferred == null)
-		{
-			for(PersonAddress a: addresses)
-			{
-				if(a.isActive())
-				{
+		if (preferred == null) {
+			for (PersonAddress a : addresses) {
+				if (a.isActive()) {
 					preferred = a;
 					break;
 				}
 			}
 		}
 		
-		if(preferred != null)
-		{
+		if (preferred != null) {
 			row.addColumnValue(province, preferred.getStateProvince());
 			row.addColumnValue(district, preferred.getCountyDistrict());
 			row.addColumnValue(sector, preferred.getCityVillage());
 			row.addColumnValue(cell, preferred.getAddress3());
 			row.addColumnValue(umudugudu, preferred.getAddress1());
-		}
-		else
-		{
+		} else {
 			row.addColumnValue(province, "");
 			row.addColumnValue(district, "");
 			row.addColumnValue(sector, "");

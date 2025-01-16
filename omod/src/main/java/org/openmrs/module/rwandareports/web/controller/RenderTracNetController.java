@@ -48,7 +48,7 @@ public class RenderTracNetController {
 		MapDataSet dataSet = (MapDataSet) data.getDataSets().get(renderArg);
 		model.addAttribute("columns", dataSet.getMetaData());
 		//List<Regimen> regimens = RwandaReportsUtil.createRegimenList(Context.getService(Cd4CountReportingService.class).getAllRegimens());  
-	//	model.addAttribute("regimens", regimens);
+		//	model.addAttribute("regimens", regimens);
 		return null;
 	}
 	

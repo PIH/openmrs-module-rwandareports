@@ -25,21 +25,22 @@ import org.springframework.stereotype.Controller;
 public class RegimenDTO {
 	
 	private List<StartDateDTO> startDates;
+	
 	private DrugRegimen drugRegimen;
 	
-    public List<StartDateDTO> getStartDates() {
-    	return startDates;
-    }
-    
-    public void setStartDates(List<StartDateDTO> startDates) {
-    	this.startDates = startDates;
-    }
-
-	public DrugRegimen getDrugRegimen() {
-    	return drugRegimen;
-    }
+	public List<StartDateDTO> getStartDates() {
+		return startDates;
+	}
 	
-    public void setDrugRegimen(DrugRegimen drugRegimen) {
-    	this.drugRegimen = drugRegimen;
-    }
+	public void setStartDates(List<StartDateDTO> startDates) {
+		this.startDates = startDates;
+	}
+	
+	public DrugRegimen getDrugRegimen() {
+		return drugRegimen;
+	}
+	
+	public void setDrugRegimen(DrugRegimen drugRegimen) {
+		this.drugRegimen = drugRegimen;
+	}
 }

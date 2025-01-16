@@ -23,22 +23,22 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * 
  */
 public class UpcomingChemotherapyCohortDefinition extends BaseCohortDefinition {
-
-    private static final long serialVersionUID = 1L;
-    
+	
+	private static final long serialVersionUID = 1L;
+	
 	//***** PROPERTIES *****	
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private Date asOfDate;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private Date untilDate;
 	
-	@ConfigurationProperty(required=true)
+	@ConfigurationProperty(required = true)
 	private Concept chemotherapyIndication;
-
+	
 	//***** CONSTRUCTORS *****
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -52,35 +52,35 @@ public class UpcomingChemotherapyCohortDefinition extends BaseCohortDefinition {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-
+		
 		StringBuilder ret = new StringBuilder();
-		ret.append("Patients that have a chemotherapy cylce within the next 7 days.");		
+		ret.append("Patients that have a chemotherapy cylce within the next 7 days.");
 		return ret.toString();
 	}
-
+	
 	//***** PROPERTY ACCESS *****
-    
+	
 	public Date getAsOfDate() {
 		return asOfDate;
 	}
-
+	
 	public void setAsOfDate(Date asOfDate) {
 		this.asOfDate = asOfDate;
 	}
-
-    public Date getUntilDate() {
-    	return untilDate;
-    }
-    
-    public void setUntilDate(Date untilDate) {
-    	this.untilDate = untilDate;
-    }
-
-    public Concept getChemotherapyIndication() {
-    	return chemotherapyIndication;
-    }
-    
-    public void setChemotherapyIndication(Concept chemotherapyIndication) {
-    	this.chemotherapyIndication = chemotherapyIndication;
-    }
+	
+	public Date getUntilDate() {
+		return untilDate;
+	}
+	
+	public void setUntilDate(Date untilDate) {
+		this.untilDate = untilDate;
+	}
+	
+	public Concept getChemotherapyIndication() {
+		return chemotherapyIndication;
+	}
+	
+	public void setChemotherapyIndication(Concept chemotherapyIndication) {
+		this.chemotherapyIndication = chemotherapyIndication;
+	}
 }

@@ -33,38 +33,38 @@ import java.util.Map;
  * Abstract class for testing Rwanda Reports
  */
 public abstract class BaseRwandaReportsTest extends BaseModuleContextSensitiveTest {
-
+	
 	public BaseRwandaReportsTest() {
 		super();
 	}
-
+	
 	protected abstract void setupTestData();
-
+	
 	@Override
 	public Boolean useInMemoryDatabase() {
 		return true;
 	}
-
+	
 	@Before
 	public void setupRwandaReports() throws Exception {
 		authenticate();
 		setupTestData();
 	}
-
+	
 	@After
 	public void teardownRwandaReports() throws Exception {
 		// TODO: If needed, here is where we need to iterate over the data created in "tdm" and delete from DB
 		// TODO: Though we should check to see if rolling back transactions will do this for us
 	}
-
+	
 	public ReportDefinitionService getReportDefinitionService() {
 		return Context.getService(ReportDefinitionService.class);
 	}
-
+	
 	public static Location getLocation(String name) {
 		return Context.getLocationService().getLocation(name);
 	}
-
+	
 	public static void printReportData(ReportData data) {
 		for (String dsName : data.getDataSets().keySet()) {
 			System.out.println(dsName);
@@ -73,9 +73,9 @@ public abstract class BaseRwandaReportsTest extends BaseModuleContextSensitiveTe
 			System.out.println("");
 		}
 	}
-
+	
 	public static void printDataSet(DataSet d) {
-
+		
 		Map<DataSetColumn, Integer> columnLengthMap = new LinkedHashMap<DataSetColumn, Integer>();
 		for (DataSetColumn c : d.getMetaData().getColumns()) {
 			columnLengthMap.put(c, c.toString().length());
@@ -89,7 +89,7 @@ public abstract class BaseRwandaReportsTest extends BaseModuleContextSensitiveTe
 				}
 			}
 		}
-
+		
 		StringBuilder output = new StringBuilder();
 		for (Map.Entry<DataSetColumn, Integer> c : columnLengthMap.entrySet()) {
 			StringBuilder n = new StringBuilder(c.getKey().toString());

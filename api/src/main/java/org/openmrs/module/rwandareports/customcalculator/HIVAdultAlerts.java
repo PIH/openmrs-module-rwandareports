@@ -20,8 +20,8 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttribu
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 
-public class HIVAdultAlerts implements CustomCalculation{
-
+public class HIVAdultAlerts implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
@@ -37,15 +37,12 @@ public class HIVAdultAlerts implements CustomCalculation{
 		double height = 0;
 		double weight = 0;
 		
-		for(PatientDataResult result: results)
-		{
+		for (PatientDataResult result : results) {
 			
-			if(result.getName().equals("CD4Test"))
-			{
-				AllObservationValuesResult cd4 = (AllObservationValuesResult)result;
+			if (result.getName().equals("CD4Test")) {
+				AllObservationValuesResult cd4 = (AllObservationValuesResult) result;
 				
-				if(cd4.getValue() != null)
-				{
+				if (cd4.getValue() != null) {
 					int decline = calculateDecline(cd4.getValue());
 					
 					/*if(decline > 50 && (state.toString().contains("GROUP") || state.toString().contains("FOLLOWING")))
@@ -57,24 +54,19 @@ public class HIVAdultAlerts implements CustomCalculation{
 					
 					Obs lastCd4 = null;
 					
-					if(cd4.getValue().size() > 0)
-					{
-						lastCd4 = cd4.getValue().get(cd4.getValue().size()-1);
+					if (cd4.getValue().size() > 0) {
+						lastCd4 = cd4.getValue().get(cd4.getValue().size() - 1);
 					}
 					
-					if(lastCd4 == null)
-					{
+					if (lastCd4 == null) {
 						alerts.append("No CD4 recorded.\n");
-					}
-					else
-					{
+					} else {
 						Date dateCd4 = lastCd4.getObsDatetime();
 						Date date = Calendar.getInstance().getTime();
 						
 						int diff = calculateMonthsDifference(date, dateCd4);
 						
-						if(diff > 12)
-						{
+						if (diff > 12) {
 							alerts.append("Very late CD4(" + diff + " months ago).\n");
 						}
 						/*else if((diff > 6) && state.toString().contains("FOLLOWING"))
@@ -87,19 +79,16 @@ public class HIVAdultAlerts implements CustomCalculation{
 							alerts.append("Eligible for Treatment.\n");
 						}*/
 					}
-				}	
+				}
 			}
-			if(result.getName().equals("viralLoadTest"))
-			{
-				AllObservationValuesResult viraload = (AllObservationValuesResult)result;
+			if (result.getName().equals("viralLoadTest")) {
+				AllObservationValuesResult viraload = (AllObservationValuesResult) result;
 				
-				if(viraload.getValue() != null)
-				{
+				if (viraload.getValue() != null) {
 					Obs lastviraload = null;
 					
-					if(viraload.getValue().size() > 0)
-					{
-						lastviraload = viraload.getValue().get(viraload.getValue().size()-1);
+					if (viraload.getValue().size() > 0) {
+						lastviraload = viraload.getValue().get(viraload.getValue().size() - 1);
 					}
 					
 					/*if(state.toString().contains("GROUP") && (lastviraload == null))
@@ -127,102 +116,86 @@ public class HIVAdultAlerts implements CustomCalculation{
 						}
 						catch(Exception e){}
 					}*/
-
-
-		// Edited block	 and remove state
-					if(lastviraload == null)
-					{
+					
+					// Edited block	 and remove state
+					if (lastviraload == null) {
 						alerts.append("No VL recorded.\n");
+					} else {
+						try {
+							Date dateVl = lastviraload.getObsDatetime();
+							Date date = Calendar.getInstance().getTime();
+							
+							int diff = calculateMonthsDifference(date, dateVl);
+							
+							if (diff > 12) {
+								alerts.append("Late VL(" + diff + " months ago).\n");
+							}
+							
+							if (lastviraload.getValueNumeric() != null && lastviraload.getValueNumeric() > 1000) {
+								alerts.append("VL Failure " + lastviraload.getValueNumeric() + ".\n");
+							}
+							
+						}
+						catch (Exception e) {}
 					}
-					else
-					{
-					 try{
-						Date dateVl = lastviraload.getObsDatetime();
-						Date date = Calendar.getInstance().getTime();
-
-						int diff = calculateMonthsDifference(date, dateVl);
-
-						if(diff > 12){
-							alerts.append("Late VL(" + diff + " months ago).\n");
-						}
-
-						if(lastviraload.getValueNumeric() != null && lastviraload.getValueNumeric() > 1000)
-						{
-							alerts.append("VL Failure "+lastviraload.getValueNumeric()+".\n");
-						}
-
-						}
-						catch(Exception e){}
-					}
-
-
-
-				}	
+					
+				}
 			}
-
+			
 			// End of Edited block	 and remove state
-
+			
 			// start creatinine
 			
-			
-			if(result.getName().equals("creatinineTest"))
-			{
-				AllObservationValuesResult creatinine = (AllObservationValuesResult)result;
+			if (result.getName().equals("creatinineTest")) {
+				AllObservationValuesResult creatinine = (AllObservationValuesResult) result;
 				
-				if(creatinine.getValue() != null)
-				{
+				if (creatinine.getValue() != null) {
 					Obs lastviCreatinine = null;
 					
-					if(creatinine.getValue().size() > 0)
-					{
-						lastviCreatinine = creatinine.getValue().get(creatinine.getValue().size()-1);
+					if (creatinine.getValue().size() > 0) {
+						lastviCreatinine = creatinine.getValue().get(creatinine.getValue().size() - 1);
 					}
 					
-					List<DrugOrder> orders= OrderEntryUtil.getDrugOrdersByPatient(result.getPatientData().getPatient());
-					Order currrentTDF=null;
+					List<DrugOrder> orders = OrderEntryUtil.getDrugOrdersByPatient(result.getPatientData().getPatient());
+					Order currrentTDF = null;
 					for (Order order : orders) {
-						if(((order.getConcept().getConceptId()==gp.getConcept(GlobalPropertiesManagement.TDF).getConceptId()) || (order.getConcept().getConceptId()==gp.getConcept(GlobalPropertiesManagement.TDF_3TC).getConceptId())) && order.getVoided()==false && !order.isDiscontinuedRightNow())
-						{
-							currrentTDF=order;
+						if (((order.getConcept().getConceptId() == gp.getConcept(GlobalPropertiesManagement.TDF)
+						        .getConceptId()) || (order.getConcept().getConceptId() == gp.getConcept(
+						    GlobalPropertiesManagement.TDF_3TC).getConceptId()))
+						        && order.getVoided() == false && !order.isDiscontinuedRightNow()) {
+							currrentTDF = order;
 							break;
 						}
 					}
 					
-					if(currrentTDF!=null && (lastviCreatinine == null))
-					{
+					if (currrentTDF != null && (lastviCreatinine == null)) {
 						alerts.append("No Creatinine recorded.\n");
-					}
-					else if(currrentTDF!=null && (lastviCreatinine != null))
-					{  
-					 try{
-						Date dateCre = lastviCreatinine.getObsDatetime();
-						Date date = Calendar.getInstance().getTime();
-						
-						int diff = calculateMonthsDifference(date, dateCre);
-						
-						if(diff > 6){
-							alerts.append("Late Creatinine(" + diff + " months ago).\n");
-						}						
-					  
+					} else if (currrentTDF != null && (lastviCreatinine != null)) {
+						try {
+							Date dateCre = lastviCreatinine.getObsDatetime();
+							Date date = Calendar.getInstance().getTime();
+							
+							int diff = calculateMonthsDifference(date, dateCre);
+							
+							if (diff > 6) {
+								alerts.append("Late Creatinine(" + diff + " months ago).\n");
+							}
+							
 						}
-						catch(Exception e){}
+						catch (Exception e) {}
 					}
-				}	
+				}
 			}
-			
 			
 			//end creatinine
 			
-			if(result.getName().equals("weightObs"))
-			{
-				AllObservationValuesResult wt = (AllObservationValuesResult)result;
+			if (result.getName().equals("weightObs")) {
+				AllObservationValuesResult wt = (AllObservationValuesResult) result;
 				
-				if(wt.getValue() != null)
-				{
+				if (wt.getValue() != null) {
 					int decline = calculatePercentageDecline(wt.getValue());
 					
-					if(decline > 5)
-					{
+					if (decline > 5) {
 						alerts.append("WT decline(");
 						alerts.append(decline);
 						alerts.append("%, ");
@@ -231,127 +204,106 @@ public class HIVAdultAlerts implements CustomCalculation{
 						alerts.append("kg)\n");
 					}
 					
-					if(wt.getValue().size() > 0)
-					{
-						weight = wt.getValue().get(wt.getValue().size()-1).getValueNumeric();
+					if (wt.getValue().size() > 0) {
+						weight = wt.getValue().get(wt.getValue().size() - 1).getValueNumeric();
 					}
 				}
 				
-				if(wt.getValue() == null || wt.getValue().size() == 0)
-				{
+				if (wt.getValue() == null || wt.getValue().size() == 0) {
 					alerts.append("No weight recorded.\n");
 				}
 			}
 			
-			if(result.getName().equals("RecentHeight"))
-			{
-				ObservationResult heightOb = (ObservationResult)result;
+			if (result.getName().equals("RecentHeight")) {
+				ObservationResult heightOb = (ObservationResult) result;
 				
-				if(heightOb.getValue() == null || heightOb.getValue().trim().length() == 0)
-				{
+				if (heightOb.getValue() == null || heightOb.getValue().trim().length() == 0) {
 					alerts.append("No height recorded.\n");
-				}
-				else
-				{
+				} else {
 					height = Double.parseDouble(heightOb.getValue());
 					
 				}
 			}
 			
-			if(result.getName().equals("lastEncInMonth"))
-			  {
-				DateValueResult encinmonths = (DateValueResult)result;
-				if(encinmonths.getValue() != null)
-				{
-				Date dateVl =encinmonths.getDateOfObservation();
-				Date date = Calendar.getInstance().getTime();
-				int diff = calculateMonthsDifference(date, dateVl);
-				if(diff > 12){
-				alerts.append("LTFU determine status.\n");
-				     }
-				  } 	
-			  }
+			if (result.getName().equals("lastEncInMonth")) {
+				DateValueResult encinmonths = (DateValueResult) result;
+				if (encinmonths.getValue() != null) {
+					Date dateVl = encinmonths.getDateOfObservation();
+					Date date = Calendar.getInstance().getTime();
+					int diff = calculateMonthsDifference(date, dateVl);
+					if (diff > 12) {
+						alerts.append("LTFU determine status.\n");
+					}
+				}
+			}
 			
-			if(result.getName().equals("IO") && result.getValue() != null)
-			{
+			if (result.getName().equals("IO") && result.getValue() != null) {
 				alerts.append("OI reported last visit: " + result.getValue() + "\n");
 			}
 			
-			if(result.getName().equals("SideEffects") && result.getValue() != null)
-			{
+			if (result.getName().equals("SideEffects") && result.getValue() != null) {
 				alerts.append("Side effects reported last visit: " + result.getValue() + "\n");
 			}
 		}
 		
-		if(height > 0 && weight > 0)
-		{
-			double bmi = weight/(height/100*height/100);
+		if (height > 0 && weight > 0) {
+			double bmi = weight / (height / 100 * height / 100);
 			int decimalPlace = 1;
-			BigDecimal bd = new BigDecimal( Double.toString(bmi) );
-			bd = bd.setScale( decimalPlace, BigDecimal.ROUND_HALF_UP );
+			BigDecimal bd = new BigDecimal(Double.toString(bmi));
+			bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
 			
-			if(bmi < 16)
-			{
-				alerts.append("Very low BMI (" + bd.doubleValue()  + ").\n");
+			if (bmi < 16) {
+				alerts.append("Very low BMI (" + bd.doubleValue() + ").\n");
+			} else if (bmi < 18.5) {
+				alerts.append("Low BMI (" + bd.doubleValue() + ").\n");
 			}
-			else if(bmi < 18.5)
-			{
-				alerts.append("Low BMI (" + bd.doubleValue()  + ").\n");
-			}
-				
+			
 		}
 		
 		alert.setValue(alerts.toString().trim());
 		return alert;
 	}
 	
-	private int calculateMonthsDifference(Date observation, Date startingDate)
-	{
+	private int calculateMonthsDifference(Date observation, Date startingDate) {
 		int diff = 0;
-	
-		Calendar obsDate = Calendar.getInstance();	
+		
+		Calendar obsDate = Calendar.getInstance();
 		obsDate.setTime(observation);
-	
+		
 		Calendar startDate = Calendar.getInstance();
 		startDate.setTime(startingDate);
-	
+		
 		//find out if there is any difference in years first
 		diff = obsDate.get(Calendar.YEAR) - startDate.get(Calendar.YEAR);
 		diff = diff * 12;
-	
+		
 		int monthDiff = obsDate.get(Calendar.MONTH) - startDate.get(Calendar.MONTH);
 		diff = diff + monthDiff;
-	
+		
 		return diff;
 	}
 	
-	private int calculateDecline(List<Obs> obs)
-	{
+	private int calculateDecline(List<Obs> obs) {
 		Obs lastOb = null;
 		Obs nextToLastOb = null;
 		
-		if(obs.size() > 0)
-		{
+		if (obs.size() > 0) {
 			lastOb = obs.get(obs.size() - 1);
 		}
 		
-		if(obs.size() > 1)
-		{
+		if (obs.size() > 1) {
 			nextToLastOb = obs.get(obs.size() - 2);
 		}
 		
-		if(lastOb != null && nextToLastOb != null)
-		{
+		if (lastOb != null && nextToLastOb != null) {
 			Double firstVal = lastOb.getValueNumeric();
 			Double nextToLastVal = nextToLastOb.getValueNumeric();
 			
-			if(firstVal != null && nextToLastVal != null)
-			{
+			if (firstVal != null && nextToLastVal != null) {
 				double decline = nextToLastVal - firstVal;
-			
-				if(decline > 0)
-				{
-					return (int)decline;
+				
+				if (decline > 0) {
+					return (int) decline;
 				}
 			}
 		}
@@ -359,33 +311,27 @@ public class HIVAdultAlerts implements CustomCalculation{
 		return 0;
 	}
 	
-	private int calculatePercentageDecline(List<Obs> obs)
-	{
+	private int calculatePercentageDecline(List<Obs> obs) {
 		Obs lastOb = null;
 		Obs nextToLastOb = null;
 		
-		if(obs.size() > 0)
-		{
+		if (obs.size() > 0) {
 			lastOb = obs.get(obs.size() - 1);
 		}
 		
-		if(obs.size() > 1)
-		{
+		if (obs.size() > 1) {
 			nextToLastOb = obs.get(obs.size() - 2);
 		}
 		
-		if(lastOb != null && nextToLastOb != null)
-		{
+		if (lastOb != null && nextToLastOb != null) {
 			Double firstVal = lastOb.getValueNumeric();
 			Double nextToLastVal = nextToLastOb.getValueNumeric();
 			
-			if(firstVal != null && nextToLastVal != null)
-			{
-				double decline = 100 - ((firstVal / nextToLastVal)*100);
-			
-				if(decline > 0)
-				{
-					return (int)decline;
+			if (firstVal != null && nextToLastVal != null) {
+				double decline = 100 - ((firstVal / nextToLastVal) * 100);
+				
+				if (decline > 0) {
+					return (int) decline;
 				}
 			}
 		}

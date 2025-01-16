@@ -13,8 +13,8 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationRes
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttributeResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 
-public class DPA implements CustomCalculation{
-
+public class DPA implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
@@ -26,18 +26,14 @@ public class DPA implements CustomCalculation{
 		
 		boolean needToFind = true;
 		
-		
-		for(PatientDataResult result: results)
-		{
-			if(result.getName().equals("ddr"))
-			{
-				ObservationResult ddrResult = (ObservationResult)result;
+		for (PatientDataResult result : results) {
+			if (result.getName().equals("ddr")) {
+				ObservationResult ddrResult = (ObservationResult) result;
 				
-				if(ddrResult.getValue() != null && ddrResult.getValue().trim().length() > 0)
-				{
+				if (ddrResult.getValue() != null && ddrResult.getValue().trim().length() > 0) {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
 					Calendar ddrDate = Calendar.getInstance();
-						
+					
 					try {
 						ddrDate.setTime(sdf.parse(ddrResult.getValue().trim()));
 						ddrDate.add(Calendar.DAY_OF_YEAR, 280);
@@ -46,23 +42,20 @@ public class DPA implements CustomCalculation{
 						dpaOutput.append(sdf.format(ddrDate.getTime()));
 						dpaOutput.append(" ");
 						needToFind = false;
-					}catch (ParseException e) {
+					}
+					catch (ParseException e) {
 						log.debug("Unable to parse DDR date", e);
 					}
 				}
 			}
 		}
 		
-		if(needToFind)
-		{
-			for(PatientDataResult result: results)
-			{
-				if(result.getName().equals("dpa"))
-				{
-					ObservationResult dpaResult = (ObservationResult)result;
+		if (needToFind) {
+			for (PatientDataResult result : results) {
+				if (result.getName().equals("dpa")) {
+					ObservationResult dpaResult = (ObservationResult) result;
 					
-					if(dpaResult.getValue() != null && dpaResult.getValue().trim().length() > 0)
-					{
+					if (dpaResult.getValue() != null && dpaResult.getValue().trim().length() > 0) {
 						//dpaOutput.append("R: ");
 						dpaOutput.append(dpaResult.getValue());
 						dpaOutput.append(" ");
@@ -72,6 +65,6 @@ public class DPA implements CustomCalculation{
 		}
 		
 		dpa.setValue(dpaOutput.toString().trim());
-		return dpa;		
+		return dpa;
 	}
 }

@@ -13,34 +13,28 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.AllDrugOrdersR
 import org.openmrs.module.rowperpatientreports.patientdata.result.DateResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 
-public class DecisionDate implements CustomCalculation{
-
+public class DecisionDate implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
 		DateResult desDate = new DateResult(null, null);
 		
-		for(PatientDataResult result: results)
-		{
-			if(result.getName().equals("Regimen"))
-			{
-				AllDrugOrdersResult arvStart = (AllDrugOrdersResult)result;
+		for (PatientDataResult result : results) {
+			if (result.getName().equals("Regimen")) {
+				AllDrugOrdersResult arvStart = (AllDrugOrdersResult) result;
 				
 				Date startDate = null;
-				if(arvStart.getValue() != null)
-				{
-					for(DrugOrder o: arvStart.getValue())
-					{
-						if(startDate == null || startDate.after(o.getEffectiveStartDate()))
-						{
+				if (arvStart.getValue() != null) {
+					for (DrugOrder o : arvStart.getValue()) {
+						if (startDate == null || startDate.after(o.getEffectiveStartDate())) {
 							startDate = o.getEffectiveStartDate();
 						}
 					}
 				}
 				
-				if(startDate != null)
-				{
+				if (startDate != null) {
 					Calendar decisionDate = Calendar.getInstance();
 					decisionDate.setTime(startDate);
 					

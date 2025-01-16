@@ -11,12 +11,11 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.DateResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.DrugOrdersResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 
-public class DrugOrderDateManipulation implements CustomCalculation{
-
+public class DrugOrderDateManipulation implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
-	public DrugOrderDateManipulation(String name, Integer dateChange, Integer dateUnit, String dateFormat)
-	{
+	public DrugOrderDateManipulation(String name, Integer dateChange, Integer dateUnit, String dateFormat) {
 		this.name = name;
 		this.dateChange = dateChange;
 		this.dateUnit = dateUnit;
@@ -24,22 +23,22 @@ public class DrugOrderDateManipulation implements CustomCalculation{
 	}
 	
 	private Integer dateChange;
+	
 	private Integer dateUnit;
+	
 	private String name;
+	
 	private String dateFormat;
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
 		DateResult dateResult = new DateResult(null, null);
 		
-		for(PatientDataResult result: results)
-		{
-			if(result.getName().equals(name))
-			{
-				DrugOrdersResult start = (DrugOrdersResult)result;
+		for (PatientDataResult result : results) {
+			if (result.getName().equals(name)) {
+				DrugOrdersResult start = (DrugOrdersResult) result;
 				
-				if(start != null && start.getValue() != null && start.getValue().getEffectiveStartDate() != null)
-				{
+				if (start != null && start.getValue() != null && start.getValue().getEffectiveStartDate() != null) {
 					Calendar adjustedDate = Calendar.getInstance();
 					adjustedDate.setTime(start.getValue().getEffectiveStartDate());
 					

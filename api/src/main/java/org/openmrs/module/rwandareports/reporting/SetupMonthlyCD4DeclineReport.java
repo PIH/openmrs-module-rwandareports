@@ -49,9 +49,9 @@ import org.openmrs.module.rwandareports.widget.AllLocation;
 import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 
 public class SetupMonthlyCD4DeclineReport implements SetupReport {
-
+	
 	protected final Log log = LogFactory.getLog(getClass());
-
+	
 	//Properties retrieved from global variables
 	private Program hivProgram;
 	
@@ -74,15 +74,15 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 	private List<EncounterType> clinicalEncoutersExcLab;
 	
 	private Concept cd4;
-
+	
 	/**
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public String getReportName() {
 		return null;
 	}
-
+	
 	public void setup() throws Exception {
 		
 		setupProperties();
@@ -96,8 +96,8 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		    "XlsCCMotherLateVisitAndCD4DeclineTemplate", null);
 		
 		ReportDefinition artDecline = createReportDefinitionDecline("HIV-Adult ART CD4 Decline-Monthly");
-		ReportDesign designa = Helper.createRowPerPatientXlsOverviewReportDesign(artDecline, "AdultLateVisitAndCD4DeclineTemplate.xls",
-		    "XlsAdultLateVisitAndCD4DeclineTemplate", null);
+		ReportDesign designa = Helper.createRowPerPatientXlsOverviewReportDesign(artDecline,
+		    "AdultLateVisitAndCD4DeclineTemplate.xls", "XlsAdultLateVisitAndCD4DeclineTemplate", null);
 		
 		createDataSetDefinition(rd, rdp, artDecline);
 		
@@ -106,29 +106,23 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		Helper.saveReportDefinition(artDecline);
 		
 		Properties props = new Properties();
-		props.put(
-		    "repeatingSections",
-		    "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:decline50PercPedi");
-		props.put("sortWeight","5000");
+		props.put("repeatingSections", "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:decline50PercPedi");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 		
 		Properties propsp = new Properties();
-		propsp.put(
-		    "repeatingSections",
-		    "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:decline50CC");
-		propsp.put("sortWeight","5000");
+		propsp.put("repeatingSections", "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:decline50CC");
+		propsp.put("sortWeight", "5000");
 		designp.setProperties(propsp);
 		Helper.saveReportDesign(designp);
 		
 		Properties propsa = new Properties();
-		propsa.put(
-		    "repeatingSections",
+		propsa.put("repeatingSections",
 		    "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:decline50Perc|sheet:2,dataset:dataSet|sheet:2,row:9,dataset:decline50");
-		propsa.put("sortWeight","5000");
+		propsa.put("sortWeight", "5000");
 		designa.setProperties(propsa);
 		Helper.saveReportDesign(designa);
-		
 		
 	}
 	
@@ -155,7 +149,6 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		//           Patients Dataset definitions
 		//====================================================================
 		
-		
 		//Patients whose cd4 has declined more than 50 in the last month for ART patients
 		RowPerPatientDataSetDefinition dataSetDefinitionA1 = new RowPerPatientDataSetDefinition();
 		dataSetDefinitionA1.setName("decline50Perc");
@@ -179,8 +172,10 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		//Adult HIV program Cohort definition
 		InProgramCohortDefinition adultHivProgramCohort = Cohorts.createInProgramParameterizableByDate(
 		    "adultHivProgramCohort", hivProgram);
-		dataSetDefinitionA1.addFilter(adultHivProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
-		dataSetDefinitionA2.addFilter(adultHivProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinitionA1.addFilter(adultHivProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinitionA2.addFilter(adultHivProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		
 		InProgramCohortDefinition pediatricHivProgramCohort = Cohorts.createInProgramParameterizableByDate(
 		    "pediatricHivProgramCohort", hivProgram);
@@ -190,7 +185,8 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		
 		InProgramCohortDefinition pmtctCombinedClinicMotherProgramCohort = Cohorts.createInProgramParameterizableByDate(
 		    "adultHivProgramCohort", pmtctCCMother);
-		dataSetDefinitionCC.addFilter(pmtctCombinedClinicMotherProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinitionCC.addFilter(pmtctCombinedClinicMotherProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		
 		//==================================================================
 		//               Encounter Filters
@@ -218,10 +214,10 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		dataSetDefinitionA1.addFilter(onARTStatusCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		dataSetDefinitionA2.addFilter(onARTStatusCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		
-		InStateCohortDefinition onARTPediStatusCohort = Cohorts.createInProgramStateParameterizableByDate("onARTPediStatusCohort",
-		    onARTPedi);
-		dataSetDefinitionP.addFilter(onARTPediStatusCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
-		
+		InStateCohortDefinition onARTPediStatusCohort = Cohorts.createInProgramStateParameterizableByDate(
+		    "onARTPediStatusCohort", onARTPedi);
+		dataSetDefinitionP
+		        .addFilter(onARTPediStatusCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		
 		//==================================================================
 		//                1 . Patients Declining in CD4 by more than 50
@@ -234,15 +230,16 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		dataSetDefinitionCC.addFilter(deciningInCD4MoreThan50,
 		    ParameterizableUtil.createParameterMappings("beforeDate=${endDate},location=${location}"));
 		
-		
 		//==================================================================
 		//                2 . Patients with 50% decline from highest CD4 count from baseline CD4 after ART initiation 
 		//==================================================================
-		SqlCohortDefinition cd4declineOfMoreThan50Percent = Cohorts.createPatientsWithDeclineFromBaseline("cd4decline", cd4, onART);
+		SqlCohortDefinition cd4declineOfMoreThan50Percent = Cohorts.createPatientsWithDeclineFromBaseline("cd4decline", cd4,
+		    onART);
 		dataSetDefinitionA1.addFilter(cd4declineOfMoreThan50Percent,
 		    ParameterizableUtil.createParameterMappings("beforeDate=${endDate},location=${location}"));
 		
-		SqlCohortDefinition cd4declineOfMoreThan50PercentPedi = Cohorts.createPatientsWithDeclineFromBaseline("cd4decline", cd4, onARTPedi);
+		SqlCohortDefinition cd4declineOfMoreThan50PercentPedi = Cohorts.createPatientsWithDeclineFromBaseline("cd4decline",
+		    cd4, onARTPedi);
 		dataSetDefinitionP.addFilter(cd4declineOfMoreThan50PercentPedi,
 		    ParameterizableUtil.createParameterMappings("beforeDate=${endDate},location=${location}"));
 		
@@ -300,8 +297,8 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		dataSetDefinitionP.addColumn(lastEncounterType, new HashMap<String, Object>());
 		dataSetDefinitionCC.addColumn(lastEncounterType, new HashMap<String, Object>());
 		
-		DateDiff lateVisitInMonth = RowPerPatientColumns.getDifferenceSinceLastEncounter(
-		    "Late visit in months", clinicalEncoutersExcLab, DateDiffType.MONTHS);
+		DateDiff lateVisitInMonth = RowPerPatientColumns.getDifferenceSinceLastEncounter("Late visit in months",
+		    clinicalEncoutersExcLab, DateDiffType.MONTHS);
 		lateVisitInMonth.addParameter(new Parameter("endDate", "endDate", Date.class));
 		dataSetDefinitionA1.addColumn(lateVisitInMonth, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		dataSetDefinitionA2.addColumn(lateVisitInMonth, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
@@ -320,8 +317,8 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		dataSetDefinitionP.addColumn(cd4Count, new HashMap<String, Object>());
 		dataSetDefinitionCC.addColumn(cd4Count, new HashMap<String, Object>());
 		
-		DateDiff lateCD4InMonths = RowPerPatientColumns.getDifferenceSinceLastObservation(
-		    "Late CD4 in months", cd4, DateDiffType.MONTHS);
+		DateDiff lateCD4InMonths = RowPerPatientColumns.getDifferenceSinceLastObservation("Late CD4 in months", cd4,
+		    DateDiffType.MONTHS);
 		lateCD4InMonths.addParameter(new Parameter("endDate", "endDate", Date.class));
 		dataSetDefinitionA1.addColumn(lateCD4InMonths, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		dataSetDefinitionA2.addColumn(lateCD4InMonths, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
@@ -348,7 +345,8 @@ public class SetupMonthlyCD4DeclineReport implements SetupReport {
 		dataSetDefinitionA2.addColumn(decline, new HashMap<String, Object>());
 		dataSetDefinitionCC.addColumn(decline, new HashMap<String, Object>());
 		
-		FirstDrugOrderStartedRestrictedByConceptSet startArt = RowPerPatientColumns.getDrugOrderForStartOfART("StartART", "dd-MMM-yyyy");
+		FirstDrugOrderStartedRestrictedByConceptSet startArt = RowPerPatientColumns.getDrugOrderForStartOfART("StartART",
+		    "dd-MMM-yyyy");
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions cd4Decline = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		cd4Decline.setName("cd4Decline");

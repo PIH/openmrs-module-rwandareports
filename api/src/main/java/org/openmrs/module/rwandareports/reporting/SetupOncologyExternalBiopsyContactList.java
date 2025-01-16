@@ -21,7 +21,7 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupOncologyExternalBiopsyContactList extends SingleSetupReport {
-
+	
 	//properties retrieved from global variables
 	private Program oncologyProgram;
 	
@@ -43,10 +43,10 @@ public class SetupOncologyExternalBiopsyContactList extends SingleSetupReport {
 	
 	private Concept primaryDoctorName;
 	
-	private Concept primaryDoctorTelephone; 
+	private Concept primaryDoctorTelephone;
 	
 	private Concept primaryDoctorEmail;
-
+	
 	@Override
 	public String getReportName() {
 		return "ONC-External Biopsy Results/Tracking Contact List";
@@ -63,7 +63,7 @@ public class SetupOncologyExternalBiopsyContactList extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:7,dataset:dataset|sheet:2,row:7,dataset:dataset2");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		
 		Helper.saveReportDesign(design);
@@ -73,9 +73,11 @@ public class SetupOncologyExternalBiopsyContactList extends SingleSetupReport {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
-				
-		reportDefinition.addParameter(new Parameter("endDate", "Date", Date.class));	
-		reportDefinition.setBaseCohortDefinition(new InverseCohortDefinition(Cohorts.createInProgramParameterizableByDate("Oncology", oncologyProgram)), ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		
+		reportDefinition.addParameter(new Parameter("endDate", "Date", Date.class));
+		reportDefinition.setBaseCohortDefinition(
+		    new InverseCohortDefinition(Cohorts.createInProgramParameterizableByDate("Oncology", oncologyProgram)),
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		createDataSetDefinition(reportDefinition);
 		
 		Helper.saveReportDefinition(reportDefinition);
@@ -102,8 +104,10 @@ public class SetupOncologyExternalBiopsyContactList extends SingleSetupReport {
 		dataSetDefinition2.setSortCriteria(sortCriteria2);
 		
 		//Add filters
-		dataSetDefinition.addFilter(Cohorts.createPatientsWhereMostRecentEncounterIsForm(pathResult, biopsyCommunicated), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
-		dataSetDefinition2.addFilter(Cohorts.createPatientsOverdueForVisit(pathSubmission, pathResult), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		dataSetDefinition.addFilter(Cohorts.createPatientsWhereMostRecentEncounterIsForm(pathResult, biopsyCommunicated),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		dataSetDefinition2.addFilter(Cohorts.createPatientsOverdueForVisit(pathSubmission, pathResult),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
 		//Add Columns
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
@@ -121,23 +125,34 @@ public class SetupOncologyExternalBiopsyContactList extends SingleSetupReport {
 		dataSetDefinition.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResult", biopsyResult, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("accession", accession, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResult", biopsyResult, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("accession", accession, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResultSort", biopsyResult, "yyyy/MM/dd"), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("accessionSort", accession, "yyyy/MM/dd"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResultSort", biopsyResult, "yyyy/MM/dd"),
+		    new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("accessionSort", accession, "yyyy/MM/dd"),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorName", primaryDoctorConstruct, primaryDoctorName, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorName", primaryDoctorConstruct, primaryDoctorName, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorName", primaryDoctorConstruct,
+		    primaryDoctorName, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorName", primaryDoctorConstruct,
+		    primaryDoctorName, "dd/MMM/yyyy"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorTelephone", primaryDoctorConstruct, primaryDoctorTelephone, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorTelephone", primaryDoctorConstruct, primaryDoctorTelephone, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorTelephone",
+		    primaryDoctorConstruct, primaryDoctorTelephone, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorTelephone",
+		    primaryDoctorConstruct, primaryDoctorTelephone, "dd/MMM/yyyy"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorEmail", primaryDoctorConstruct, primaryDoctorEmail, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctorEmail", primaryDoctorConstruct,
+		    primaryDoctorEmail, "dd/MMM/yyyy"), new HashMap<String, Object>());
 		
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null), new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null), new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null),
+		    new HashMap<String, Object>());
 		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("endDate", "${endDate}");

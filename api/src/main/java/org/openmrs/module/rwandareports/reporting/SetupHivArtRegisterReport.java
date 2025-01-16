@@ -24,11 +24,11 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupHivArtRegisterReport implements SetupReport {
-
+	
 	protected final Log log = LogFactory.getLog(getClass());
-
+	
 	private boolean pedi = false;
-
+	
 	//private HashMap<String, String> properties;
 	//properties
 	private Program adultHIVProgram;
@@ -67,15 +67,15 @@ public class SetupHivArtRegisterReport implements SetupReport {
 		
 		this.pedi = pedi;
 	}
-
+	
 	/**
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public String getReportName() {
 		return null;
 	}
-
+	
 	public void setup() throws Exception {
 		
 		delete();
@@ -90,7 +90,7 @@ public class SetupHivArtRegisterReport implements SetupReport {
 			
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,row:7,dataset:dataSet");
-			props.put("sortWeight","5000");
+			props.put("sortWeight", "5000");
 			design.setProperties(props);
 			Helper.saveReportDesign(design);
 		} else {
@@ -100,7 +100,7 @@ public class SetupHivArtRegisterReport implements SetupReport {
 			
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,row:7,dataset:dataSet");
-			props.put("sortWeight","5000");
+			props.put("sortWeight", "5000");
 			design.setProperties(props);
 			Helper.saveReportDesign(design);
 		}

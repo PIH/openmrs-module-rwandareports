@@ -13,7 +13,6 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttribu
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 
-
 public class EpilepsyAlerts implements CustomCalculation {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
@@ -34,12 +33,10 @@ public class EpilepsyAlerts implements CustomCalculation {
 			@SuppressWarnings("unused")
 			boolean uncontrolledAlert = false;
 			if (result.getName().equals("RecentSeizure")) {
-				ObservationResult seizure = (ObservationResult)result;
+				ObservationResult seizure = (ObservationResult) result;
 				
-				if(seizure.getValue() != null && seizure.getObs() != null && seizure.getObs().getValueNumeric() >= 2)
-				{
-					if(alerts.length() > 0)
-					{
+				if (seizure.getValue() != null && seizure.getObs() != null && seizure.getObs().getValueNumeric() >= 2) {
+					if (alerts.length() > 0) {
 						alerts.append(",");
 					}
 					alerts.append(">=2 episodes/month at last visit");
@@ -55,23 +52,24 @@ public class EpilepsyAlerts implements CustomCalculation {
 		return alert;
 	}
 	
-	private boolean patientHasEpilepsyDDBForm(PatientDataResult result){
+	private boolean patientHasEpilepsyDDBForm(PatientDataResult result) {
 		try {
 			int formId = gp.getForm(GlobalPropertiesManagement.EPILEPSY_DDB).getFormId();
 			Patient p = result.getPatientData().getPatient();
-			List<Encounter> patientEncounters =Context.getEncounterService().getEncountersByPatient(p);
+			List<Encounter> patientEncounters = Context.getEncounterService().getEncountersByPatient(p);
 			
-		    for (Encounter encounter : patientEncounters) {
-				if (encounter != null && encounter.getForm() !=null) {
-					if(encounter.getForm().getFormId() == formId){	
+			for (Encounter encounter : patientEncounters) {
+				if (encounter != null && encounter.getForm() != null) {
+					if (encounter.getForm().getFormId() == formId) {
 						return true;
-					} 				
+					}
 				}
 			}
-		} catch (NumberFormatException e) {
-			 log.error("Could not parse value of "+ GlobalPropertiesManagement.EPILEPSY_DDB+ "to integer");
 		}
-			
+		catch (NumberFormatException e) {
+			log.error("Could not parse value of " + GlobalPropertiesManagement.EPILEPSY_DDB + "to integer");
+		}
+		
 		return false;
 	}
 	

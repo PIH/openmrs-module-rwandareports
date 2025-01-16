@@ -36,48 +36,48 @@ import java.util.Iterator;
  */
 @Ignore
 public class SetupGenericPatientByProgramReportTest extends StandaloneContextSensitiveTest {
-
-    @Autowired
-    @Qualifier(value = "reportingReportDefinitionService")
-    ReportDefinitionService reportDefinitionService;
-
-    @Test
-    public void test() throws Exception {
-
-        //LogManager.getLogger(EvaluationProfiler.class).setLevel(Level.TRACE);
-
-        StopWatch sw = new StopWatch();
-        sw.start();
-        GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
-
-        Program hivProgram = gp.getProgram(GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
-
-        EvaluationContext context = new EvaluationContext();
-        context.addParameterValue("startDate", DateUtil.getDateTime(2016,1,1));
-        context.addParameterValue("endDate", DateUtil.getDateTime(2016,1,7));
-        context.addParameterValue("programs", hivProgram);
-
-        System.out.println("Setting up report");
-        SetupGenericPatientByProgramReport report = new SetupGenericPatientByProgramReport();
-        report.setup();
-
-        System.out.println("Running report");
-        ReportDefinition rd = reportDefinitionService.getDefinitions("Generic Patient Report", true).get(0);
-        ReportData data = reportDefinitionService.evaluate(rd, context);
-
-        for (String dsName : data.getDataSets().keySet()) {
-            System.out.println("Got Data Set: " + dsName);
-            DataSet ds = data.getDataSets().get(dsName);
-            int numRows = 0;
-            for (Iterator<DataSetRow> i = ds.iterator(); i.hasNext();) {
-                DataSetRow row = i.next();
-                numRows++;
-            }
-            System.out.println("Iterated over " + numRows + " rows");
-        }
-
-        sw.stop();
-        System.out.println("Lasted: " + sw.toString());
-    }
-
+	
+	@Autowired
+	@Qualifier(value = "reportingReportDefinitionService")
+	ReportDefinitionService reportDefinitionService;
+	
+	@Test
+	public void test() throws Exception {
+		
+		//LogManager.getLogger(EvaluationProfiler.class).setLevel(Level.TRACE);
+		
+		StopWatch sw = new StopWatch();
+		sw.start();
+		GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
+		
+		Program hivProgram = gp.getProgram(GlobalPropertiesManagement.ADULT_HIV_PROGRAM);
+		
+		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("startDate", DateUtil.getDateTime(2016, 1, 1));
+		context.addParameterValue("endDate", DateUtil.getDateTime(2016, 1, 7));
+		context.addParameterValue("programs", hivProgram);
+		
+		System.out.println("Setting up report");
+		SetupGenericPatientByProgramReport report = new SetupGenericPatientByProgramReport();
+		report.setup();
+		
+		System.out.println("Running report");
+		ReportDefinition rd = reportDefinitionService.getDefinitions("Generic Patient Report", true).get(0);
+		ReportData data = reportDefinitionService.evaluate(rd, context);
+		
+		for (String dsName : data.getDataSets().keySet()) {
+			System.out.println("Got Data Set: " + dsName);
+			DataSet ds = data.getDataSets().get(dsName);
+			int numRows = 0;
+			for (Iterator<DataSetRow> i = ds.iterator(); i.hasNext();) {
+				DataSetRow row = i.next();
+				numRows++;
+			}
+			System.out.println("Iterated over " + numRows + " rows");
+		}
+		
+		sw.stop();
+		System.out.println("Lasted: " + sw.toString());
+	}
+	
 }

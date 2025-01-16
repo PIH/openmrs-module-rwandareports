@@ -20,15 +20,15 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataRes
 import org.openmrs.module.rwandareports.definition.StartOfArt;
 import org.openmrs.util.OpenmrsUtil;
 
-@Handler(supports={StartOfArt.class})
-public class StartOfArtEvaluator implements RowPerPatientDataEvaluator{
-
+@Handler(supports = { StartOfArt.class })
+public class StartOfArtEvaluator implements RowPerPatientDataEvaluator {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) {
-	    
+		
 		AllDrugOrdersResult par = new AllDrugOrdersResult(patientData, context);
-		StartOfArt pd = (StartOfArt)patientData;
+		StartOfArt pd = (StartOfArt) patientData;
 		
 		par.setDateFormat(pd.getDateFormat());
 		
@@ -36,36 +36,30 @@ public class StartOfArtEvaluator implements RowPerPatientDataEvaluator{
 		
 		List<DrugOrder> results = new ArrayList<DrugOrder>();
 		
-        if(orders != null)
-        {   	
-			if(pd.getDrugConceptSetConcept() != null)
-			{
-				List<Concept> drugConcepts = Context.getConceptService().getConceptsByConceptSet(pd.getDrugConceptSetConcept());
-				if(drugConcepts != null)
-				{
-					for(DrugOrder order: orders)
-					{
+		if (orders != null) {
+			if (pd.getDrugConceptSetConcept() != null) {
+				List<Concept> drugConcepts = Context.getConceptService().getConceptsByConceptSet(
+				    pd.getDrugConceptSetConcept());
+				if (drugConcepts != null) {
+					for (DrugOrder order : orders) {
 						Concept drug = null;
-						try{
+						try {
 							drug = order.getDrug().getConcept();
 						}
-						catch(Exception e)
-						{
+						catch (Exception e) {
 							log.error("Unable to retrieve a drug from the drug order: " + e.getMessage());
 						}
-						if(drug != null)
-						{
-							if(drugConcepts.contains(drug))
-							{
-								if(order.getEffectiveStartDate() != null && (pd.getEndDate() == null || OpenmrsUtil.compare(pd.getEndDate(), order.getEffectiveStartDate()) >=0))
-								{		
-									if(results.size() == 0 || order.getEffectiveStartDate().before(results.get(0).getEffectiveStartDate()))
-									{
+						if (drug != null) {
+							if (drugConcepts.contains(drug)) {
+								if (order.getEffectiveStartDate() != null
+								        && (pd.getEndDate() == null || OpenmrsUtil.compare(pd.getEndDate(),
+								            order.getEffectiveStartDate()) >= 0)) {
+									if (results.size() == 0
+									        || order.getEffectiveStartDate().before(results.get(0).getEffectiveStartDate())) {
 										results = new ArrayList<DrugOrder>();
 										results.add(order);
-									}
-									else if(results.size() > 0 && order.getEffectiveStartDate().equals(results.get(0).getEffectiveStartDate()))
-									{
+									} else if (results.size() > 0
+									        && order.getEffectiveStartDate().equals(results.get(0).getEffectiveStartDate())) {
 										results.add(order);
 									}
 								}
@@ -75,18 +69,18 @@ public class StartOfArtEvaluator implements RowPerPatientDataEvaluator{
 				}
 			}
 		}
-        
-        Collections.sort(results, new Comparator<DrugOrder>() {
-        	
-        	@Override
+		
+		Collections.sort(results, new Comparator<DrugOrder>() {
+			
+			@Override
 			public int compare(DrugOrder d1, DrugOrder d2) {
 				
-        		return d1.getDrug().getName().toLowerCase().compareTo(d2.getDrug().getName().toLowerCase());
+				return d1.getDrug().getName().toLowerCase().compareTo(d2.getDrug().getName().toLowerCase());
 			}
-        });
-        
-        par.setValue(results);
+		});
+		
+		par.setValue(results);
 		
 		return par;
-    }
+	}
 }

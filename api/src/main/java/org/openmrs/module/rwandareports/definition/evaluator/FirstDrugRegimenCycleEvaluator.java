@@ -23,9 +23,9 @@ public class FirstDrugRegimenCycleEvaluator implements RowPerPatientDataEvaluato
 		StringResult par = new StringResult(patientData, context);
 		FirstDrugRegimenCycle pd = (FirstDrugRegimenCycle) patientData;
 		
-		if(pd.getRegimen() != null)
-		{
-			DrugRegimen regimen = Context.getService(OrderExtensionService.class).getDrugRegimen(Integer.parseInt(pd.getRegimen()));
+		if (pd.getRegimen() != null) {
+			DrugRegimen regimen = Context.getService(OrderExtensionService.class).getDrugRegimen(
+			    Integer.parseInt(pd.getRegimen()));
 			if (regimen.isCyclical() && regimen.getCycleNumber() > 1) {
 				par.setValue("true");
 			} else {

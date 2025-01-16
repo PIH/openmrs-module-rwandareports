@@ -9,65 +9,54 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPati
 import java.util.Date;
 
 public class DateOfFirstOrLastDrugOrderRestrictedByConcept extends BasePatientData implements RowPerPatientData, DateOfPatientData {
-
-    @ConfigurationProperty(required = true)
-    private Concept drugConcept = null;
-
-    @ConfigurationProperty
-    private Date startDate = null;
-
-
-    @ConfigurationProperty
-    private Date endDate = null;
-
-
-    @ConfigurationProperty(required = true)
-    private String firsOrLast;
-
-    /**
-     * @return the drugConceptSet
-     */
-    public Concept getDrugConcept() {
-        return drugConcept;
-    }
-
-
-    /**
-     * @param drugConcept the drugConceptSet to set
-     */
-    public void setDrugConcept(Concept drugConceptSetConcept) {
-        this.drugConcept = drugConceptSetConcept;
-    }
-
-
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getFirsOrLast() {
-        return firsOrLast;
-    }
-
-    public void setFirsOrLast(String firsOrLast) {
-        this.firsOrLast = firsOrLast;
-    }
+	
+	@ConfigurationProperty(required = true)
+	private Concept drugConcept = null;
+	
+	@ConfigurationProperty
+	private Date startDate = null;
+	
+	@ConfigurationProperty
+	private Date endDate = null;
+	
+	@ConfigurationProperty(required = true)
+	private String firsOrLast;
+	
+	/**
+	 * @return the drugConceptSet
+	 */
+	public Concept getDrugConcept() {
+		return drugConcept;
+	}
+	
+	/**
+	 * @param drugConcept the drugConceptSet to set
+	 */
+	public void setDrugConcept(Concept drugConceptSetConcept) {
+		this.drugConcept = drugConceptSetConcept;
+	}
+	
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	
+	public Date getEndDate() {
+		return endDate;
+	}
+	
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	
+	public String getFirsOrLast() {
+		return firsOrLast;
+	}
+	
+	public void setFirsOrLast(String firsOrLast) {
+		this.firsOrLast = firsOrLast;
+	}
 }

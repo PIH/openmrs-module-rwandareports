@@ -25,7 +25,7 @@ import org.openmrs.module.rwandareports.widget.AllLocation;
 import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 
 public class SetupPMTCTFormCompletionSheet extends SingleSetupReport {
-
+	
 	private List<String> onOrAfterOnOrBefore = new ArrayList<String>();
 	
 	private Program pmtctCombinedInfantProgram;
@@ -79,26 +79,26 @@ public class SetupPMTCTFormCompletionSheet extends SingleSetupReport {
 	private Concept pregnancyTestConcept;
 	
 	private Concept dateDelivery;
-
+	
 	@Override
 	public String getReportName() {
 		return "DQ-HIV PMTCT Form Completion";
 	}
-
-    public void setup() throws Exception {
-	    log.info("Setting up report: " + getReportName());
+	
+	public void setup() throws Exception {
+		log.info("Setting up report: " + getReportName());
 		setUpProperties();
 		
 		ReportDefinition rd = createCrossSiteReportDefinition();
-		ReportDesign design = Helper.createRowPerPatientXlsOverviewReportDesign(rd,
-		    "PMTCTFormCompletion.xls", "PMTCT Form Completion Excel", null);
+		ReportDesign design = Helper.createRowPerPatientXlsOverviewReportDesign(rd, "PMTCTFormCompletion.xls",
+		    "PMTCT Form Completion Excel", null);
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,dataset:DataSet");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
-
+	
 	private ReportDefinition createCrossSiteReportDefinition() {
 		
 		ReportDefinition rd = new ReportDefinition();
@@ -114,7 +114,8 @@ public class SetupPMTCTFormCompletionSheet extends SingleSetupReport {
 		rd.addDataSetDefinition(createDataSet(),
 		    ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
 		
-		rd.setBaseCohortDefinition(Cohorts.createInProgramParameterizableByDate("InPMTCT", programs, onOrAfterOnOrBefore), ParameterizableUtil.createParameterMappings("onOrBefore=${endDate},onOrAfter=${startDate}"));
+		rd.setBaseCohortDefinition(Cohorts.createInProgramParameterizableByDate("InPMTCT", programs, onOrAfterOnOrBefore),
+		    ParameterizableUtil.createParameterMappings("onOrBefore=${endDate},onOrAfter=${startDate}"));
 		
 		Helper.saveReportDefinition(rd);
 		
@@ -135,7 +136,7 @@ public class SetupPMTCTFormCompletionSheet extends SingleSetupReport {
 	private EncounterIndicatorDataSetDefinition createBaseDataSet() {
 		
 		EncounterIndicatorDataSetDefinition eidsd = new EncounterIndicatorDataSetDefinition();
-	
+		
 		eidsd.setName("DataSet");
 		eidsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		eidsd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -146,130 +147,190 @@ public class SetupPMTCTFormCompletionSheet extends SingleSetupReport {
 	
 	private void createIndicators(EncounterIndicatorDataSetDefinition dsd) {
 		
-		SqlEncounterQuery patientsWithVisit = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsWithVisit", adultFlowVisit, pmtctPregnancyProgram);
-		SqlEncounterQuery visitForms = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("visitForms", adultFlowVisit, pmtctPregnancyProgram);
-		SqlEncounterQuery pregnantYes = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingCodedObservationValue("pregnantYes", adultFlowVisit, pregnancyStatus, yes, pmtctPregnancyProgram);
+		SqlEncounterQuery patientsWithVisit = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsWithVisit", adultFlowVisit,
+		            pmtctPregnancyProgram);
+		SqlEncounterQuery visitForms = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("visitForms",
+		    adultFlowVisit, pmtctPregnancyProgram);
+		SqlEncounterQuery pregnantYes = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingCodedObservationValue("pregnantYes",
+		            adultFlowVisit, pregnancyStatus, yes, pmtctPregnancyProgram);
 		
-		SqlEncounterQuery patientsCCWithVisit = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsCCWithVisit", adultFlowVisit, pmtctCombinedMotherProgram);
-		SqlEncounterQuery visitCCForms = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("visitCCForms", adultFlowVisit, pmtctCombinedMotherProgram);
-		SqlEncounterQuery contraception = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("contraception", adultFlowVisit, familyPlanning, pmtctCombinedMotherProgram);
+		SqlEncounterQuery patientsCCWithVisit = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsCCWithVisit", adultFlowVisit,
+		            pmtctCombinedMotherProgram);
+		SqlEncounterQuery visitCCForms = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("visitCCForms",
+		    adultFlowVisit, pmtctCombinedMotherProgram);
+		SqlEncounterQuery contraception = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("contraception", adultFlowVisit,
+		            familyPlanning, pmtctCombinedMotherProgram);
 		
-		SqlEncounterQuery expDDB = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("expDDB", pmtctDDB, pmtctCombinedInfantProgram);
-		SqlEncounterQuery patientsExpDDB = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsExpDDB", pmtctDDB, pmtctCombinedInfantProgram);
+		SqlEncounterQuery expDDB = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("expDDB", pmtctDDB,
+		    pmtctCombinedInfantProgram);
+		SqlEncounterQuery patientsExpDDB = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsExpDDB", pmtctDDB,
+		            pmtctCombinedInfantProgram);
 		
-		SqlEncounterQuery birthWeight = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("birthWeight", pmtctDDB, birthWeightConcept, pmtctCombinedInfantProgram);
-		SqlEncounterQuery therapyWhilePregnant = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingCodedObservationValue("therapyWhilePregnant", pmtctDDB, therapyDuringPregnancy, therapyAnswers, pmtctCombinedInfantProgram);
-		SqlEncounterQuery motherCD4 = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("motherCD4", pmtctDDB, motherCD4Concept, pmtctCombinedInfantProgram);
+		SqlEncounterQuery birthWeight = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("birthWeight", pmtctDDB,
+		            birthWeightConcept, pmtctCombinedInfantProgram);
+		SqlEncounterQuery therapyWhilePregnant = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingCodedObservationValue("therapyWhilePregnant",
+		            pmtctDDB, therapyDuringPregnancy, therapyAnswers, pmtctCombinedInfantProgram);
+		SqlEncounterQuery motherCD4 = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("motherCD4", pmtctDDB,
+		            motherCD4Concept, pmtctCombinedInfantProgram);
 		
-		SqlEncounterQuery expRDV = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("expRDV", pmtctRDV, pmtctCombinedInfantProgram);
-		SqlEncounterQuery patientsExpRDV = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsExpRDV", pmtctRDV, pmtctCombinedInfantProgram);
+		SqlEncounterQuery expRDV = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("expRDV", pmtctRDV,
+		    pmtctCombinedInfantProgram);
+		SqlEncounterQuery patientsExpRDV = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsExpRDV", pmtctRDV,
+		            pmtctCombinedInfantProgram);
 		
-		SqlEncounterQuery artificial = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("artificial", pmtctRDV, changeToArtificial, pmtctCombinedInfantProgram);
-		SqlEncounterQuery nextVisit = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("nextVisit", pmtctRDV, nextVisitConcept, pmtctCombinedInfantProgram);
+		SqlEncounterQuery artificial = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("artificial", pmtctRDV,
+		            changeToArtificial, pmtctCombinedInfantProgram);
+		SqlEncounterQuery nextVisit = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("nextVisit", pmtctRDV,
+		            nextVisitConcept, pmtctCombinedInfantProgram);
 		
-		SqlEncounterQuery pregTrans = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("pregTrans", transferToPMTCT, pmtctPregnancyProgram);
-		SqlEncounterQuery patientsPregTrans = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsPregTrans", transferToPMTCT, pmtctPregnancyProgram);
+		SqlEncounterQuery pregTrans = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("pregTrans",
+		    transferToPMTCT, pmtctPregnancyProgram);
+		SqlEncounterQuery patientsPregTrans = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsPregTrans", transferToPMTCT,
+		            pmtctPregnancyProgram);
 		
-		SqlEncounterQuery dpa = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("dpa", transferToPMTCT, dpaConcept, pmtctPregnancyProgram);
-		SqlEncounterQuery ddr = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("ddr", transferToPMTCT, ddrConcept, pmtctPregnancyProgram);
-		SqlEncounterQuery pregnancyTest = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("pregnancyTest", transferToPMTCT, pregnancyTestConcept, pmtctPregnancyProgram);
+		SqlEncounterQuery dpa = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation(
+		    "dpa", transferToPMTCT, dpaConcept, pmtctPregnancyProgram);
+		SqlEncounterQuery ddr = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation(
+		    "ddr", transferToPMTCT, ddrConcept, pmtctPregnancyProgram);
+		SqlEncounterQuery pregnancyTest = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("pregnancyTest", transferToPMTCT,
+		            pregnancyTestConcept, pmtctPregnancyProgram);
 		
-		SqlEncounterQuery ccTrans = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("ccTrans", transferToCC, pmtctCombinedMotherProgram);
-		SqlEncounterQuery patientsCCTrans = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsCCTrans", transferToCC, pmtctCombinedMotherProgram);
+		SqlEncounterQuery ccTrans = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollment("ccTrans",
+		    transferToCC, pmtctCombinedMotherProgram);
+		SqlEncounterQuery patientsCCTrans = EncounterQuerys
+		        .getFormsBetweenStartEndDatesForAProgramEnrollmentGroupedByPatient("patientsCCTrans", transferToCC,
+		            pmtctCombinedMotherProgram);
 		
-		SqlEncounterQuery delivery = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation("delivery", transferToPMTCT, dateDelivery, pmtctCombinedMotherProgram);
+		SqlEncounterQuery delivery = EncounterQuerys.getFormsBetweenStartEndDatesForAProgramEnrollmentContainingObservation(
+		    "delivery", transferToPMTCT, dateDelivery, pmtctCombinedMotherProgram);
 		
 		EncounterIndicator one = new EncounterIndicator();
 		one.setName("1");
-		one.setEncounterQuery(new Mapped<EncounterQuery>(patientsWithVisit,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		one.setEncounterQuery(new Mapped<EncounterQuery>(patientsWithVisit, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator two = new EncounterIndicator();
 		two.setName("2");
-		two.setEncounterQuery(new Mapped<EncounterQuery>(visitForms,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		two.setEncounterQuery(new Mapped<EncounterQuery>(visitForms, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator three = new EncounterIndicator();
 		three.setName("3");
-		three.setEncounterQuery(new Mapped<EncounterQuery>(pregnantYes,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		three.setEncounterQuery(new Mapped<EncounterQuery>(pregnantYes, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator four = new EncounterIndicator();
 		four.setName("4");
-		four.setEncounterQuery(new Mapped<EncounterQuery>(patientsCCWithVisit,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		four.setEncounterQuery(new Mapped<EncounterQuery>(patientsCCWithVisit, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator five = new EncounterIndicator();
 		five.setName("5");
-		five.setEncounterQuery(new Mapped<EncounterQuery>(visitCCForms,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		five.setEncounterQuery(new Mapped<EncounterQuery>(visitCCForms, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator six = new EncounterIndicator();
 		six.setName("6");
-		six.setEncounterQuery(new Mapped<EncounterQuery>(contraception,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		six.setEncounterQuery(new Mapped<EncounterQuery>(contraception, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator seven = new EncounterIndicator();
 		seven.setName("7");
-		seven.setEncounterQuery(new Mapped<EncounterQuery>(expDDB,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		seven.setEncounterQuery(new Mapped<EncounterQuery>(expDDB, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator eight = new EncounterIndicator();
 		eight.setName("8");
-		eight.setEncounterQuery(new Mapped<EncounterQuery>(patientsExpDDB,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		eight.setEncounterQuery(new Mapped<EncounterQuery>(patientsExpDDB, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator nine = new EncounterIndicator();
 		nine.setName("9");
-		nine.setEncounterQuery(new Mapped<EncounterQuery>(birthWeight,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		nine.setEncounterQuery(new Mapped<EncounterQuery>(birthWeight, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator ten = new EncounterIndicator();
 		ten.setName("10");
-		ten.setEncounterQuery(new Mapped<EncounterQuery>(therapyWhilePregnant,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		ten.setEncounterQuery(new Mapped<EncounterQuery>(therapyWhilePregnant, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator eleven = new EncounterIndicator();
 		eleven.setName("11");
-		eleven.setEncounterQuery(new Mapped<EncounterQuery>(motherCD4,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		eleven.setEncounterQuery(new Mapped<EncounterQuery>(motherCD4, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator twelve = new EncounterIndicator();
 		twelve.setName("12");
-		twelve.setEncounterQuery(new Mapped<EncounterQuery>(expRDV,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		twelve.setEncounterQuery(new Mapped<EncounterQuery>(expRDV, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator thirteen = new EncounterIndicator();
 		thirteen.setName("13");
-		thirteen.setEncounterQuery(new Mapped<EncounterQuery>(patientsExpRDV,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		thirteen.setEncounterQuery(new Mapped<EncounterQuery>(patientsExpRDV, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator fourteen = new EncounterIndicator();
 		fourteen.setName("14");
-		fourteen.setEncounterQuery(new Mapped<EncounterQuery>(artificial,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		fourteen.setEncounterQuery(new Mapped<EncounterQuery>(artificial, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator fifteen = new EncounterIndicator();
 		fifteen.setName("15");
-		fifteen.setEncounterQuery(new Mapped<EncounterQuery>(nextVisit,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		fifteen.setEncounterQuery(new Mapped<EncounterQuery>(nextVisit, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator sixteen = new EncounterIndicator();
 		sixteen.setName("16");
-		sixteen.setEncounterQuery(new Mapped<EncounterQuery>(pregTrans,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		sixteen.setEncounterQuery(new Mapped<EncounterQuery>(pregTrans, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator seventeen = new EncounterIndicator();
 		seventeen.setName("17");
-		seventeen.setEncounterQuery(new Mapped<EncounterQuery>(patientsPregTrans,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		seventeen.setEncounterQuery(new Mapped<EncounterQuery>(patientsPregTrans, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator eighteen = new EncounterIndicator();
 		eighteen.setName("18");
-		eighteen.setEncounterQuery(new Mapped<EncounterQuery>(dpa,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		eighteen.setEncounterQuery(new Mapped<EncounterQuery>(dpa, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator nineteen = new EncounterIndicator();
 		nineteen.setName("19");
-		nineteen.setEncounterQuery(new Mapped<EncounterQuery>(ddr,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		nineteen.setEncounterQuery(new Mapped<EncounterQuery>(ddr, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator twenty = new EncounterIndicator();
 		twenty.setName("20");
-		twenty.setEncounterQuery(new Mapped<EncounterQuery>(pregnancyTest,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		twenty.setEncounterQuery(new Mapped<EncounterQuery>(pregnancyTest, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator twentyone = new EncounterIndicator();
 		twentyone.setName("21");
-		twentyone.setEncounterQuery(new Mapped<EncounterQuery>(ccTrans,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		twentyone.setEncounterQuery(new Mapped<EncounterQuery>(ccTrans, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator twentytwo = new EncounterIndicator();
 		twentytwo.setName("22");
-		twentytwo.setEncounterQuery(new Mapped<EncounterQuery>(patientsCCTrans,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		twentytwo.setEncounterQuery(new Mapped<EncounterQuery>(patientsCCTrans, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		EncounterIndicator twentythree = new EncounterIndicator();
 		twentythree.setName("23");
-		twentythree.setEncounterQuery(new Mapped<EncounterQuery>(delivery,ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}")));
+		twentythree.setEncounterQuery(new Mapped<EncounterQuery>(delivery, ParameterizableUtil
+		        .createParameterMappings("endDate=${endDate},startDate=${startDate}")));
 		
 		dsd.addColumn(one);
 		dsd.addColumn(two);

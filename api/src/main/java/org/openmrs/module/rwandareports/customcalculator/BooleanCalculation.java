@@ -9,7 +9,7 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalc
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.StringResult;
 
-public class BooleanCalculation implements CustomCalculation{
+public class BooleanCalculation implements CustomCalculation {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
@@ -17,18 +17,14 @@ public class BooleanCalculation implements CustomCalculation{
 		
 		StringResult res = new StringResult(null, null);
 		
-		for(PatientDataResult result: results)
-		{
+		for (PatientDataResult result : results) {
 			
-			if(result.getValueAsString() != null && result.getValueAsString().trim().length() > 0)
-			{
+			if (result.getValueAsString() != null && result.getValueAsString().trim().length() > 0) {
 				res.setValue("1");
-			}
-			else
-			{
+			} else {
 				res.setValue("0");
 			}
-	
+			
 		}
 		
 		return res;

@@ -11,22 +11,18 @@ import org.openmrs.module.rwandareports.dataset.comparator.ObsComparatorDesc;
 
 public class LastThreeObsFilter implements ResultFilter {
 	
-	
 	public Object filter(Object value) {
 		
-		List<Obs> allObs = (List<Obs>)value;
+		List<Obs> allObs = (List<Obs>) value;
 		
-		if(allObs != null)
-		{
+		if (allObs != null) {
 			Collections.sort(allObs, new ObsComparatorDesc());
 		}
 		
-		if(allObs.size() > 3)
-		{
+		if (allObs.size() > 3) {
 			List<Obs> lastObs = new ArrayList<Obs>();
 			
-			for(int i = 0; i < 3; i++)
-			{
+			for (int i = 0; i < 3; i++) {
 				lastObs.add(allObs.get(i));
 				Collections.sort(lastObs, new ObsComparator());
 			}
@@ -35,9 +31,9 @@ public class LastThreeObsFilter implements ResultFilter {
 		Collections.sort(allObs, new ObsComparator());
 		return allObs;
 	}
-
+	
 	public Object filterWhenNull() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -94,9 +94,15 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 			
 			if (dsd.getIndication() != null) {
 				for (DrugOrder order : regimen.getMembers()) {
-					if (!order.isVoided() && order.getOrderReason() != null && order.getOrderReason().equals(dsd.getIndication())) {
+					if (!order.isVoided() && order.getOrderReason() != null
+					        && order.getOrderReason().equals(dsd.getIndication())) {
 						if (activeDate != null) {
-							if (OrderEntryUtil.isCurrent(order, activeDate) || OpenmrsUtil.compare(order.getEffectiveStartDate(), activeDate) == 0 || (order.getAutoExpireDate() != null && OpenmrsUtil.compare(order.getAutoExpireDate(), activeDate) == 0) || (order.getEffectiveStopDate() != null && OpenmrsUtil.compare(order.getEffectiveStopDate(), activeDate) == 0)) {
+							if (OrderEntryUtil.isCurrent(order, activeDate)
+							        || OpenmrsUtil.compare(order.getEffectiveStartDate(), activeDate) == 0
+							        || (order.getAutoExpireDate() != null && OpenmrsUtil.compare(order.getAutoExpireDate(),
+							            activeDate) == 0)
+							        || (order.getEffectiveStopDate() != null && OpenmrsUtil.compare(
+							            order.getEffectiveStopDate(), activeDate) == 0)) {
 								orders.add(order);
 							}
 						} else {
@@ -104,9 +110,8 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 						}
 					}
 				}
-			}
-			else {
-				for (DrugOrder order: regimen.getMembers()) {
+			} else {
+				for (DrugOrder order : regimen.getMembers()) {
 					if (!order.isVoided()) {
 						orders.add(order);
 					}
@@ -115,7 +120,7 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 			
 			DataSetColumn start = new DataSetColumn("startDate", "startDate", Date.class);
 			dataSet.getMetaData().addColumn(start);
-
+			
 			DataSetColumn drug = new DataSetColumn("drug", "drug", String.class);
 			dataSet.getMetaData().addColumn(drug);
 			
@@ -145,14 +150,14 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 			
 			DataSetColumn discontuedReason = new DataSetColumn("discontuedReason", "discontuedReason", String.class);
 			dataSet.getMetaData().addColumn(discontuedReason);
-
+			
 			Collections.sort(orders, new DrugOrderComparator());
-
+			
 			for (DrugOrder edo : orders) {
-
+				
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 				dataSet.addColumnValue(edo.getId(), start, dateFormat.format(edo.getEffectiveStartDate()));
-
+				
 				dataSet.addColumnValue(edo.getId(), drug, getDrugDisplay(edo));
 				dataSet.addColumnValue(edo.getId(), doseReduction, getDoseReductionDisplay(edo));
 				dataSet.addColumnValue(edo.getId(), dose, getDoseDisplay(edo));
@@ -223,7 +228,7 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 		
 		return (int) diffDays + 1;
 	}
-
+	
 	private String getDoseDisplay(DrugOrder edo) {
 		String doseDisplay = "";
 		String doseUnits = (edo.getDoseUnits() == null ? null : edo.getDoseUnits().getDisplayString());
@@ -239,7 +244,7 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 		}
 		return doseDisplay;
 	}
-
+	
 	private String getActualDoseDisplay(DrugOrder edo) {
 		String actualDoseDisplay = "";
 		Concept bsa = gp.getConcept(GlobalPropertiesManagement.BSA_CONCEPT);
@@ -248,10 +253,10 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 		String doseUnits = (edo.getDoseUnits() == null ? null : edo.getDoseUnits().getDisplayString());
 		if (edo.getDose() != null && doseUnits != null) {
 			if (doseUnits.contains("/m2")) {
-
+				
 				Patient patient = edo.getPatient();
 				List<Obs> bsaValues = Context.getObsService().getObservationsByPersonAndConcept(patient, bsa);
-
+				
 				if (bsaValues != null && bsaValues.size() > 0) {
 					Obs recent = null;
 					for (Obs o : bsaValues) {
@@ -259,20 +264,19 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 							recent = o;
 						}
 					}
-
+					
 					double calcDose = edo.getDose() * recent.getValueNumeric();
 					if (edo.getDrug() != null && edo.getDrug().getMaximumDailyDose() != null
-							&& calcDose > edo.getDrug().getMaximumDailyDose()) {
+					        && calcDose > edo.getDrug().getMaximumDailyDose()) {
 						calcDose = edo.getDrug().getMaximumDailyDose();
 					}
 					actualDoseDisplay = f2.format(calcDose);
 				}
-			}
-			else if (doseUnits.contains("/kg")) {
-
+			} else if (doseUnits.contains("/kg")) {
+				
 				Patient patient = edo.getPatient();
 				List<Obs> weightValues = Context.getObsService().getObservationsByPersonAndConcept(patient, weight);
-
+				
 				if (weightValues != null && weightValues.size() > 0) {
 					Obs recent = null;
 					for (Obs o : weightValues) {
@@ -280,25 +284,24 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 							recent = o;
 						}
 					}
-
+					
 					double calcDose = edo.getDose() * recent.getValueNumeric();
 					if (edo.getDrug() != null && edo.getDrug().getMaximumDailyDose() != null
-							&& calcDose > edo.getDrug().getMaximumDailyDose()) {
+					        && calcDose > edo.getDrug().getMaximumDailyDose()) {
 						calcDose = edo.getDrug().getMaximumDailyDose();
 					}
 					actualDoseDisplay = f2.format(calcDose);
 				}
-
-			} else if(doseUnits.contains("AUC")) {
+				
+			} else if (doseUnits.contains("AUC")) {
 				actualDoseDisplay = "";
-			}
-			else {
+			} else {
 				actualDoseDisplay = f2.format(edo.getDose()) + " (" + doseUnits + ")";
 			}
 		}
 		return actualDoseDisplay;
 	}
-
+	
 	private String getDoseReductionDisplay(DrugOrder edo) {
 		String ret = "";
 		DecimalFormat fPerc = new DecimalFormat("0");
@@ -307,21 +310,20 @@ public class ExtendedDrugOrderDataSetEvaluator implements DataSetEvaluator {
 			drugStrength = Double.valueOf(edo.getDrug().getStrength());
 		}
 		catch (Exception e) {}
-		if(drugStrength != null) {
-			Double reduction = (edo.getDose()/drugStrength) * 100;
-			if(reduction < 100) {
+		if (drugStrength != null) {
+			Double reduction = (edo.getDose() / drugStrength) * 100;
+			if (reduction < 100) {
 				ret = fPerc.format(reduction) + "%";
 			}
 		}
 		return ret;
 	}
-
+	
 	private String getDrugDisplay(DrugOrder edo) {
 		String drugDisplay = "";
 		if (edo.getDrug() != null) {
 			drugDisplay = edo.getDrug().getName();
-		}
-		else if (edo.getConcept() != null) {
+		} else if (edo.getConcept() != null) {
 			drugDisplay = edo.getConcept().getDisplayString();
 		}
 		return drugDisplay;

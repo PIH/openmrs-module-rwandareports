@@ -6,17 +6,14 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.ResultFilt
 public class OutcomeStateFilter implements ResultFilter {
 	
 	public Object filter(Object value) {
-	
-		PatientState state = (PatientState)value;
-	
-		if(state != null)
-		{
+		
+		PatientState state = (PatientState) value;
+		
+		if (state != null) {
 			String stateName = state.getState().getConcept().getName().getName();
 			
-			if(stateName != null)
-			{
-				if(stateName.equals("ON ANTIRETROVIRALS") || stateName.equals("FOLLOWING"))
-				{
+			if (stateName != null) {
+				if (stateName.equals("ON ANTIRETROVIRALS") || stateName.equals("FOLLOWING")) {
 					stateName = "";
 				}
 				return stateName;

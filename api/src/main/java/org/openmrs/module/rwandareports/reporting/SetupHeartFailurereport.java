@@ -53,7 +53,7 @@ import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 public class SetupHeartFailurereport extends SingleSetupReport {
 	
 	protected final static Log log = LogFactory.getLog(SetupHeartFailurereport.class);
-
+	
 	//properties retrieved from global variables
 	private Program heartFailure;
 	
@@ -118,12 +118,12 @@ public class SetupHeartFailurereport extends SingleSetupReport {
 	List<EncounterType> encounterTypes;
 	
 	private List<String> onOrAfterOnOrBeforeParamterNames = new ArrayList<String>();
-
+	
 	@Override
 	public String getReportName() {
 		return "Heart Failure Report";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -134,7 +134,7 @@ public class SetupHeartFailurereport extends SingleSetupReport {
 		    "Xlsheartfailurereporttemplate", null);
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,dataset:Heart Failure Report Location");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
@@ -174,7 +174,7 @@ public class SetupHeartFailurereport extends SingleSetupReport {
 		
 		//Patient In Heart Failure Program
 		InProgramCohortDefinition patientsInHFProgram = Cohorts.createInProgramParameterizableByDate("patientsInHFProgram",
-		    heartFailure,onOrAfterOnOrBeforeParamterNames);
+		    heartFailure, onOrAfterOnOrBeforeParamterNames);
 		
 		//============================================================================
 		//  1.1.m & 1.1.f % male and female
@@ -228,12 +228,11 @@ public class SetupHeartFailurereport extends SingleSetupReport {
 		medianAge.setName("medianAge");
 		medianAge.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		medianAge.addParameter(new Parameter("endDate", "End Date", Date.class));
-		medianAge.setCohortDefinition(new Mapped<CohortDefinition>(patientsInHFProgram,
-		    ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")
-		));
+		medianAge.setCohortDefinition(new Mapped<CohortDefinition>(patientsInHFProgram, ParameterizableUtil
+		        .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}")));
 		medianAge.setAggregator(MedianAggregator.class);
 		medianAge.setType(CohortIndicator.IndicatorType.LOGIC);
-
+		
 		PatientDataDefinition ageData = new PersonToPatientDataDefinition(new AgeDataDefinition());
 		PatientDataDefinition ageYearsData = new ConvertedPatientDataDefinition(ageData, new AgeConverter("{y}"));
 		medianAge.setDataToAggregate(Mapped.noMappings(ageYearsData));
@@ -318,7 +317,8 @@ public class SetupHeartFailurereport extends SingleSetupReport {
 		// ===============================================================================   
 		
 		NumericObsCohortDefinition patientsWithCreatinineCohortDef = Cohorts.createNumericObsCohortDefinition(
-		    "patientsWithCreatinineCohortDef",onOrAfterOnOrBeforeParamterNames, serumCreatinine, 0.0, RangeComparator.GREATER_THAN, TimeModifier.LAST);
+		    "patientsWithCreatinineCohortDef", onOrAfterOnOrBeforeParamterNames, serumCreatinine, 0.0,
+		    RangeComparator.GREATER_THAN, TimeModifier.LAST);
 		
 		CompositionCohortDefinition hfPatientWithoutCreatinineCompositionCohortDef = new CompositionCohortDefinition();
 		hfPatientWithoutCreatinineCompositionCohortDef.setName("hfPatientWithoutCreatinineCompositionCohortDef");
@@ -544,8 +544,8 @@ public class SetupHeartFailurereport extends SingleSetupReport {
 		postCardiacSurgeryCohortDefinition.addParameter(new Parameter("startedOnOrAfter", "startedOnOrAfter", Date.class));
 		postCardiacSurgeryCohortDefinition.addParameter(new Parameter("startedOnOrBefore", "startedOnOrBefore", Date.class));
 		
-		CohortIndicator postCardiacSurgeryCohortIndicator = Indicators.newCountIndicator("postCardiacSurgeryCohortIndicator",
-		    postCardiacSurgeryCohortDefinition,
+		CohortIndicator postCardiacSurgeryCohortIndicator = Indicators.newCountIndicator(
+		    "postCardiacSurgeryCohortIndicator", postCardiacSurgeryCohortDefinition,
 		    ParameterizableUtil.createParameterMappings("startedOnOrAfter=${startDate},startedOnOrBefore=${endDate}"));
 		
 		//================================================                        
@@ -1151,8 +1151,8 @@ public class SetupHeartFailurereport extends SingleSetupReport {
 		            .createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
 		hospitalizedDuringPeriodComposition.setCompositionString("(patientsInHFProgram AND hospitalizedDuringPeriod");
 		
-		CohortIndicator hospitalizedDuringPeriodIndicator = Indicators.newCohortIndicator("hospitalizedDuringPeriodIndicator",
-		    hospitalizedDuringPeriodComposition,
+		CohortIndicator hospitalizedDuringPeriodIndicator = Indicators.newCohortIndicator(
+		    "hospitalizedDuringPeriodIndicator", hospitalizedDuringPeriodComposition,
 		    ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 		
 		//===============================================================================                   

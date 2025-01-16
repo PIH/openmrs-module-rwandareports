@@ -23,19 +23,19 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupPMTCTFormulaDistributionReport extends SingleSetupReport {
-
+	
 	//Properties
 	private Program pmtctCombined;
 	
 	private List<ProgramWorkflowState> feedingStates = new ArrayList<ProgramWorkflowState>();
 	
 	private ProgramWorkflow feedingStatus;
-
+	
 	@Override
 	public String getReportName() {
 		return "HIV-PMTCT Formula Package Distribution";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setUpProperties();
@@ -46,7 +46,7 @@ public class SetupPMTCTFormulaDistributionReport extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:4,dataset:dataSet");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}

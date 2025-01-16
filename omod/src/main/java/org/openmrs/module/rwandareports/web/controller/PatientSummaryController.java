@@ -34,28 +34,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PatientSummaryController {
 	
 	@RequestMapping("/module/rwandareports/patientSummary.form")
-	public String handle(Model model,
-						 @RequestParam("type") Class<? extends PatientSummaryManager> type,
-						 @RequestParam("patientId") Integer patientId) throws Exception {
-
-		PatientSummaryManager manager = (PatientSummaryManager)type.newInstance();
+	public String handle(Model model, @RequestParam("type") Class<? extends PatientSummaryManager> type,
+	        @RequestParam("patientId") Integer patientId) throws Exception {
+		
+		PatientSummaryManager manager = (PatientSummaryManager) type.newInstance();
 		ReportDefinition rd = manager.constructReportDefinition();
-
+		
 		model.addAttribute("patientId", patientId);
 		model.addAttribute("patientSummaryManager", manager);
 		model.addAttribute("reportDefinition", rd);
-
+		
 		EvaluationContext context = new EvaluationContext();
 		Cohort c = new Cohort();
 		c.addMember(patientId);
 		context.setBaseCohort(c);
-
+		
 		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(rd, context);
-		SimpleDataSet dataSet = (SimpleDataSet)data.getDataSets().values().iterator().next();
+		SimpleDataSet dataSet = (SimpleDataSet) data.getDataSets().values().iterator().next();
 		for (DataSetColumn column : dataSet.getMetaData().getColumns()) {
 			model.addAttribute(column.getName(), dataSet.getColumnValue(patientId, column.getName()));
 		}
-
+		
 		return "/module/rwandareports/patientSummaries/" + manager.getKey();
 	}
 	

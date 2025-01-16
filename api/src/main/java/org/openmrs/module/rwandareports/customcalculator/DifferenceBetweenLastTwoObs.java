@@ -13,31 +13,28 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataRes
 import org.openmrs.module.rowperpatientreports.patientdata.result.StringResult;
 import org.openmrs.module.rwandareports.dataset.comparator.ObsComparatorDesc;
 
-public class DifferenceBetweenLastTwoObs implements CustomCalculation{
-
+public class DifferenceBetweenLastTwoObs implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
 		StringResult result = new StringResult(null, null);
 		
-		if(results.size() > 0)
-		{
-			AllObservationValuesResult obs = (AllObservationValuesResult)results.get(0);
-			List<Obs> allObs = (List<Obs>)obs.getValue();
+		if (results.size() > 0) {
+			AllObservationValuesResult obs = (AllObservationValuesResult) results.get(0);
+			List<Obs> allObs = (List<Obs>) obs.getValue();
 			
-			if(allObs != null)
-			{
+			if (allObs != null) {
 				Collections.sort(allObs, new ObsComparatorDesc());
 			}
 			
-			if(allObs.size() > 1)
-			{
+			if (allObs.size() > 1) {
 				Obs firstObs = allObs.get(0);
 				Obs secondObs = allObs.get(1);
 				
-				if(firstObs != null && firstObs.getValueNumeric() != null && secondObs != null && secondObs.getValueNumeric() != null)
-				{
+				if (firstObs != null && firstObs.getValueNumeric() != null && secondObs != null
+				        && secondObs.getValueNumeric() != null) {
 					Double diff = (firstObs.getValueNumeric() - secondObs.getValueNumeric());
 					result.setValue(diff.toString());
 				}

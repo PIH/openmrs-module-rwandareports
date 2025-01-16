@@ -12,6 +12,13 @@
 	<activator>@MODULE_PACKAGE@.RwandaReportsModuleActivator</activator>
 	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf
 	</updateURL>
+
+
+	<aware_of_modules>
+        <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+	 <aware_of_module>org.openmrs.module.webservices.rest</aware_of_module>
+    </aware_of_modules>
+
 	<require_version>${openMRSVersion}</require_version>
 	<require_modules>
         <require_module>org.openmrs.module.reporting</require_module>
@@ -41,6 +48,14 @@
 		<lang>en</lang>
 		<file>messages.properties</file>
 	</messages>
+	<messages>
+        <lang>fr</lang>
+        <file>messages_fr.properties</file>
+    </messages>
+    <messages>
+        <lang>es</lang>
+        <file>messages_es.properties</file>
+    </messages>
 
 	<globalProperty>
 		<property>reports.dataEntryDelay</property>

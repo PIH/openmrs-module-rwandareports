@@ -32,20 +32,17 @@ import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 
 /**
  * Renderer for Data Quality report
- *
  */
 @Handler
 public class DataQualityWebRenderedForNCDandOncology extends AbstractRwandaWebRenderer {
 	
-	
 	/**
-     * @see org.openmrs.report.ReportRenderer#getLabel()
-     */
+	 * @see org.openmrs.report.ReportRenderer#getLabel()
+	 */
 	@Override
-    public String getLabel() {
-    	return "DQ-Data Quality NCD/ONCOLOGY Report By Site";
-    }
-	
+	public String getLabel() {
+		return "DQ-Data Quality NCD/ONCOLOGY Report By Site";
+	}
 	
 	/**
 	 * @see org.openmrs.module.reporting.web.renderers.WebReportRenderer#getLinkUrl(org.openmrs.module.reporting.report.definition.ReportDefinition)
@@ -54,10 +51,9 @@ public class DataQualityWebRenderedForNCDandOncology extends AbstractRwandaWebRe
 	public String getLinkUrl(ReportDefinition arg0) {
 		return "module/rwandareports/renderDataQualityDataSet.form";
 	}
-
+	
 	public String getDataSetNameToCheck() {
 		return "DQ-Data Quality NCD/ONCOLOGY Report By Site Data Set";
 	}
-
-
+	
 }

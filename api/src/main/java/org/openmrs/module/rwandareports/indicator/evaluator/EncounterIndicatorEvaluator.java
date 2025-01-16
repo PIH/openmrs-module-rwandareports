@@ -12,16 +12,16 @@ import org.openmrs.module.reporting.query.encounter.service.EncounterQueryServic
 import org.openmrs.module.rwandareports.indicator.EncounterIndicator;
 import org.openmrs.module.rwandareports.indicator.EncounterIndicatorResult;
 
-@Handler(supports={EncounterIndicator.class})
+@Handler(supports = { EncounterIndicator.class })
 public class EncounterIndicatorEvaluator implements IndicatorEvaluator {
 	
 	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException {
 		
 		EncounterIndicator ei = (EncounterIndicator) indicator;
-    	
-    	EncounterIndicatorResult result = new EncounterIndicatorResult();
-    	result.setContext(context);
-    	result.setIndicator(ei);
+		
+		EncounterIndicatorResult result = new EncounterIndicatorResult();
+		result.setContext(context);
+		result.setIndicator(ei);
 		
 		EncounterQueryService eqs = Context.getService(EncounterQueryService.class);
 		

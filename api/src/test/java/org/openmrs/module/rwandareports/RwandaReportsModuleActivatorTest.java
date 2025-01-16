@@ -21,13 +21,13 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  * Initial test
  */
 public class RwandaReportsModuleActivatorTest extends BaseModuleContextSensitiveTest {
-
+	
 	@Test
 	public void testStartupWithoutErrors() {
 		RwandaReportsModuleActivator activator = new RwandaReportsModuleActivator();
 		activator.started();
 	}
-
+	
 	@Test
 	public void testShutdownWithoutErrors() {
 		RwandaReportsModuleActivator activator = new RwandaReportsModuleActivator();

@@ -31,38 +31,39 @@ import java.util.List;
  * Abstract class for testing Rwanda Reports
  */
 public abstract class SetupReportTest extends BaseRwandaReportsTest {
-
+	
 	/**
 	 * @return the name of the report that this is testing
 	 */
 	public abstract String getReportName();
-
+	
 	/**
 	 * @return the names of any saved Report Designs that are created for this report
 	 */
 	public abstract List<String> getReportDesignNames();
-
+	
 	/**
 	 * @return an instance of SetupReport that is responsible for creating and deleting the report
 	 */
 	public abstract SetupReport getSetupReportClass();
-
+	
 	/**
 	 * @return the names and values of the parameters to run the report with
 	 */
 	public abstract EvaluationContext getEvaluationContext();
-
+	
 	/**
-	 * This method should be overridden to apply any specific tests to the evaluated report data for the given input parameters
+	 * This method should be overridden to apply any specific tests to the evaluated report data for
+	 * the given input parameters
 	 */
 	public abstract void testResults(ReportData data);
-
+	
 	@Before
 	public void setup() throws Exception {
 		authenticate();
 		getSetupReportClass().delete();
 	}
-
+	
 	/**
 	 * Tests that the Report and associated ReportDesigns are successfully saved
 	 */
@@ -70,13 +71,13 @@ public abstract class SetupReportTest extends BaseRwandaReportsTest {
 	public void shouldSetupReport() throws Exception {
 		List<ReportDefinition> l = getReportDefinitionService().getDefinitions(getReportName(), true);
 		Assert.assertEquals(0, l.size());
-
+		
 		ReportDefinition reportDefinition = setupReport();
 		Assert.assertEquals(getReportName(), reportDefinition.getName());
-
+		
 		ReportService rs = Context.getService(ReportService.class);
 		List<ReportDesign> designs = rs.getReportDesigns(reportDefinition, null, false);
-
+		
 		Assert.assertEquals(getReportDesignNames().size(), designs.size());
 		int numMatches = 0;
 		for (ReportDesign rd : designs) {
@@ -86,17 +87,18 @@ public abstract class SetupReportTest extends BaseRwandaReportsTest {
 		}
 		Assert.assertEquals(getReportDesignNames().size(), numMatches);
 	}
-
+	
 	/**
 	 * Tests that the Report and associated ReportDesigns are successfully run
 	 */
 	@Test
 	public void shouldRunReport() throws Exception {
 		ReportDefinition reportDefinition = setupReport();
-		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(reportDefinition, getEvaluationContext());
+		ReportData data = Context.getService(ReportDefinitionService.class).evaluate(reportDefinition,
+		    getEvaluationContext());
 		testResults(data);
 	}
-
+	
 	/**
 	 * Tests that the Report and associated ReportDesigns are successfully deleted
 	 */
@@ -104,20 +106,20 @@ public abstract class SetupReportTest extends BaseRwandaReportsTest {
 	public void shouldDeleteReport() throws Exception {
 		ReportService rs = Context.getService(ReportService.class);
 		setupReport();
-
+		
 		int startingDesignCount = rs.getAllReportDesigns(true).size();
-
+		
 		getSetupReportClass().delete();
-
+		
 		List<ReportDefinition> l = getReportDefinitionService().getDefinitions(getReportName(), true);
 		Assert.assertEquals(0, l.size());
-
+		
 		int endingDesignCount = rs.getAllReportDesigns(true).size();
 		Assert.assertEquals(getReportDesignNames().size(), startingDesignCount - endingDesignCount);
 	}
-
+	
 	//******* HELPER METHODS *****
-
+	
 	protected ReportDefinition setupReport() throws Exception {
 		getSetupReportClass().setup();
 		List<ReportDefinition> l = getReportDefinitionService().getDefinitions(getReportName(), true);

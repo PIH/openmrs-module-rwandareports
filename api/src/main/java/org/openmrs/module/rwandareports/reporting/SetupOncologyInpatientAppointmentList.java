@@ -21,20 +21,18 @@ import org.openmrs.module.rwandareports.util.Cohorts;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
-
 public class SetupOncologyInpatientAppointmentList extends SingleSetupReport {
-
+	
 	//properties retrieved from global variables
 	private Program oncologyProgram;
 	
 	private Concept ChemoAdultInpatientVisit;
-
-
+	
 	@Override
 	public String getReportName() {
 		return "ONC-Oncology Inpatient Clinic Appointment List";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -43,7 +41,7 @@ public class SetupOncologyInpatientAppointmentList extends SingleSetupReport {
 		
 		createCustomWebRenderer(rd);
 	}
-
+	
 	private ReportDefinition createReportDefinition() {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
@@ -64,42 +62,39 @@ public class SetupOncologyInpatientAppointmentList extends SingleSetupReport {
 		RowPerPatientDataSetDefinition dataSetDefinition = new RowPerPatientDataSetDefinition();
 		dataSetDefinition.setName("Chemotherapy – Adult Inpatient Ward");
 		
-
 		dataSetDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
 		
 		SortCriteria sortCriteria = new SortCriteria();
 		sortCriteria.addSortElement("nextRDV", SortDirection.ASC);
 		dataSetDefinition.setSortCriteria(sortCriteria);
-
 		
 		//Add filters
-		dataSetDefinition.addFilter(Cohorts.createDateObsCohortDefinition(ChemoAdultInpatientVisit, RangeComparator.GREATER_EQUAL,
-		    RangeComparator.LESS_EQUAL, TimeModifier.LAST), ParameterizableUtil
+		dataSetDefinition.addFilter(Cohorts.createDateObsCohortDefinition(ChemoAdultInpatientVisit,
+		    RangeComparator.GREATER_EQUAL, RangeComparator.LESS_EQUAL, TimeModifier.LAST), ParameterizableUtil
 		        .createParameterMappings("value2=${endDate+6M},value1=${endDate-14d}"));
-
 		
 		//Add Columns
 		dataSetDefinition.addColumn(RowPerPatientColumns.getSystemId("id"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMiddleNameColumn("middleName"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFamilyNameColumn("familyName"), new HashMap<String, Object>());
 		dataSetDefinition.addColumn(RowPerPatientColumns.getAge("age"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("date", ChemoAdultInpatientVisit, "yyyy-MM-dd"),
 		    new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getIMBId("imbId"), new HashMap<String, Object>());
-
+		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("endDate", "${endDate}");
 		
 		reportDefinition.addDataSetDefinition("Chemotherapy – Adult Inpatient Ward", dataSetDefinition, mappings);
-
+		
 	}
 	
 	private void setupProperties() {
@@ -107,7 +102,7 @@ public class SetupOncologyInpatientAppointmentList extends SingleSetupReport {
 		oncologyProgram = gp.getProgram(GlobalPropertiesManagement.ONCOLOGY_PROGRAM);
 		
 		ChemoAdultInpatientVisit = gp.getConcept(GlobalPropertiesManagement.CHEMOTHERAPY_INPATIENT_WARD_VISIT_DATE);
-
+		
 	}
 	
 	private void createCustomWebRenderer(ReportDefinition rd) throws IOException {

@@ -24,27 +24,29 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 @Ignore
 public class SetupPDCIndicatorReportTest extends StandaloneContextSensitiveTest {
-
-    @Autowired
-    @Qualifier(value = "reportingCohortDefinitionService")
-    CohortDefinitionService cohortDefinitionService;
-
-    @Test
-    public void testReasonForNotDoingFollowupCohort() throws Exception {
-        EvaluationContext context = new EvaluationContext();
-        context.addParameterValue("endDate", new Date());
-
-        Concept reasonForNotDoingFollowUp= MetadataLookup.getConcept("REASON FOR NOT DOING FOLLOW-UP");
-        CodedObsCohortDefinition codedObsDef = Cohorts.createCodedObsCohortDefinition("reasonForNotDoingFollowUpCohort",reasonForNotDoingFollowUp, null, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);
-        Cohort codedObsCohort = cohortDefinitionService.evaluate(codedObsDef, context);
-        System.out.println("Coded obs cohort: " + codedObsCohort.size());
-
-        SqlCohortDefinition sqlDef = new SqlCohortDefinition();
-        sqlDef.setName("reasonForNotDoingFollowUpCohort");
-        sqlDef.setQuery("select distinct o.person_id from obs o where o.concept_id="+reasonForNotDoingFollowUp.getConceptId()+" and o.voided=0 order by o.obs_datetime desc");
-        sqlDef.addParameter(new Parameter("endDate","endDate",Date.class));
-        Cohort sqlCohort = cohortDefinitionService.evaluate(sqlDef, context);
-        System.out.println("Sql obs cohort: " + sqlCohort.size());
-    }
-
+	
+	@Autowired
+	@Qualifier(value = "reportingCohortDefinitionService")
+	CohortDefinitionService cohortDefinitionService;
+	
+	@Test
+	public void testReasonForNotDoingFollowupCohort() throws Exception {
+		EvaluationContext context = new EvaluationContext();
+		context.addParameterValue("endDate", new Date());
+		
+		Concept reasonForNotDoingFollowUp = MetadataLookup.getConcept("REASON FOR NOT DOING FOLLOW-UP");
+		CodedObsCohortDefinition codedObsDef = Cohorts.createCodedObsCohortDefinition("reasonForNotDoingFollowUpCohort",
+		    reasonForNotDoingFollowUp, null, SetComparator.IN, BaseObsCohortDefinition.TimeModifier.LAST);
+		Cohort codedObsCohort = cohortDefinitionService.evaluate(codedObsDef, context);
+		System.out.println("Coded obs cohort: " + codedObsCohort.size());
+		
+		SqlCohortDefinition sqlDef = new SqlCohortDefinition();
+		sqlDef.setName("reasonForNotDoingFollowUpCohort");
+		sqlDef.setQuery("select distinct o.person_id from obs o where o.concept_id="
+		        + reasonForNotDoingFollowUp.getConceptId() + " and o.voided=0 order by o.obs_datetime desc");
+		sqlDef.addParameter(new Parameter("endDate", "endDate", Date.class));
+		Cohort sqlCohort = cohortDefinitionService.evaluate(sqlDef, context);
+		System.out.println("Sql obs cohort: " + sqlCohort.size());
+	}
+	
 }

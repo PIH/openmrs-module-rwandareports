@@ -22,7 +22,7 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupOncologyTreatmentAdministrationPlan extends SingleSetupReport {
-
+	
 	Program oncologyProgram;
 	
 	ProgramWorkflow treatmentIntent;
@@ -38,12 +38,12 @@ public class SetupOncologyTreatmentAdministrationPlan extends SingleSetupReport 
 	Concept doxorubicinGiven;
 	
 	Concept daunorubicinGiven;
-
+	
 	@Override
 	public String getReportName() {
 		return "ONC-Chemotherapy Treatment Administration Plan";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -54,8 +54,9 @@ public class SetupOncologyTreatmentAdministrationPlan extends SingleSetupReport 
 		    "TreatmentAdministrationPlan.xls_", null);
 		
 		Properties props = new Properties();
-		props.put("repeatingSections", "sheet:1,row:21,dataset:premedication|sheet:1,row:23,dataset:chemotherapy|sheet:1,row:25,dataset:postmedication");
-		props.put("sortWeight","5000");
+		props.put("repeatingSections",
+		    "sheet:1,row:21,dataset:premedication|sheet:1,row:23,dataset:chemotherapy|sheet:1,row:25,dataset:postmedication");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		
 		Helper.saveReportDesign(design);
@@ -69,7 +70,8 @@ public class SetupOncologyTreatmentAdministrationPlan extends SingleSetupReport 
 		reportDefinition.addParameter(new Parameter("patientId", "patientId", String.class));
 		reportDefinition.addParameter(new Parameter("regimenId", "regimenId", String.class));
 		
-		reportDefinition.setBaseCohortDefinition(Cohorts.createPatientCohort("patientCohort"), ParameterizableUtil.createParameterMappings("patientId=${patientId}"));
+		reportDefinition.setBaseCohortDefinition(Cohorts.createPatientCohort("patientCohort"),
+		    ParameterizableUtil.createParameterMappings("patientId=${patientId}"));
 		
 		createDataSetDefinitions(reportDefinition);
 		
@@ -93,20 +95,27 @@ public class SetupOncologyTreatmentAdministrationPlan extends SingleSetupReport 
 		dataSetDefinition.addColumn(RowPerPatientColumns.getIMBId("Id"), new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
-				
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentWeight("RecentWeight", "dd/MMM/yy"),
 		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentHeight("RecentHeight", "dd/MMM/yy"),new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentHeight("RecentHeight", "dd/MMM/yy"),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentBSA("RecentBSA", "dd/MMM/yy"),new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentBSA("RecentBSA", "dd/MMM/yy"),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("adminInstructions", adminInstructions, "dd/MMM/yy"),new HashMap<String, Object>());
-		    
-		dataSetDefinition.addColumn(RowPerPatientColumns.getStateOfPatient("intent", oncologyProgram, treatmentIntent, null), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("adminInstructions", adminInstructions, "dd/MMM/yy"),
+		    new HashMap<String, Object>());
 		
-		AllObservationValues doxoAll = RowPerPatientColumns.getAllObservationValues("allDoxo", doxorubicinGiven, "dd/MMM/yy", null, null);
-		AllObservationValues daunoAll = RowPerPatientColumns.getAllObservationValues("allDauno", daunorubicinGiven, "dd/MMM/yy", null, null);
+		dataSetDefinition.addColumn(
+		    RowPerPatientColumns.getStateOfPatient("intent", oncologyProgram, treatmentIntent, null),
+		    new HashMap<String, Object>());
+		
+		AllObservationValues doxoAll = RowPerPatientColumns.getAllObservationValues("allDoxo", doxorubicinGiven,
+		    "dd/MMM/yy", null, null);
+		AllObservationValues daunoAll = RowPerPatientColumns.getAllObservationValues("allDauno", daunorubicinGiven,
+		    "dd/MMM/yy", null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions totalDoxo = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		totalDoxo.setName("totalDoxo");
@@ -123,7 +132,7 @@ public class SetupOncologyTreatmentAdministrationPlan extends SingleSetupReport 
 		DrugRegimenInformation info = RowPerPatientColumns.getDrugRegimenInformation("regimenInfo");
 		info.addParameter(new Parameter("regimen", "regimen", String.class));
 		dataSetDefinition.addColumn(info, ParameterizableUtil.createParameterMappings("regimen=${regimen}"));
-
+		
 		//Premedication dataSet
 		ExtendedDrugOrderDataSetDefinition premedicationDS = new ExtendedDrugOrderDataSetDefinition();
 		premedicationDS.setIndication(premedication);

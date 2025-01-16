@@ -13,24 +13,24 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataRes
 import org.openmrs.module.rwandareports.definition.CurrentPatientProgram;
 import org.openmrs.module.rwandareports.definition.result.CurrentPatientProgramResult;
 
-@Handler(supports={CurrentPatientProgram.class})
-public class CurrentPatientProgramEvaluator implements RowPerPatientDataEvaluator{
-
+@Handler(supports = { CurrentPatientProgram.class })
+public class CurrentPatientProgramEvaluator implements RowPerPatientDataEvaluator {
+	
 	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) {
-	    
+		
 		CurrentPatientProgramResult ppr = new CurrentPatientProgramResult(patientData, context);
 		CurrentPatientProgram pp = (CurrentPatientProgram) patientData;
-		List<PatientProgram> programs = Context.getProgramWorkflowService().getPatientPrograms(pp.getPatient(), null, null, null, null, null, false);
+		List<PatientProgram> programs = Context.getProgramWorkflowService().getPatientPrograms(pp.getPatient(), null, null,
+		    null, null, null, false);
 		//just check if the passed-in program is present in the current patient programs
-		Program p= pp.getCurrentPatientProgram();
+		Program p = pp.getCurrentPatientProgram();
 		for (PatientProgram patientProgram : programs) {
-			if(p != null && patientProgram.getProgram().equals(p))
-			{		
-					ppr.setValue(p.getName());
+			if (p != null && patientProgram.getProgram().equals(p)) {
+				ppr.setValue(p.getName());
 			}
 		}
-			
+		
 		return ppr;
-    }
-
+	}
+	
 }

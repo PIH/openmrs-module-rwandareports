@@ -19,24 +19,26 @@ import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 public class DrugDosageCurrentFilter implements ResultFilter {
 	
 	private String finalDateFormat = null;
+	
 	private List<EncounterType> heartFailureEncounter;
+	
 	protected Log log = LogFactory.getLog(this.getClass());
-	GlobalPropertiesManagement gp=new GlobalPropertiesManagement();
+	
+	GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
 	
 	public DrugDosageCurrentFilter(List<EncounterType> heartFailureEncounter) {
 		heartFailureEncounter.add(gp.getEncounterType(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTER));
 		heartFailureEncounter.add(gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE));
-		this.heartFailureEncounter =heartFailureEncounter;
+		this.heartFailureEncounter = heartFailureEncounter;
 		
 	}
-
 	
 	public Object filter(Object value) {
-		DrugOrder drugOrder = (DrugOrder)value;
-	
+		DrugOrder drugOrder = (DrugOrder) value;
+		
 		StringBuilder result = new StringBuilder();
-			
-		if(drugOrder.getEffectiveStopDate() != null) {
+		
+		if (drugOrder.getEffectiveStopDate() != null) {
 			if (returnVisitDates().compareTo(drugOrder.getEffectiveStopDate()) < 0) {
 				if (drugOrder != null && drugOrder.getDrug() != null) {
 					result.append(drugOrder.getDrug().getName());
@@ -59,47 +61,45 @@ public class DrugDosageCurrentFilter implements ResultFilter {
 				}
 			}
 		}
-		 
+		
 		return result.toString();
 	}
-
-
+	
 	public String getFinalDateFormat() {
 		return finalDateFormat;
 	}
-
+	
 	public void setFinalDateFormat(String finalDateFormat) {
 		this.finalDateFormat = finalDateFormat;
 	}
-
-
-	public Object filterWhenNull() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
 	
-     public Date returnVisitDates(){
-    	 DrugOrder drugOrder=new DrugOrder();
-    	 Date retunv=null;
-    	 Patient patient = drugOrder.getPatient();
-	     EncounterSearchCriteriaBuilder builder = new EncounterSearchCriteriaBuilder();
-	     builder.setPatient(patient).setEncounterTypes(heartFailureEncounter).setIncludeVoided(false);
-    	 List<Encounter> patientEncounters = Context.getEncounterService().getEncounters(builder.createEncounterSearchCriteria());
-
-    	 if (patientEncounters.size() > 0 && !drugOrder.isDiscontinuedRightNow() ) {
-         Encounter recentEncounter = patientEncounters.get(patientEncounters.size() - 1); //the last encounter in the List should be the most recent one.
-
-         for (Obs obs: recentEncounter.getObs()){
-            if(obs.getConcept().getConceptId() == 5096){
-    	      retunv = obs.getValueDatetime();
-    	 
-    	   }
-    	 }
-      }
-
-    	 return retunv;
-    	 
-    	}
-    
-	 	
+	public Object filterWhenNull() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public Date returnVisitDates() {
+		DrugOrder drugOrder = new DrugOrder();
+		Date retunv = null;
+		Patient patient = drugOrder.getPatient();
+		EncounterSearchCriteriaBuilder builder = new EncounterSearchCriteriaBuilder();
+		builder.setPatient(patient).setEncounterTypes(heartFailureEncounter).setIncludeVoided(false);
+		List<Encounter> patientEncounters = Context.getEncounterService().getEncounters(
+		    builder.createEncounterSearchCriteria());
+		
+		if (patientEncounters.size() > 0 && !drugOrder.isDiscontinuedRightNow()) {
+			Encounter recentEncounter = patientEncounters.get(patientEncounters.size() - 1); //the last encounter in the List should be the most recent one.
+			
+			for (Obs obs : recentEncounter.getObs()) {
+				if (obs.getConcept().getConceptId() == 5096) {
+					retunv = obs.getValueDatetime();
+					
+				}
+			}
+		}
+		
+		return retunv;
+		
+	}
+	
 }

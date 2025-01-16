@@ -8,7 +8,6 @@ import org.openmrs.module.reporting.dataset.definition.BaseDataSetDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.rwandareports.widget.AllLocation;
 
-
 /**
  *
  */
@@ -20,6 +19,7 @@ public class DataEntryDelayDataSetDefinition extends BaseDataSetDefinition {
 	
 	@ConfigurationProperty
 	private List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
+	
 	//***** CONSTRUCTORS *****
 	
 	/**
@@ -31,26 +31,25 @@ public class DataEntryDelayDataSetDefinition extends BaseDataSetDefinition {
 	
 	//***** INSTANCE METHODS *****
 	
-	
 	//***** PROPERTY ACCESS *****
-
+	
 	public AllLocation getLocation() {
 		return location;
 	}
-
+	
 	public void setLocation(AllLocation location) {
 		this.location = location;
 	}
-
-    public List<EncounterType> getEncounterTypes() {
-    	return encounterTypes;
-    }
-
-    public void setEncounterTypes(List<EncounterType> encounterTypes) {
-    	this.encounterTypes = encounterTypes;
-    }
-    
-    public void addEncounterType(EncounterType encounterType) {
-    	encounterTypes.add(encounterType);
-    }
+	
+	public List<EncounterType> getEncounterTypes() {
+		return encounterTypes;
+	}
+	
+	public void setEncounterTypes(List<EncounterType> encounterTypes) {
+		this.encounterTypes = encounterTypes;
+	}
+	
+	public void addEncounterType(EncounterType encounterType) {
+		encounterTypes.add(encounterType);
+	}
 }

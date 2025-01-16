@@ -24,8 +24,8 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 
 public class MetadataLookup {
 	
-	protected final static Log log=LogFactory.getLog(MetadataLookup.class);
-
+	protected final static Log log = LogFactory.getLog(MetadataLookup.class);
+	
 	/**
 	 * @return the Program that matches the passed uuid, concept name, name, or primary key id
 	 */
@@ -45,15 +45,15 @@ public class MetadataLookup {
 			try {
 				program = Context.getProgramWorkflowService().getProgram(Integer.parseInt(lookup));
 			}
-			catch(Exception e) { }
+			catch (Exception e) {}
 		}
 		if (program == null) {
 			throw new IllegalArgumentException("Unable to find program using key: " + lookup);
 		}
-
+		
 		return program;
 	}
-
+	
 	/**
 	 * @return the ProgramWorkflow matching the given programLookup and workflowLookup
 	 */
@@ -64,13 +64,11 @@ public class MetadataLookup {
 		if (wf == null) {
 			for (ProgramWorkflow programWorkflow : p.getAllWorkflows()) {
 				if (workflowLookup.equalsIgnoreCase(programWorkflow.getConcept().getName().toString())) {
-					wf = programWorkflow;					
-				}
-				else if (workflowLookup.equalsIgnoreCase(programWorkflow.getUuid())) {
-						wf = programWorkflow;						
-				}
-				else if (workflowLookup.equalsIgnoreCase(programWorkflow.getId().toString())) {
-						wf = programWorkflow;
+					wf = programWorkflow;
+				} else if (workflowLookup.equalsIgnoreCase(programWorkflow.getUuid())) {
+					wf = programWorkflow;
+				} else if (workflowLookup.equalsIgnoreCase(programWorkflow.getId().toString())) {
+					wf = programWorkflow;
 				}
 			}
 		}
@@ -79,11 +77,13 @@ public class MetadataLookup {
 		}
 		return wf;
 	}
-
+	
 	/**
-	 * @return the ProgramWorkflowState matching the given programLookup and workflowLookup and stateLookup
+	 * @return the ProgramWorkflowState matching the given programLookup and workflowLookup and
+	 *         stateLookup
 	 */
-	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup, String stateLookup) {
+	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup,
+	        String stateLookup) {
 		ProgramWorkflow wf = getProgramWorkflow(programLookup, workflowLookup);
 		ProgramWorkflowState s = wf.getStateByName(stateLookup);
 		if (s == null) {
@@ -95,35 +95,34 @@ public class MetadataLookup {
 			for (ProgramWorkflowState state : wf.getStates()) {
 				if (stateConcept != null && state.getConcept().equals(stateConcept)) {
 					s = state;
-				}
-				else if (stateLookup.equalsIgnoreCase(state.getUuid())) {
+				} else if (stateLookup.equalsIgnoreCase(state.getUuid())) {
 					s = state;
-				}
-				else if (stateLookup.equalsIgnoreCase(state.getId().toString())) {
+				} else if (stateLookup.equalsIgnoreCase(state.getId().toString())) {
 					s = state;
-				}
-				else if (stateLookup.equalsIgnoreCase(state.getConcept().getId().toString())) {
+				} else if (stateLookup.equalsIgnoreCase(state.getConcept().getId().toString())) {
 					s = state;
 				}
 			}
 		}
 		if (s == null) {
-			throw new IllegalArgumentException("Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
+			throw new IllegalArgumentException("Unable to find state using " + programLookup + " - " + workflowLookup
+			        + " - " + stateLookup);
 		}
 		return s;
 	}
-
+	
 	public static List<ProgramWorkflowState> getProgramWorkflowstateList(String lookup) {
 		List<ProgramWorkflowState> l = new ArrayList<ProgramWorkflowState>();
 		if (ObjectUtil.notNull(lookup)) {
 			String[] split = lookup.split(",");
 			for (String s : split) {
-				int state=Integer.parseInt(s);
+				int state = Integer.parseInt(s);
 				l.add(Context.getProgramWorkflowService().getState(state));
 			}
 		}
 		return l;
 	}
+	
 	/**
 	 * @return the PatientIdentifier that matches the passed uuid, name, or primary key id
 	 */
@@ -133,28 +132,29 @@ public class MetadataLookup {
 			pit = Context.getPatientService().getPatientIdentifierTypeByName(lookup);
 		}
 		if (pit == null) {
-			try{
+			try {
 				pit = Context.getPatientService().getPatientIdentifierType(Integer.parseInt(lookup));
 			}
-			catch(Exception e) { }
+			catch (Exception e) {}
 		}
 		if (pit == null) {
 			throw new RuntimeException("Unable to find Patient Identifier using key: " + lookup);
 		}
 		return pit;
 	}
-
+	
 	/**
-	 * @return the Concept that matches the passed uuid, name, source:code mapping, or primary key id
+	 * @return the Concept that matches the passed uuid, name, source:code mapping, or primary key
+	 *         id
 	 */
 	public static Concept getConcept(String lookup) {
-
+		
 		// First try to lookup based on UUID
 		Concept c = Context.getConceptService().getConceptByUuid(lookup);
 		if (c != null) {
 			return c;
 		}
-
+		
 		// Next lookup based on name.  Return any exact match for current locale, otherwise first found concept with matching fully specified name
 		List<Concept> possible = Context.getConceptService().getConceptsByName(lookup, Context.getLocale(), false);
 		Set<Concept> matches = new HashSet<Concept>();
@@ -168,8 +168,7 @@ public class MetadataLookup {
 		if (!matches.isEmpty()) {
 			if (matches.size() == 1) {
 				return matches.iterator().next();
-			}
-			else {
+			} else {
 				for (Concept possibleMatch : matches) {
 					for (ConceptName conceptName : possibleMatch.getNames(false)) {
 						if (conceptName.isFullySpecifiedName()) {
@@ -179,7 +178,7 @@ public class MetadataLookup {
 				}
 			}
 		}
-
+		
 		// Next, try to lookup based on concept mapping, where the lookup is source:term
 		try {
 			String[] split = lookup.split("\\:");
@@ -191,7 +190,7 @@ public class MetadataLookup {
 			}
 		}
 		catch (Exception e) {}
-
+		
 		// Finally try to lookup by id
 		try {
 			c = Context.getConceptService().getConcept(Integer.parseInt(lookup));
@@ -200,10 +199,10 @@ public class MetadataLookup {
 			}
 		}
 		catch (Exception e) {}
-
+		
 		throw new IllegalArgumentException("Unable to find Concept using key: " + lookup);
 	}
-
+	
 	/**
 	 * @return the List of Concepts that matches the passed comma-separated list of concept lookups
 	 * @see MetadataLookup#getConcept(String)
@@ -223,21 +222,21 @@ public class MetadataLookup {
 	 * @return the List of Concepts that matches the passed any separated list of concept lookups
 	 * @see MetadataLookup#getConcept(String)
 	 */
-	public static List<Concept> getConceptList(String lookup,String separator) {
+	public static List<Concept> getConceptList(String lookup, String separator) {
 		List<Concept> l = new ArrayList<Concept>();
 		if (ObjectUtil.notNull(lookup)) {
-			if(ObjectUtil.notNull(separator)){
-			String[] split = lookup.split(separator);
-			for (String s : split) {
-				l.add(MetadataLookup.getConcept(s));
-			}
-			}else{
+			if (ObjectUtil.notNull(separator)) {
+				String[] split = lookup.split(separator);
+				for (String s : split) {
+					l.add(MetadataLookup.getConcept(s));
+				}
+			} else {
 				l.add(MetadataLookup.getConcept(lookup));
 			}
 		}
 		return l;
 	}
-
+	
 	/**
 	 * @return the Form that matches the passed uuid, name, or primary key id
 	 */
@@ -253,14 +252,14 @@ public class MetadataLookup {
 			try {
 				form = Context.getFormService().getForm(Integer.parseInt(lookup));
 			}
-			catch(Exception e) { }
+			catch (Exception e) {}
 		}
 		if (form == null) {
 			throw new IllegalArgumentException("Unable to find Form using key: " + lookup);
 		}
 		return form;
 	}
-
+	
 	/**
 	 * @return the List of Forms that matches the passed comma-separated list of Form lookups
 	 * @see MetadataLookup#getForm(String)
@@ -280,21 +279,21 @@ public class MetadataLookup {
 	 * @return the List of Forms that matches the passed any separated list of Form lookups
 	 * @see MetadataLookup#getForm(String)
 	 */
-	public static List<Form> getFormList(String lookup,String separator) {
+	public static List<Form> getFormList(String lookup, String separator) {
 		List<Form> l = new ArrayList<Form>();
 		if (ObjectUtil.notNull(lookup)) {
-			if(ObjectUtil.notNull(separator)){
-			String[] split = lookup.split(separator);
-			for (String s : split) {
-				l.add(MetadataLookup.getForm(s));
-			}
-			}else{
+			if (ObjectUtil.notNull(separator)) {
+				String[] split = lookup.split(separator);
+				for (String s : split) {
+					l.add(MetadataLookup.getForm(s));
+				}
+			} else {
 				l.add(MetadataLookup.getForm(lookup));
 			}
 		}
 		return l;
 	}
-
+	
 	/**
 	 * @return the EncounterType that matches the passed uuid, name, or primary key id
 	 */
@@ -307,76 +306,78 @@ public class MetadataLookup {
 			try {
 				et = Context.getEncounterService().getEncounterType(Integer.parseInt(lookup));
 			}
-			catch(Exception e) {}
+			catch (Exception e) {}
 		}
 		if (et == null) {
 			throw new IllegalArgumentException("Unable to find EncounterType using key: " + lookup);
 		}
 		
 		return et;
-	}	
+	}
 	
 	/**
-	 * @return the List of EncounterTypes that matches the passed comma-separated list of Encounter lookups
+	 * @return the List of EncounterTypes that matches the passed comma-separated list of Encounter
+	 *         lookups
 	 * @see MetadataLookup#getEncounterType(String)
 	 */
 	public static List<EncounterType> getEncounterTypeList(String lookup) {
 		List<EncounterType> l = new ArrayList<EncounterType>();
 		if (ObjectUtil.notNull(lookup)) {
-				String[] split = lookup.split(",");
-				for (String s : split) {
-					l.add(MetadataLookup.getEncounterType(s));
-			
-		}
+			String[] split = lookup.split(",");
+			for (String s : split) {
+				l.add(MetadataLookup.getEncounterType(s));
+				
+			}
 		}
 		return l;
 	}
 	
 	/**
-	 * @return the List of EncounterTypes that matches the passed any separated list of Encounter lookups
+	 * @return the List of EncounterTypes that matches the passed any separated list of Encounter
+	 *         lookups
 	 * @see MetadataLookup#getEncounterType(String)
 	 */
-	public static List<EncounterType> getEncounterTypeList(String lookup,String separator) {
+	public static List<EncounterType> getEncounterTypeList(String lookup, String separator) {
 		List<EncounterType> l = new ArrayList<EncounterType>();
 		if (ObjectUtil.notNull(lookup)) {
-			if(ObjectUtil.notNull(separator)){
+			if (ObjectUtil.notNull(separator)) {
 				String[] split = lookup.split(separator);
 				for (String s : split) {
 					l.add(MetadataLookup.getEncounterType(s));
-			}
-			}else{
-				l.add(MetadataLookup.getEncounterType(lookup));	
+				}
+			} else {
+				l.add(MetadataLookup.getEncounterType(lookup));
 			}
 		}
 		return l;
 	}
-
+	
 	/**
 	 * @return the RelationshipType that matches the passed uuid, name, or primary key id
 	 */
 	public static RelationshipType getRelationshipType(String lookup) {
 		RelationshipType rt = Context.getPersonService().getRelationshipTypeByUuid(lookup);
 		if (rt == null) {
-			rt =  Context.getPersonService().getRelationshipTypeByName(lookup);
+			rt = Context.getPersonService().getRelationshipTypeByName(lookup);
 		}
 		if (rt == null) {
 			try {
-				rt =  Context.getPersonService().getRelationshipType(Integer.parseInt(lookup));
+				rt = Context.getPersonService().getRelationshipType(Integer.parseInt(lookup));
 			}
-			catch(Exception e) {}
+			catch (Exception e) {}
 		}
 		if (rt == null) {
 			try {
-				rt =  Context.getPersonService().getRelationshipTypeByUuid(lookup);
+				rt = Context.getPersonService().getRelationshipTypeByUuid(lookup);
 			}
-			catch(Exception e) {}
+			catch (Exception e) {}
 		}
 		if (rt == null) {
 			throw new IllegalArgumentException("Unable to find RelationshipType using key: " + lookup);
 		}
 		return rt;
 	}
-
+	
 	/**
 	 * @return the OrderType that matches the passed uuid, name, or primary key id
 	 */
@@ -391,16 +392,16 @@ public class MetadataLookup {
 		}
 		if (ot == null) {
 			try {
-				ot =  Context.getOrderService().getOrderType(Integer.parseInt(lookup));
+				ot = Context.getOrderService().getOrderType(Integer.parseInt(lookup));
 			}
-			catch(Exception e) { }
+			catch (Exception e) {}
 		}
 		if (ot == null) {
 			throw new IllegalArgumentException("Unable to find OrderType using key: " + lookup);
 		}
 		return ot;
 	}
-
+	
 	/**
 	 * @return the Location that matches the passed uuid, name, or primary key id
 	 */
@@ -413,15 +414,15 @@ public class MetadataLookup {
 			try {
 				et = Context.getLocationService().getLocation(Integer.parseInt(lookup));
 			}
-			catch(Exception e) {}
+			catch (Exception e) {}
 		}
 		if (et == null) {
 			throw new IllegalArgumentException("Unable to find Location using key: " + lookup);
 		}
-
+		
 		return et;
 	}
-
+	
 	/**
 	 * @return the PersonAttributeType that matches the passed uuid, name, or primary key id
 	 */
@@ -434,12 +435,12 @@ public class MetadataLookup {
 			try {
 				et = Context.getPersonService().getPersonAttributeType(Integer.parseInt(lookup));
 			}
-			catch(Exception e) {}
+			catch (Exception e) {}
 		}
 		if (et == null) {
 			throw new IllegalArgumentException("Unable to find PersonAttributeType using key: " + lookup);
 		}
-
+		
 		return et;
 	}
 }

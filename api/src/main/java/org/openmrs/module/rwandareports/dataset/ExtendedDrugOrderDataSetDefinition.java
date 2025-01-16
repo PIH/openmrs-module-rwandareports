@@ -4,12 +4,10 @@ import org.openmrs.Concept;
 import org.openmrs.module.reporting.dataset.definition.BaseDataSetDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-
 /**
  *
  */
 public class ExtendedDrugOrderDataSetDefinition extends BaseDataSetDefinition {
-	
 	
 	//***** PROPERTIES *****
 	
@@ -18,7 +16,6 @@ public class ExtendedDrugOrderDataSetDefinition extends BaseDataSetDefinition {
 	
 	@ConfigurationProperty
 	Concept indication = null;
-	
 	
 	//***** CONSTRUCTORS *****
 	
@@ -29,19 +26,19 @@ public class ExtendedDrugOrderDataSetDefinition extends BaseDataSetDefinition {
 		
 	}
 	
-    public String getDrugRegimen() {
-    	return drugRegimen;
-    }
-    
-    public void setDrugRegimen(String drugRegimen) {
-    	this.drugRegimen = drugRegimen;
-    }
-
+	public String getDrugRegimen() {
+		return drugRegimen;
+	}
+	
+	public void setDrugRegimen(String drugRegimen) {
+		this.drugRegimen = drugRegimen;
+	}
+	
 	public Concept getIndication() {
-    	return indication;
-    }
-
-    public void setIndication(Concept indication) {
-    	this.indication = indication;
-    }
+		return indication;
+	}
+	
+	public void setIndication(Concept indication) {
+		this.indication = indication;
+	}
 }

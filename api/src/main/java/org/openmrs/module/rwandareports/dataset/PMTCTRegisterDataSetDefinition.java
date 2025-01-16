@@ -23,13 +23,14 @@ import org.openmrs.module.reporting.dataset.definition.evaluator.SimplePatientDa
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 
 /**
- * This is a simple example of how one might implement a row-per-Patient DataSetDefinition
- * There are no guarantees that this class will be backwards compatible, or exist in a future
- * release, so should be used with caution
+ * This is a simple example of how one might implement a row-per-Patient DataSetDefinition There are
+ * no guarantees that this class will be backwards compatible, or exist in a future release, so
+ * should be used with caution
+ * 
  * @see SimplePatientDataSetEvaluator
  */
 public class PMTCTRegisterDataSetDefinition extends BaseDataSetDefinition {
-
+	
 	private static final long serialVersionUID = 6405583324151111487L;
 	
 	private List<RowPerPatientData> columns;
@@ -37,7 +38,6 @@ public class PMTCTRegisterDataSetDefinition extends BaseDataSetDefinition {
 	private List<CohortDefinition> filters;
 	
 	private Patient patient;
-	
 	
 	/**
 	 * Constructor
@@ -52,71 +52,61 @@ public class PMTCTRegisterDataSetDefinition extends BaseDataSetDefinition {
 	public PMTCTRegisterDataSetDefinition(String name, String description) {
 		super(name, description);
 	}
-
 	
-    /**
-     * @return the columns
-     */
-    public List<RowPerPatientData> getColumns() {
-    	if (columns == null) {
+	/**
+	 * @return the columns
+	 */
+	public List<RowPerPatientData> getColumns() {
+		if (columns == null) {
 			columns = new ArrayList<RowPerPatientData>();
 		}
-    	return columns;
-    }
-
+		return columns;
+	}
 	
-    /**
-     * @param columns the columns to set
-     */
-    public void setColumns(List<RowPerPatientData> columns) {
-    	this.columns = columns;
-    }
-
+	/**
+	 * @param columns the columns to set
+	 */
+	public void setColumns(List<RowPerPatientData> columns) {
+		this.columns = columns;
+	}
 	
-    /**
-     * @return the patient
-     */
-    public Patient getPatient() {
-    	return patient;
-    }
-
+	/**
+	 * @return the patient
+	 */
+	public Patient getPatient() {
+		return patient;
+	}
 	
-    /**
-     * @param patient the patient to set
-     */
-    public void setPatient(Patient patient) {
-    	this.patient = patient;
-    }
-
+	/**
+	 * @param patient the patient to set
+	 */
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
 	
-	public void addColumn(RowPerPatientData column)
-	{
+	public void addColumn(RowPerPatientData column) {
 		getColumns().add(column);
 	}
-
 	
-    /**
-     * @return the filters
-     */
-    public List<CohortDefinition> getFilters() {
-    	if (filters == null) {
+	/**
+	 * @return the filters
+	 */
+	public List<CohortDefinition> getFilters() {
+		if (filters == null) {
 			filters = new ArrayList<CohortDefinition>();
 		}
-    	return filters;
-    }
-
+		return filters;
+	}
 	
-    /**
-     * @param filters the filters to set
-     */
-    public void setFilters(List<CohortDefinition> filters) {
-    	this.filters = filters;
-    }
-
-    public void addFilter(CohortDefinition cohort)
-    {
-    	getFilters().add(cohort);
-    }
+	/**
+	 * @param filters the filters to set
+	 */
+	public void setFilters(List<CohortDefinition> filters) {
+		this.filters = filters;
+	}
+	
+	public void addFilter(CohortDefinition cohort) {
+		getFilters().add(cohort);
+	}
 	
 }
-

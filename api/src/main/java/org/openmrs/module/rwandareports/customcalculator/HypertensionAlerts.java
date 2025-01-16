@@ -35,12 +35,10 @@ public class HypertensionAlerts implements CustomCalculation {
 			
 			//boolean uncontrolledAlert = false;
 			if (result.getName().equals("systolic") && !alerts.toString().contains("Last BP was uncontrolled")) {
-				ObservationResult systolic = (ObservationResult)result;
+				ObservationResult systolic = (ObservationResult) result;
 				
-				if(systolic.getValue() != null && systolic.getObs() != null && systolic.getObs().getValueNumeric() > 140)
-				{
-					if(alerts.length() > 0)
-					{
+				if (systolic.getValue() != null && systolic.getObs() != null && systolic.getObs().getValueNumeric() > 140) {
+					if (alerts.length() > 0) {
 						alerts.append(", \n");
 					}
 					alerts.append("Last BP was uncontrolled");
@@ -50,15 +48,13 @@ public class HypertensionAlerts implements CustomCalculation {
 				//uncontrolledAlert = true;
 			}
 			
-			if(!alerts.toString().contains("Last BP was uncontrolled"))
-			{
+			if (!alerts.toString().contains("Last BP was uncontrolled")) {
 				if (result.getName().equals("diastolic")) {
-					ObservationResult diastolic = (ObservationResult)result;
+					ObservationResult diastolic = (ObservationResult) result;
 					
-					if(diastolic.getValue() != null && diastolic.getObs() != null && diastolic.getObs().getValueNumeric() > 90)
-					{
-						if(alerts.length() > 0)
-						{
+					if (diastolic.getValue() != null && diastolic.getObs() != null
+					        && diastolic.getObs().getValueNumeric() > 90) {
+						if (alerts.length() > 0) {
 							alerts.append(", \n");
 						}
 						alerts.append("Last BP was uncontrolled");
@@ -66,41 +62,41 @@ public class HypertensionAlerts implements CustomCalculation {
 				}
 			}
 			
-//			if(result.getName().equals("systolicLastTwo"))
-//			{
-//				AllObservationValuesResult systolicLastTwo = (AllObservationValuesResult)result;
-//				
-//				if(systolicLastTwo.getValue() != null && systolicLastTwo.getValue().size() > 1)
-//				{
-//					int increase = increaseBetweenTwoObs(systolicLastTwo.getValue());
-//					if(increase >= 5)
-//					{
-//						if(alerts.length() > 0)
-//						{
-//							alerts.append(", ");
-//						}
-//						alerts.append("Last last 2 recorded systolic BP showed an increase of " + increase);
-//					}
-//				}
-//			}
-//			
-//			if(result.getName().equals("diastolicLastTwo"))
-//			{
-//				AllObservationValuesResult diastolicLastTwo = (AllObservationValuesResult)result;
-//				
-//				if(diastolicLastTwo.getValue() != null && diastolicLastTwo.getValue().size() > 1)
-//				{
-//					int increase = increaseBetweenTwoObs(diastolicLastTwo.getValue());
-//					if(increase >= 5)
-//					{
-//						if(alerts.length() > 0)
-//						{
-//							alerts.append(", ");
-//						}
-//						alerts.append("Last last 2 recorded diastolic BP showed an increase of " + increase);
-//					}
-//				}
-//			}
+			//			if(result.getName().equals("systolicLastTwo"))
+			//			{
+			//				AllObservationValuesResult systolicLastTwo = (AllObservationValuesResult)result;
+			//				
+			//				if(systolicLastTwo.getValue() != null && systolicLastTwo.getValue().size() > 1)
+			//				{
+			//					int increase = increaseBetweenTwoObs(systolicLastTwo.getValue());
+			//					if(increase >= 5)
+			//					{
+			//						if(alerts.length() > 0)
+			//						{
+			//							alerts.append(", ");
+			//						}
+			//						alerts.append("Last last 2 recorded systolic BP showed an increase of " + increase);
+			//					}
+			//				}
+			//			}
+			//			
+			//			if(result.getName().equals("diastolicLastTwo"))
+			//			{
+			//				AllObservationValuesResult diastolicLastTwo = (AllObservationValuesResult)result;
+			//				
+			//				if(diastolicLastTwo.getValue() != null && diastolicLastTwo.getValue().size() > 1)
+			//				{
+			//					int increase = increaseBetweenTwoObs(diastolicLastTwo.getValue());
+			//					if(increase >= 5)
+			//					{
+			//						if(alerts.length() > 0)
+			//						{
+			//							alerts.append(", ");
+			//						}
+			//						alerts.append("Last last 2 recorded diastolic BP showed an increase of " + increase);
+			//					}
+			//				}
+			//			}
 		}
 		
 		alert.setValue(alerts.toString().trim());
@@ -111,22 +107,19 @@ public class HypertensionAlerts implements CustomCalculation {
 		
 		List<Form> forms = gp.getFormList(GlobalPropertiesManagement.HYPERTENSION_DDBs);
 		Patient p = result.getPatientData().getPatient();
-		for (Form form:forms) {
+		for (Form form : forms) {
 			if (RwandaReportsUtil.patientHasForm(p, form))
-			return true;
+				return true;
 		}
-		return  false;
+		return false;
 	}
 	
-	private int increaseBetweenTwoObs(List<Obs> obs)
-	{
+	private int increaseBetweenTwoObs(List<Obs> obs) {
 		Obs one = obs.get(0);
 		Obs two = obs.get(1);
 		
-		if(one.getValueNumeric() != null && two.getValueNumeric() != null)
-		{
-			if(one.getObsDatetime().after(two.getObsDatetime()))
-			{
+		if (one.getValueNumeric() != null && two.getValueNumeric() != null) {
+			if (one.getObsDatetime().after(two.getObsDatetime())) {
 				return one.getValueNumeric().intValue() - two.getValueNumeric().intValue();
 			}
 			

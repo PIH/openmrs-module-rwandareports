@@ -18,16 +18,15 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Renderer for Data Quality report
- *
  */
 @Handler
 public class DataQualityWebRendererForSites extends AbstractRwandaWebRenderer {
-
+	
 	@Override
-    public String getLabel() {
-    	return "DQ-Data Quality HIV/TB Report For All Sites";
-    }
-
+	public String getLabel() {
+		return "DQ-Data Quality HIV/TB Report For All Sites";
+	}
+	
 	@Override
 	public String getLinkUrl(ReportDefinition arg0) {
 		return "module/rwandareports/renderDataQualityDataSet.form";
@@ -35,7 +34,7 @@ public class DataQualityWebRendererForSites extends AbstractRwandaWebRenderer {
 	
 	public String getDataSetNameToCheck() {
 		return "DQ-Data Quality HIV/TB Report For All Sites Data Set";
-
+		
 	}
-
+	
 }

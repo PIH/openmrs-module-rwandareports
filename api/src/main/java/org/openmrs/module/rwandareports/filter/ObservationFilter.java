@@ -10,25 +10,24 @@ public class ObservationFilter implements ResultFilter {
 	private String finalDateFormat = "ddMMMyy";
 	
 	public Object filter(Object value) {
-		Obs result = (Obs)value;
+		Obs result = (Obs) value;
 		
 		StringBuilder sb = new StringBuilder();
 		
-		if(result != null)
-		{
+		if (result != null) {
 			Double val = result.getValueNumeric();
 			sb.append(val.intValue());
 			sb.append(" @");
 			sb.append(new SimpleDateFormat(finalDateFormat).format(result.getObsDatetime()));
-			sb.append(" ");	
+			sb.append(" ");
 		}
 		
 		return sb.toString();
 	}
-
+	
 	public Object filterWhenNull() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

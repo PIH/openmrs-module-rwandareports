@@ -12,7 +12,6 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-
 package org.openmrs.module.rwandareports.patientsummary;
 
 import org.openmrs.Encounter;
@@ -50,35 +49,35 @@ import java.util.UUID;
  */
 @Component
 public class OncologyPatientSummary extends BasePatientSummaryManager {
-
+	
 	@Override
 	public String getUuid() {
-		return UUID.randomUUID().toString();  // TODO: Make this a static value in a constant
+		return UUID.randomUUID().toString(); // TODO: Make this a static value in a constant
 	}
-
+	
 	/**
 	 * @return the unique key that can be used to reference this patient summary
 	 */
 	public String getKey() {
 		return "oncologyPatientSummary";
 	}
-
+	
 	@Override
 	public List<Program> getRequiredPrograms() {
 		Program oncologyProgram = Context.getProgramWorkflowService().getProgram(18);
 		return Arrays.asList(oncologyProgram);
 	}
-
+	
 	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition();
 		Map<String, Object> mappings = new HashMap<String, Object>();
-
+		
 		reportDefinition.addDataSetDefinition("patient", dsd, mappings);
-
+		
 		// TODO: Get all of the below definitions from a library, do not construct on the fly
-
+		
 		{
 			PatientIdDataDefinition d = new PatientIdDataDefinition();
 			dsd.addColumn("patientId", d, mappings);
@@ -93,7 +92,8 @@ public class OncologyPatientSummary extends BasePatientSummaryManager {
 			d.setWhich(TimeQualifier.LAST);
 			d.setQuestion(Context.getConceptService().getConcept("WEIGHT (KG)"));
 			dsd.addColumn("lastWeight", d, mappings, new PropertyConverter(Obs.class, "valueNumeric"));
-			dsd.addColumn("lastWeightDate", d, mappings, new PropertyConverter(Obs.class, "obsDatetime"), new DateConverter("dd/MMM/yyyy"));
+			dsd.addColumn("lastWeightDate", d, mappings, new PropertyConverter(Obs.class, "obsDatetime"), new DateConverter(
+			        "dd/MMM/yyyy"));
 		}
 		
 		{
@@ -101,19 +101,21 @@ public class OncologyPatientSummary extends BasePatientSummaryManager {
 			d.setWhich(TimeQualifier.LAST);
 			d.setQuestion(Context.getConceptService().getConcept("HEIGHT (CM)"));
 			dsd.addColumn("lastHeight", d, mappings, new PropertyConverter(Obs.class, "valueNumeric"));
-			dsd.addColumn("lastHeightDate", d, mappings, new PropertyConverter(Obs.class, "obsDatetime"), new DateConverter("dd/MMM/yyyy"));
+			dsd.addColumn("lastHeightDate", d, mappings, new PropertyConverter(Obs.class, "obsDatetime"), new DateConverter(
+			        "dd/MMM/yyyy"));
 		}
 		
 		{
 			PatientIdentifierDataDefinition d = new PatientIdentifierDataDefinition();
 			d.addType(Context.getPatientService().getPatientIdentifierTypeByName("IMB ID"));
-			d.addType(Context.getPatientService().getPatientIdentifierTypeByName("IMB Primary Care Registration ID"));			
+			d.addType(Context.getPatientService().getPatientIdentifierTypeByName("IMB Primary Care Registration ID"));
 			dsd.addColumn("imbId", d, mappings);
 		}
 		{
 			EncountersForPatientDataDefinition d = new EncountersForPatientDataDefinition();
 			d.setWhich(TimeQualifier.LAST);
-			dsd.addColumn("lastEncounterDate", d, mappings, new PropertyConverter(Encounter.class, "encounterDatetime"), new DateConverter("dd/MMM/yyyy"));
+			dsd.addColumn("lastEncounterDate", d, mappings, new PropertyConverter(Encounter.class, "encounterDatetime"),
+			    new DateConverter("dd/MMM/yyyy"));
 			dsd.addColumn("lastEncounterType", d, mappings, new PropertyConverter(Encounter.class, "encounterType.name"));
 		}
 		
@@ -126,36 +128,36 @@ public class OncologyPatientSummary extends BasePatientSummaryManager {
 				
 				ProgramEnrollmentsForPatientDataDefinition d = new ProgramEnrollmentsForPatientDataDefinition();
 				d.setProgram(program);
-				d.addParameter(new Parameter("activeOnDate", "activeOnDate", Date.class));				
-				activeprograms.addContainedDataDefinition("pp"+program.getProgramId(), d,ParameterizableUtil.createParameterMappings("activeOnDate=${now}"));
-				
+				d.addParameter(new Parameter("activeOnDate", "activeOnDate", Date.class));
+				activeprograms.addContainedDataDefinition("pp" + program.getProgramId(), d,
+				    ParameterizableUtil.createParameterMappings("activeOnDate=${now}"));
 				
 			}
-			StringBuilder script=new StringBuilder();			
-			int i=0;			
+			StringBuilder script = new StringBuilder();
+			int i = 0;
 			script.append("prognames=\"\";");
 			for (Program program : programs) {
-				if(i==0){					
-					script.append("if(pp"+program.getProgramId()+"!=null)");
+				if (i == 0) {
+					script.append("if(pp" + program.getProgramId() + "!=null)");
 					script.append("prognames=");
-					script.append("pp"+program.getProgramId());
+					script.append("pp" + program.getProgramId());
 					script.append(".program.name; ");
-					i++;					
-				}else{
-								
-					script.append(" if(pp"+program.getProgramId()+"!=null)");
+					i++;
+				} else {
+					
+					script.append(" if(pp" + program.getProgramId() + "!=null)");
 					script.append("prognames=prognames");
 					script.append("+\" \"+");
-					script.append("pp"+program.getProgramId());
+					script.append("pp" + program.getProgramId());
 					script.append(".program.name; ");
 					i++;
 				}
 			}
 			script.append("return prognames;");
 			activeprograms.setScriptCode(script.toString());
-			dsd.addColumn("activePrograms", activeprograms,mappings);
+			dsd.addColumn("activePrograms", activeprograms, mappings);
 		}
-
+		
 		return reportDefinition;
 	}
 }

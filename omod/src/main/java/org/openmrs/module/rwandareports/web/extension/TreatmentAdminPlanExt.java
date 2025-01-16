@@ -15,26 +15,25 @@ package org.openmrs.module.rwandareports.web.extension;
 
 import org.openmrs.module.web.extension.PortletExt;
 
-
 /**
  *
  */
 public class TreatmentAdminPlanExt extends PortletExt {
-
+	
 	/**
-     * @see org.openmrs.module.web.extension.PortletExt#getPortletParameters()
-     */
-    @Override
-    public String getPortletParameters() {
-	    return null;
-    }
-
+	 * @see org.openmrs.module.web.extension.PortletExt#getPortletParameters()
+	 */
+	@Override
+	public String getPortletParameters() {
+		return null;
+	}
+	
 	/**
-     * @see org.openmrs.module.web.extension.PortletExt#getPortletUrl()
-     */
-    @Override
-    public String getPortletUrl() {
-	    return "/regimenHeader.portlet";
-    }
-    
+	 * @see org.openmrs.module.web.extension.PortletExt#getPortletUrl()
+	 */
+	@Override
+	public String getPortletUrl() {
+		return "/regimenHeader.portlet";
+	}
+	
 }

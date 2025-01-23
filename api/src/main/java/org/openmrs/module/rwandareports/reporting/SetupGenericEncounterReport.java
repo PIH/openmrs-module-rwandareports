@@ -60,7 +60,8 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 		reportDefinition.addParameter(new Parameter("startDate", "From Date", Date.class));	
 		reportDefinition.addParameter(new Parameter("endDate", "To Date", Date.class));
 //		reportDefinition.addParameter(new Parameter("location", "Health Facility", Location.class));
-		Parameter location = new Parameter("location", "Location", AllLocation.class, properties);
+//		Parameter location = new Parameter("location", "Location", AllLocation.class, properties);
+		Parameter location = new Parameter("location", "Health Facility", Location.class);
 		location.setRequired(false);
 
 		Parameter encouterType = new Parameter("encounterTypes", "Encounter Type", EncounterType.class);
@@ -72,10 +73,10 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 		reportDefinition.addParameter(encouterType);
 		reportDefinition.addParameter(form);
 
-//		reportDefinition.addDataSetDefinition(createQuarterlyLocationDataSet(reportDefinition),
-//				ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
+		reportDefinition.addDataSetDefinition(createQuarterlyLocationDataSet(reportDefinition),
+				ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
 
-		createQuarterlyLocationDataSet(reportDefinition);
+//		createQuarterlyLocationDataSet(reportDefinition);
 
 //		createDataSetDefinition(reportDefinition);
 
@@ -101,13 +102,13 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 		dsd.setName("Quarterly Cohort Data Set");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		createDataSetDefinition(reportDefinition,dsd);
+		createDataSetDefinition(reportDefinition);
 		return dsd;
 	}
 	
-	private void createDataSetDefinition(ReportDefinition reportDefinition, EncounterAndObsDataSetDefinition dsd) {
-//		EncounterAndObsDataSetDefinition dsd = new EncounterAndObsDataSetDefinition();
-//		dsd.setName("dsd");
+	private void createDataSetDefinition(ReportDefinition reportDefinition) {
+		EncounterAndObsDataSetDefinition dsd = new EncounterAndObsDataSetDefinition();
+		dsd.setName("dsd");
 		dsd.setParameters(getParameters());
 
 		BasicEncounterQuery rowFilter = new BasicEncounterQuery();
@@ -115,7 +116,8 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 		rowFilter.addParameter(new Parameter("onOrBefore", "On Or Before", Date.class));
 		rowFilter.addParameter(new Parameter("location", "Health Facility", Location.class));
 
-		Parameter locationList = new Parameter("locationList", "Health Facility", LocationHierarchy.class);
+//		Parameter locationList = new Parameter("locationList", "Health Facility", LocationHierarchy.class);
+		Parameter locationList = new Parameter("locationList", "Health Facility", Location.class);
 		locationList.setRequired(false);
 		Parameter encouterType = new Parameter("encounterTypes", "Encounter Type", EncounterType.class);
 		Parameter form = new Parameter("forms", "Form", Form.class);

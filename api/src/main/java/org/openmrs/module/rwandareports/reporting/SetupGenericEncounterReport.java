@@ -132,6 +132,7 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 
 		dsd.addColumn("SYSTEM_PATIENT_ID", patientData.getPatientId(), "");
 		dsd.addColumn("IDENTIFIER", patientData.getPreferredIdentifierIdentifier(), "");
+		dsd.addColumn("DATE OF BIRTH", patientData.getBirthdateYmd(), "");
 		dsd.addColumn("AGE", patientData.getAgeOnDateYears(), "");
 		dsd.addColumn("GENDER", patientData.getGender(), "");
 		dsd.addColumn("FAMILY NAME", patientData.getPreferredFamilyName(), "");

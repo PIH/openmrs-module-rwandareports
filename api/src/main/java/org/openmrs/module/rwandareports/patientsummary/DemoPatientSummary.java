@@ -12,7 +12,6 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-
 package org.openmrs.module.rwandareports.patientsummary;
 
 import org.openmrs.Obs;
@@ -40,35 +39,35 @@ import java.util.UUID;
  */
 //@Component
 public class DemoPatientSummary extends BasePatientSummaryManager {
-
+	
 	@Override
 	public String getUuid() {
-		return UUID.randomUUID().toString();  // TODO: Make this a static value in a constant
+		return UUID.randomUUID().toString(); // TODO: Make this a static value in a constant
 	}
-
+	
 	/**
 	 * @return the unique key that can be used to reference this patient summary
 	 */
 	public String getKey() {
 		return "demoPatientSummary";
 	}
-
+	
 	@Override
 	public List<Program> getRequiredPrograms() {
 		Program hivProgram = Context.getProgramWorkflowService().getProgram(3);
 		return Arrays.asList(hivProgram);
 	}
-
+	
 	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		PatientDataSetDefinition dsd = new PatientDataSetDefinition();
 		Map<String, Object> mappings = new HashMap<String, Object>();
-
+		
 		reportDefinition.addDataSetDefinition("patient", dsd, mappings);
-
+		
 		// TODO: Get all of the below definitions from a library, do not construct on the fly
-
+		
 		{
 			PatientIdDataDefinition d = new PatientIdDataDefinition();
 			dsd.addColumn("patientId", d, mappings);
@@ -83,9 +82,10 @@ public class DemoPatientSummary extends BasePatientSummaryManager {
 			d.setWhich(TimeQualifier.LAST);
 			d.setQuestion(Context.getConceptService().getConcept("WEIGHT (KG)"));
 			dsd.addColumn("lastWeight", d, mappings, new PropertyConverter(Obs.class, "valueNumeric"));
-			dsd.addColumn("lastWeightDate", d, mappings, new PropertyConverter(Obs.class, "obsDatetime"), new DateConverter("dd/MMM/yyyy"));
+			dsd.addColumn("lastWeightDate", d, mappings, new PropertyConverter(Obs.class, "obsDatetime"), new DateConverter(
+			        "dd/MMM/yyyy"));
 		}
-
+		
 		return reportDefinition;
 	}
 }

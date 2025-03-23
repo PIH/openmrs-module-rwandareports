@@ -66,12 +66,14 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		AllLocation location = lhdsd.getLocation();
 		if (location != null) {
 			if (!location.isAllSites() && location.getHierarchy().equals(AllLocation.LOCATION)) {
-				addIteration(ret, getEncounters(location.getValue(), LOCATION, location.getValue(), lhdsd.getEncounterTypes()), location.getValue(),
-				    context, lhdsd);
+				addIteration(ret,
+				    getEncounters(location.getValue(), LOCATION, location.getValue(), lhdsd.getEncounterTypes()),
+				    location.getValue(), context, lhdsd);
 			} else if (!location.isAllSites()) {
 				List<Location> allLocations = Context.getLocationService().getAllLocations(false);
 				
-				addIteration(ret, getEncounters(location.getValue(), HIERARCHY, location.getHierarchy(), lhdsd.getEncounterTypes()),
+				addIteration(ret,
+				    getEncounters(location.getValue(), HIERARCHY, location.getHierarchy(), lhdsd.getEncounterTypes()),
 				    location.getValue() + " " + location.getDisplayHierarchy(), context, lhdsd);
 				
 				for (Location l : allLocations) {
@@ -82,13 +84,13 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 					}
 					
 					if (location.getValue() != null && location.getValue().toUpperCase().equals(hierarchyValue)) {
-						addIteration(ret, getEncounters(l.getName(), LOCATION, l.getName(), lhdsd.getEncounterTypes()), l.getName(), context,
-							lhdsd);
+						addIteration(ret, getEncounters(l.getName(), LOCATION, l.getName(), lhdsd.getEncounterTypes()),
+						    l.getName(), context, lhdsd);
 					}
 				}
 			} else {
-				addIteration(ret, getEncounters("All Sites", ALL_SITES, "All Sites", lhdsd.getEncounterTypes()), "All Sites", context,
-					lhdsd);
+				addIteration(ret, getEncounters("All Sites", ALL_SITES, "All Sites", lhdsd.getEncounterTypes()),
+				    "All Sites", context, lhdsd);
 				
 				List<Location> allLocations = Context.getLocationService().getAllLocations(false);
 				
@@ -117,14 +119,14 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 					}
 					
 					for (String hLoc : allLoc) {
-						addIteration(ret, getEncounters(hLoc, HIERARCHY, hVal, lhdsd.getEncounterTypes()), hLoc + " " + hDisplay, context,
-							lhdsd);
+						addIteration(ret, getEncounters(hLoc, HIERARCHY, hVal, lhdsd.getEncounterTypes()), hLoc + " "
+						        + hDisplay, context, lhdsd);
 					}
 				}
 				
 				for (Location l : allLocations) {
-					addIteration(ret, getEncounters(l.getName(), LOCATION, l.getName(), lhdsd.getEncounterTypes()), l.getName(), context,
-						lhdsd);
+					addIteration(ret, getEncounters(l.getName(), LOCATION, l.getName(), lhdsd.getEncounterTypes()),
+					    l.getName(), context, lhdsd);
 				}
 			}
 		}
@@ -132,21 +134,21 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		return ret;
 	}
 	
-	private SqlEncounterQuery getEncounters(String location, String hierarchy, String hierarchyValue, List<EncounterType> encounterTypes) {
+	private SqlEncounterQuery getEncounters(String location, String hierarchy, String hierarchyValue,
+	        List<EncounterType> encounterTypes) {
 		
 		if (hierarchy.equals(LOCATION)) {
 			Location loc = Context.getLocationService().getLocation(location);
 			
 			SqlEncounterQuery locationCohort = new SqlEncounterQuery();
 			//String sql = "select encounter_id from encounter where form_id is not null and date_created >= :startDate and date_created <= :endDate and voided=0 and location_id =" + loc.getLocationId();
-			String sql = "select encounter_id from encounter where date_created >= :startDate and date_created <= :endDate and voided=0 and location_id =" + loc.getLocationId();
-
-			if(encounterTypes != null && encounterTypes.size() > 0)
-			{
+			String sql = "select encounter_id from encounter where date_created >= :startDate and date_created <= :endDate and voided=0 and location_id ="
+			        + loc.getLocationId();
+			
+			if (encounterTypes != null && encounterTypes.size() > 0) {
 				sql = sql + " and encounter_type in (" + getCommaSeparatedEncounterTypes(encounterTypes) + ")";
 			}
-			locationCohort
-			        .setQuery(sql);
+			locationCohort.setQuery(sql);
 			locationCohort.addParameter(new Parameter("startDate", "startDate", Date.class));
 			locationCohort.addParameter(new Parameter("endDate", "endDate", Date.class));
 			
@@ -159,13 +161,11 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 			/*String sql = "select encounter_id from encounter where form_id is not null and date_created >= :startDate and date_created <= :endDate and voided=0 and location_id in (select location_id from location where retired = 0 and "
 			                + hVal + " = '" + location + "')";*/
 			String sql = "select encounter_id from encounter where date_created >= :startDate and date_created <= :endDate and voided=0 and location_id in (select location_id from location where retired = 0 and "
-					+ hVal + " = '" + location + "')";
-			if(encounterTypes != null && encounterTypes.size() > 0)
-			{
+			        + hVal + " = '" + location + "')";
+			if (encounterTypes != null && encounterTypes.size() > 0) {
 				sql = sql + " and encounter_type in (" + getCommaSeparatedEncounterTypes(encounterTypes) + ")";
 			}
-			locationCohort
-			        .setQuery(sql);
+			locationCohort.setQuery(sql);
 			locationCohort.addParameter(new Parameter("startDate", "startDate", Date.class));
 			locationCohort.addParameter(new Parameter("endDate", "endDate", Date.class));
 			
@@ -175,13 +175,11 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 			SqlEncounterQuery locationCohort = new SqlEncounterQuery();
 			//String sql = "select encounter_id from encounter where form_id is not null and date_created >= :startDate and date_created <= :endDate and voided=0";
 			String sql = "select encounter_id from encounter where date_created >= :startDate and date_created <= :endDate and voided=0";
-
-			if(encounterTypes != null && encounterTypes.size() > 0)
-			{
+			
+			if (encounterTypes != null && encounterTypes.size() > 0) {
 				sql = sql + " and encounter_type in (" + getCommaSeparatedEncounterTypes(encounterTypes) + ")";
 			}
-			locationCohort
-			        .setQuery(sql);
+			locationCohort.setQuery(sql);
 			locationCohort.addParameter(new Parameter("startDate", "startDate", Date.class));
 			locationCohort.addParameter(new Parameter("endDate", "endDate", Date.class));
 			
@@ -190,7 +188,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 	}
 	
 	private void addIteration(SimpleDataSet resultsSet, SqlEncounterQuery cohort, String locationDisplay,
-	                          EvaluationContext context, DataEntryDelayDataSetDefinition dataSetDefinition) throws EvaluationException {
+	        EvaluationContext context, DataEntryDelayDataSetDefinition dataSetDefinition) throws EvaluationException {
 		
 		if (cohort != null) {
 			try {
@@ -244,7 +242,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		} else if (value.equals("neighbourhoodCell")) {
 			return "address3";
 		}
-
+		
 		else if (value.equals("townshipDivision")) {
 			return "township_division";
 		}
@@ -253,7 +251,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 	}
 	
 	private SimpleDataSet getSummaryDataSetForLocation(List<Encounter> encounters, DataSetDefinition dataSetDefinition,
-	                                                   EvaluationContext context) {
+	        EvaluationContext context) {
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		
 		DataSetColumn dataOfficer = new DataSetColumn("dataOfficer", "dataOfficer", String.class);
@@ -296,15 +294,19 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		for (User user : encounterMap.keySet()) {
 			
 			List<Encounter> encs = encounterMap.get(user);
-			addEncounterValues(encs, user.getGivenName() + " " + user.getFamilyName(), dataSet, dataOfficer, totalEncounters, numberAcceptable, proportion,  longestDelay, shortestDelay, meanDelay, modeDelay);
+			addEncounterValues(encs, user.getGivenName() + " " + user.getFamilyName(), dataSet, dataOfficer,
+			    totalEncounters, numberAcceptable, proportion, longestDelay, shortestDelay, meanDelay, modeDelay);
 		}
 		
-		addEncounterValues(encounters, "Total", dataSet, dataOfficer, totalEncounters, numberAcceptable, proportion,  longestDelay, shortestDelay, meanDelay, modeDelay);
+		addEncounterValues(encounters, "Total", dataSet, dataOfficer, totalEncounters, numberAcceptable, proportion,
+		    longestDelay, shortestDelay, meanDelay, modeDelay);
 		return dataSet;
 	}
 	
-	private void addEncounterValues(List<Encounter> encounters, String userName, SimpleDataSet dataSet, DataSetColumn dataOfficer, DataSetColumn totalEncounters, DataSetColumn numberAcceptable, DataSetColumn proportion, DataSetColumn longestDelay, DataSetColumn shortestDelay, DataSetColumn meanDelay, DataSetColumn modeDelay)
-	{
+	private void addEncounterValues(List<Encounter> encounters, String userName, SimpleDataSet dataSet,
+	        DataSetColumn dataOfficer, DataSetColumn totalEncounters, DataSetColumn numberAcceptable,
+	        DataSetColumn proportion, DataSetColumn longestDelay, DataSetColumn shortestDelay, DataSetColumn meanDelay,
+	        DataSetColumn modeDelay) {
 		DataSetRow row = new DataSetRow();
 		
 		row.addColumnValue(dataOfficer, userName);
@@ -329,8 +331,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 			
 			Integer delay = (int) diff;
 			
-			if(delay <= acceptance)
-			{
+			if (delay <= acceptance) {
 				acceptable++;
 			}
 			
@@ -350,17 +351,13 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		
 		DecimalFormat df = new DecimalFormat("#.##");
 		
-		
-		if(encounters.size() > 0)
-		{
+		if (encounters.size() > 0) {
 			double numerator = acceptable;
 			double denominator = encounters.size();
 			
-			double prop = numerator/denominator;
+			double prop = numerator / denominator;
 			row.addColumnValue(proportion, df.format(prop));
-		}
-		else
-		{
+		} else {
 			row.addColumnValue(proportion, "");
 		}
 		
@@ -376,8 +373,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 	}
 	
 	private SimpleDataSet getEncounterSummaryDataSetForLocation(EncounterType encounterType, List<Encounter> encounters,
-	                                                            DataSetDefinition dataSetDefinition,
-	                                                            EvaluationContext context) {
+	        DataSetDefinition dataSetDefinition, EvaluationContext context) {
 		
 		Map<User, List<Encounter>> encounterMap = new HashMap<User, List<Encounter>>();
 		List<Encounter> encountersOfType = new ArrayList<Encounter>();
@@ -426,14 +422,14 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		
 		if (encounterMap.size() > 0) {
 			for (User user : encounterMap.keySet()) {
-								
+				
 				List<Encounter> encs = encounterMap.get(user);
-				addEncounterValues(encs, user.getGivenName() + " " + user.getFamilyName(), dataSet, dataOfficer, totalEncounters, numberAcceptable, proportion, longestDelay, shortestDelay, meanDelay, modeDelay);
+				addEncounterValues(encs, user.getGivenName() + " " + user.getFamilyName(), dataSet, dataOfficer,
+				    totalEncounters, numberAcceptable, proportion, longestDelay, shortestDelay, meanDelay, modeDelay);
 			}
-			addEncounterValues(encountersOfType, "Total", dataSet, dataOfficer, totalEncounters, numberAcceptable, proportion, longestDelay, shortestDelay, meanDelay, modeDelay);
-		}
-		else
-		{
+			addEncounterValues(encountersOfType, "Total", dataSet, dataOfficer, totalEncounters, numberAcceptable,
+			    proportion, longestDelay, shortestDelay, meanDelay, modeDelay);
+		} else {
 			DataSetRow row = new DataSetRow();
 			
 			row.addColumnValue(dataOfficer, "");
@@ -449,9 +445,8 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		return dataSet;
 	}
 	
-	private SimpleDataSet getExtraLongDelayDataSet(List<Encounter> encounters,
-	                                                            DataSetDefinition dataSetDefinition,
-	                                                            EvaluationContext context) {
+	private SimpleDataSet getExtraLongDelayDataSet(List<Encounter> encounters, DataSetDefinition dataSetDefinition,
+	        EvaluationContext context) {
 		
 		SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 		
@@ -468,8 +463,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		dataSet.getMetaData().addColumn(encounterType);
 		
 		boolean includeBlank = true;
-		for(Encounter e: encounters)
-		{
+		for (Encounter e : encounters) {
 			Date created = e.getDateCreated();
 			Date encDate = e.getEncounterDatetime();
 			
@@ -477,8 +471,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 			diff = (diff / (1000 * 60 * 60 * 24));
 			
 			int delayThreshold = gp.getGlobalPropertyAsInt(GlobalPropertiesManagement.DATA_ENTRY_DELAY);
-			if(diff > delayThreshold)
-			{
+			if (diff > delayThreshold) {
 				includeBlank = false;
 				DataSetRow row = new DataSetRow();
 				
@@ -493,8 +486,7 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 			}
 		}
 		
-		if(includeBlank)
-		{
+		if (includeBlank) {
 			DataSetRow row = new DataSetRow();
 			
 			row.addColumnValue(dataOfficer, "");
@@ -541,13 +533,10 @@ public class DataEntryDelayDataSetDefinitionEvaluator implements DataSetEvaluato
 		return encs;
 	}
 	
-	private String getCommaSeparatedEncounterTypes(List<EncounterType> encounterTypes)
-	{
+	private String getCommaSeparatedEncounterTypes(List<EncounterType> encounterTypes) {
 		StringBuilder result = new StringBuilder();
-		for(EncounterType et: encounterTypes)
-		{
-			if(result.length() > 0)
-			{
+		for (EncounterType et : encounterTypes) {
+			if (result.length() > 0) {
 				result.append(",");
 			}
 			result.append(et.getId());

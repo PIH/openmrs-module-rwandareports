@@ -26,39 +26,40 @@ import java.util.List;
  */
 @Ignore
 public class SetupAdultHIVConsultationSheetTest extends SetupReportTest {
-
+	
 	@Override
 	protected void setupTestData() {
 		// TODO: Implement me
 	}
-
+	
 	@Override
 	public String getReportName() {
 		return "HIV-Adult Consultation Sheet";
 	}
-
+	
 	@Override
 	public List<String> getReportDesignNames() {
 		return Arrays.asList("AdultHIVConsultationSheet.xls_");
 	}
-
+	
 	@Override
 	public SetupReport getSetupReportClass() {
 		return new SetupAdultHIVConsultationSheet();
 	}
-
+	
 	@Override
 	public EvaluationContext getEvaluationContext() {
 		EvaluationContext context = new EvaluationContext();
 		context.addParameterValue("location", getLocation("Kirehe Health Center"));
-		context.addParameterValue("state", MetadataLookup.getProgramWorkflowState("HIV PROGRAM", "TREATMENT GROUP", "GROUP 1"));
+		context.addParameterValue("state",
+		    MetadataLookup.getProgramWorkflowState("HIV PROGRAM", "TREATMENT GROUP", "GROUP 1"));
 		return context;
 	}
-
+	
 	@Override
 	public void testResults(ReportData data) {
 		printReportData(data);
-
+		
 		// TODO: Find some way to test the output of this
 	}
 }

@@ -20,69 +20,60 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.DateValueResul
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rwandareports.definition.HIVOutcome;
 
-@Handler(supports={HIVOutcome.class})
-public class HIVOutcomeEvaluator implements RowPerPatientDataEvaluator{
-
+@Handler(supports = { HIVOutcome.class })
+public class HIVOutcomeEvaluator implements RowPerPatientDataEvaluator {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) {
-	    
+		
 		DateValueResult par = new DateValueResult(patientData, context);
-		HIVOutcome pd = (HIVOutcome)patientData;
+		HIVOutcome pd = (HIVOutcome) patientData;
 		
 		par.setDateFormat(pd.getDateFormat());
 		
-		if(pd.getPatient().isDead())
-		{
+		if (pd.getPatient().isDead()) {
 			par.setValue("PATIENT DIED");
 			par.setDateOfObservation(pd.getPatient().getDeathDate());
 		}
 		
 		//Some patients don't have death dates, so want to pick up values from exit from care reason
-		if(pd.getPatient().getDeathDate() == null)
-		{
-			List<Obs> exitFromCare = Context.getObsService().getObservationsByPersonAndConcept(pd.getPatient(), pd.getExitFromCare());  
-			if(exitFromCare != null && exitFromCare.size() > 0)
-			{
-				par.setValue(exitFromCare.get(exitFromCare.size() -1).getValueAsString(Context.getLocale()));
-				par.setDateOfObservation(exitFromCare.get(exitFromCare.size() -1).getObsDatetime());
-			}
-			else {		
-				List<PatientProgram> allPrograms = Context.getProgramWorkflowService().getPatientPrograms(pd.getPatient(), null, null, pd.getEndDate(), null, null, false);
+		if (pd.getPatient().getDeathDate() == null) {
+			List<Obs> exitFromCare = Context.getObsService().getObservationsByPersonAndConcept(pd.getPatient(),
+			    pd.getExitFromCare());
+			if (exitFromCare != null && exitFromCare.size() > 0) {
+				par.setValue(exitFromCare.get(exitFromCare.size() - 1).getValueAsString(Context.getLocale()));
+				par.setDateOfObservation(exitFromCare.get(exitFromCare.size() - 1).getObsDatetime());
+			} else {
+				List<PatientProgram> allPrograms = Context.getProgramWorkflowService().getPatientPrograms(pd.getPatient(),
+				    null, null, pd.getEndDate(), null, null, false);
 				
-				if(allPrograms != null)
-				{
+				if (allPrograms != null) {
 					PatientProgram last = null;
-					for(PatientProgram p: allPrograms)
-					{
-						if(p.getDateEnrolled() != null && pd.getAllHivPrograms().contains(p.getProgram()))
-						{
-							if(last == null || p.getDateEnrolled().after(last.getDateEnrolled()))
-							{
+					for (PatientProgram p : allPrograms) {
+						if (p.getDateEnrolled() != null && pd.getAllHivPrograms().contains(p.getProgram())) {
+							if (last == null || p.getDateEnrolled().after(last.getDateEnrolled())) {
 								last = p;
 							}
 						}
 					}
 					
-					if(last != null)
-					{
-						if(!((pd.getEndDate() != null && last.getActive(pd.getEndDate())) || (pd.getEndDate() == null && last.getActive())))
-						{
+					if (last != null) {
+						if (!((pd.getEndDate() != null && last.getActive(pd.getEndDate())) || (pd.getEndDate() == null && last
+						        .getActive()))) {
 							Set<PatientState> states = last.getCurrentStates();
-							for(PatientState state: states)
-							{
+							for (PatientState state : states) {
 								String outcome = state.getState().getConcept().getName().getName();
 								
-								if(!outcome.contains("GROUP") && !outcome.equals("ON ANTIRETROVIRALS") && !outcome.contains("FOLLOWING"))
-								{
+								if (!outcome.contains("GROUP") && !outcome.equals("ON ANTIRETROVIRALS")
+								        && !outcome.contains("FOLLOWING")) {
 									par.setValue(outcome);
 									par.setDateOfObservation(last.getDateCompleted());
 									break;
 								}
 							}
 							
-							if(par.getValue() == null)
-							{
+							if (par.getValue() == null) {
 								par.setValue("NO LONGER ENROLLED IN HIV PROGRAM");
 								par.setDateOfObservation(last.getDateCompleted());
 							}
@@ -91,7 +82,7 @@ public class HIVOutcomeEvaluator implements RowPerPatientDataEvaluator{
 				}
 			}
 		}
-				
+		
 		return par;
-    }
+	}
 }

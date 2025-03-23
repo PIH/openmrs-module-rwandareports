@@ -11,22 +11,19 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.DateResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 
-public class NextCD4 implements CustomCalculation{
-
+public class NextCD4 implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
 		DateResult desDate = new DateResult(null, null);
 		
-		for(PatientDataResult result: results)
-		{
-			if(result.getName().equals("CD4Test"))
-			{
-				ObservationResult cd4Test = (ObservationResult)result;
+		for (PatientDataResult result : results) {
+			if (result.getName().equals("CD4Test")) {
+				ObservationResult cd4Test = (ObservationResult) result;
 				
-				if(cd4Test.getDateOfObservation() != null)
-				{
+				if (cd4Test.getDateOfObservation() != null) {
 					Calendar decisionDate = Calendar.getInstance();
 					decisionDate.setTime(cd4Test.getDateOfObservation());
 					

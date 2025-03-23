@@ -15,8 +15,8 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.DrugOrdersResu
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.StringResult;
 
-public class DeclineCD4 implements CustomCalculation{
-
+public class DeclineCD4 implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	private int daysBefore = 0;
@@ -28,21 +28,17 @@ public class DeclineCD4 implements CustomCalculation{
 		StringResult res = new StringResult(null, context);
 		
 		Date artInitiation = null;
-		for(PatientDataResult result: results)
-		{
+		for (PatientDataResult result : results) {
 			
-			if(result.getName().equals(initiationArt))
-			{
-				DrugOrdersResult artDateResult = (DrugOrdersResult)result;
-				if(artDateResult.getValue() != null)
-				{
+			if (result.getName().equals(initiationArt)) {
+				DrugOrdersResult artDateResult = (DrugOrdersResult) result;
+				if (artDateResult.getValue() != null) {
 					artInitiation = artDateResult.getValue().getEffectiveStartDate();
 				}
 			}
 		}
 		
-		if(artInitiation != null)
-		{
+		if (artInitiation != null) {
 			Calendar artAdjustment = Calendar.getInstance();
 			artAdjustment.setTime(artInitiation);
 			artAdjustment.add(Calendar.DAY_OF_YEAR, -daysBefore);
@@ -50,40 +46,35 @@ public class DeclineCD4 implements CustomCalculation{
 			
 			Obs highest = null;
 			Obs mostRecent = null;
-			for(PatientDataResult result: results)
-			{
-				if(result.getName().equals("allCD4Obs"))
-				{
-					AllObservationValuesResult cd4Values = (AllObservationValuesResult)result;
+			for (PatientDataResult result : results) {
+				if (result.getName().equals("allCD4Obs")) {
+					AllObservationValuesResult cd4Values = (AllObservationValuesResult) result;
 					
-					for(Obs cd4: cd4Values.getValue())
-					{
-						if(cd4.getObsDatetime().after(artInitiation))
-						{
-							if((highest == null && cd4.getValueNumeric() != null) || (cd4.getValueNumeric() != null && cd4.getValueNumeric() > highest.getValueNumeric()))
-							{
+					for (Obs cd4 : cd4Values.getValue()) {
+						if (cd4.getObsDatetime().after(artInitiation)) {
+							if ((highest == null && cd4.getValueNumeric() != null)
+							        || (cd4.getValueNumeric() != null && cd4.getValueNumeric() > highest.getValueNumeric())) {
 								highest = cd4;
 							}
 							
-							if((mostRecent == null && cd4.getValueNumeric() != null) || (cd4.getValueNumeric() != null && cd4.getObsDatetime().after(highest.getObsDatetime())))
-							{
+							if ((mostRecent == null && cd4.getValueNumeric() != null)
+							        || (cd4.getValueNumeric() != null && cd4.getObsDatetime()
+							                .after(highest.getObsDatetime()))) {
 								mostRecent = cd4;
 							}
 						}
 					}
 					
-					if(mostRecent != null && highest != null)
-					{
-						double percentDecline = 100 - ((mostRecent.getValueNumeric()/highest.getValueNumeric())*100);
+					if (mostRecent != null && highest != null) {
+						double percentDecline = 100 - ((mostRecent.getValueNumeric() / highest.getValueNumeric()) * 100);
 						
-						if(percentDecline > 50)
-						{
+						if (percentDecline > 50) {
 							DecimalFormat twoDigit = new DecimalFormat("#,##0.00");//formats to 2
 							
-							String resString = twoDigit.format(percentDecline) + "% CD4 decline since highest CD4 since art initiation";
-							if(daysBefore > 0)
-							{
-								resString = resString + " or " + daysBefore + " days before art initiation"; 
+							String resString = twoDigit.format(percentDecline)
+							        + "% CD4 decline since highest CD4 since art initiation";
+							if (daysBefore > 0) {
+								resString = resString + " or " + daysBefore + " days before art initiation";
 							}
 							
 							res.setValue(resString);
@@ -93,26 +84,22 @@ public class DeclineCD4 implements CustomCalculation{
 			}
 		}
 		
-		return res;	
+		return res;
 	}
-
 	
-    public int getDaysBefore() {
-    	return daysBefore;
-    }
-
+	public int getDaysBefore() {
+		return daysBefore;
+	}
 	
-    public void setDaysBefore(int daysBefore) {
-    	this.daysBefore = daysBefore;
-    }
-
+	public void setDaysBefore(int daysBefore) {
+		this.daysBefore = daysBefore;
+	}
 	
-    public String getInitiationArt() {
-    	return initiationArt;
-    }
-
+	public String getInitiationArt() {
+		return initiationArt;
+	}
 	
-    public void setInitiationArt(String initiationArt) {
-    	this.initiationArt = initiationArt;
-    }
+	public void setInitiationArt(String initiationArt) {
+		this.initiationArt = initiationArt;
+	}
 }

@@ -30,34 +30,33 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 /**
  * 
  */
-@Handler(supports={UpcomingChemotherapyCohortDefinition.class})
+@Handler(supports = { UpcomingChemotherapyCohortDefinition.class })
 public class UpcomingChemotherapyCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
 	GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
-
+	
 	/**
 	 * Default Constructor
 	 */
-	public UpcomingChemotherapyCohortDefinitionEvaluator() {}
+	public UpcomingChemotherapyCohortDefinitionEvaluator() {
+	}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
-     */
-    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	UpcomingChemotherapyCohortDefinition definition = (UpcomingChemotherapyCohortDefinition) cohortDefinition;
-
-    	List<DrugOrder> orders = Context.getService(OrderExtensionService.class).getDrugOrders(
-    			null, definition.getChemotherapyIndication(), definition.getAsOfDate(), definition.getUntilDate()
-	    );
-    	Cohort cohort = new Cohort();
-    	
-    	for(DrugOrder order: orders)
-    	{
-    		if(order.getRoute() != null && gp.getConceptList(GlobalPropertiesManagement.IV_CONCEPT).contains(order.getRoute()))
-    		{
-    			cohort.addMember(order.getPatient().getId());
-    		}
-    	}
-    	return new EvaluatedCohort(cohort, cohortDefinition, context);
-    }
+	 * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
+	 */
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+		UpcomingChemotherapyCohortDefinition definition = (UpcomingChemotherapyCohortDefinition) cohortDefinition;
+		
+		List<DrugOrder> orders = Context.getService(OrderExtensionService.class).getDrugOrders(null,
+		    definition.getChemotherapyIndication(), definition.getAsOfDate(), definition.getUntilDate());
+		Cohort cohort = new Cohort();
+		
+		for (DrugOrder order : orders) {
+			if (order.getRoute() != null
+			        && gp.getConceptList(GlobalPropertiesManagement.IV_CONCEPT).contains(order.getRoute())) {
+				cohort.addMember(order.getPatient().getId());
+			}
+		}
+		return new EvaluatedCohort(cohort, cohortDefinition, context);
+	}
 }

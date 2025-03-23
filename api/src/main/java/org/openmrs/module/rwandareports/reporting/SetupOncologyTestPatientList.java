@@ -25,7 +25,7 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupOncologyTestPatientList extends SingleSetupReport {
-
+	
 	//properties retrieved from global variables
 	private Program oncologyProgram;
 	
@@ -51,7 +51,7 @@ public class SetupOncologyTestPatientList extends SingleSetupReport {
 	
 	private Concept primaryDoctorConstruct;
 	
-	private Concept primaryDoctorDetails; 
+	private Concept primaryDoctorDetails;
 	
 	private Concept patientNotified;
 	
@@ -60,7 +60,7 @@ public class SetupOncologyTestPatientList extends SingleSetupReport {
 	private Concept otherOncologyTest;
 	
 	private Concept tissueBiospsy;
-
+	
 	@Override
 	public String getReportName() {
 		return "ONC-Biopsy Results/Tracking Contact List";
@@ -76,8 +76,9 @@ public class SetupOncologyTestPatientList extends SingleSetupReport {
 		    "BiopsyResultsContactList.xls_", null);
 		
 		Properties props = new Properties();
-		props.put("repeatingSections", "sheet:1,row:8,dataset:dataset|sheet:2,row:8,dataset:dataset2|sheet:3,row:8,dataset:dataset3|sheet:4,row:8,dataset:dataset4");
-		props.put("sortWeight","5000");
+		props.put("repeatingSections",
+		    "sheet:1,row:8,dataset:dataset|sheet:2,row:8,dataset:dataset2|sheet:3,row:8,dataset:dataset3|sheet:4,row:8,dataset:dataset4");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		
 		Helper.saveReportDesign(design);
@@ -87,9 +88,10 @@ public class SetupOncologyTestPatientList extends SingleSetupReport {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
-				
-		reportDefinition.addParameter(new Parameter("endDate", "Date", Date.class));	
-		reportDefinition.setBaseCohortDefinition(Cohorts.createInProgramParameterizableByDate("Oncology", oncologyProgram), ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		
+		reportDefinition.addParameter(new Parameter("endDate", "Date", Date.class));
+		reportDefinition.setBaseCohortDefinition(Cohorts.createInProgramParameterizableByDate("Oncology", oncologyProgram),
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		createDataSetDefinition(reportDefinition);
 		
 		Helper.saveReportDefinition(reportDefinition);
@@ -169,9 +171,14 @@ public class SetupOncologyTestPatientList extends SingleSetupReport {
 		
 		CompositionCohortDefinition visit = new CompositionCohortDefinition();
 		visit.addParameter(new Parameter("endDate", "endDate", Date.class));
-		visit.getSearches().put("1",new Mapped<CohortDefinition>(lateVisit, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
-		visit.getSearches().put("2",new Mapped<CohortDefinition>(lateVisitNoEncounter, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
-		visit.getSearches().put("3",new Mapped<CohortDefinition>(lateVisit2, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+		visit.getSearches().put("1",
+		    new Mapped<CohortDefinition>(lateVisit, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+		visit.getSearches().put(
+		    "2",
+		    new Mapped<CohortDefinition>(lateVisitNoEncounter, ParameterizableUtil
+		            .createParameterMappings("endDate=${endDate}")));
+		visit.getSearches().put("3",
+		    new Mapped<CohortDefinition>(lateVisit2, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
 		visit.setCompositionString("(1 OR 2) AND NOT 3");
 		
 		//Biopsy not taken
@@ -208,20 +215,29 @@ public class SetupOncologyTestPatientList extends SingleSetupReport {
 		
 		CompositionCohortDefinition visit2 = new CompositionCohortDefinition();
 		visit2.addParameter(new Parameter("endDate", "endDate", Date.class));
-		visit2.getSearches().put("1",new Mapped<CohortDefinition>(lateVisit3, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
-		visit2.getSearches().put("2",new Mapped<CohortDefinition>(lateVisitNoEncounter3, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+		visit2.getSearches().put("1",
+		    new Mapped<CohortDefinition>(lateVisit3, ParameterizableUtil.createParameterMappings("endDate=${endDate}")));
+		visit2.getSearches().put(
+		    "2",
+		    new Mapped<CohortDefinition>(lateVisitNoEncounter3, ParameterizableUtil
+		            .createParameterMappings("endDate=${endDate}")));
 		visit2.setCompositionString("1 OR 2");
-
+		
 		//Add filters
 		dataSetDefinition.addFilter(visit, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
-		dataSetDefinition2.addFilter(Cohorts.createPatientsDueForVisit(resultsVisit, pathResult), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
-		dataSetDefinition3.addFilter(Cohorts.createPatientsOverdueForVisit(pathSubmission, pathResult), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		dataSetDefinition2.addFilter(Cohorts.createPatientsDueForVisit(resultsVisit, pathResult),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		dataSetDefinition3.addFilter(Cohorts.createPatientsOverdueForVisit(pathSubmission, pathResult),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		dataSetDefinition4.addFilter(visit2, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
 		//Add Columns
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("nextRDV", resultsVisit, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("nextRDV", resultsVisit, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("nextRDV", resultsVisit, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("nextRDV", resultsVisit, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("nextRDV", resultsVisit, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
+		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("nextRDV", resultsVisit, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
@@ -247,30 +263,49 @@ public class SetupOncologyTestPatientList extends SingleSetupReport {
 		dataSetDefinition2.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
 		dataSetDefinition3.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
 		dataSetDefinition4.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
-		 
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResult", biopsyResult, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("accession", accession, "dd/MMM/yyyy"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResultSort", biopsyResult, "yyyy/MM/dd"), new HashMap<String, Object>());
-		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("accessionSort", accession, "yyyy/MM/dd"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResult", biopsyResult, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
+		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("accession", accession, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecent("biopsyScheduledSort", biopsyScheduled, "yyyy/MM/dd"), new HashMap<String, Object>());
-		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecent("biopsyScheduled", biopsyScheduled, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("biopsyResultSort", biopsyResult, "yyyy/MM/dd"),
+		    new HashMap<String, Object>());
+		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("accessionSort", accession, "yyyy/MM/dd"),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct, primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct, primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct, primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
-		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct, primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition4.addColumn(
+		    RowPerPatientColumns.getMostRecent("biopsyScheduledSort", biopsyScheduled, "yyyy/MM/dd"),
+		    new HashMap<String, Object>());
+		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecent("biopsyScheduled", biopsyScheduled, "dd/MMM/yyyy"),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null), new HashMap<String, Object>());
-		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null), new HashMap<String, Object>());
-		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct,
+		    primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct,
+		    primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct,
+		    primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
+		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecentObsgroup("primaryDoctor", primaryDoctorConstruct,
+		    primaryDoctorDetails, "dd/MMM/yyyy"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null), new HashMap<String, Object>());
-		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null), new HashMap<String, Object>());
-		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null),
+		    new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null),
+		    new HashMap<String, Object>());
+		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null),
+		    new HashMap<String, Object>());
+		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecent("telephone", telephone, null),
+		    new HashMap<String, Object>());
+		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null),
+		    new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null),
+		    new HashMap<String, Object>());
+		dataSetDefinition3.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null),
+		    new HashMap<String, Object>());
+		dataSetDefinition4.addColumn(RowPerPatientColumns.getMostRecent("telephone2", telephone2, null),
+		    new HashMap<String, Object>());
 		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("endDate", "${endDate}");

@@ -33,20 +33,17 @@ import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 
 /**
  * Renderer for Data Quality report
- *
  */
 @Handler
 public class CalendarWebRenderer extends SimpleHtmlReportRenderer implements WebReportRenderer {
 	
-	
 	/**
-     * @see org.openmrs.report.ReportRenderer#getLabel()
-     */
+	 * @see org.openmrs.report.ReportRenderer#getLabel()
+	 */
 	@Override
-    public String getLabel() {
-    	return "Calendar Web Renderer";
-    }
-	
+	public String getLabel() {
+		return "Calendar Web Renderer";
+	}
 	
 	/**
 	 * @see org.openmrs.module.reporting.web.renderers.WebReportRenderer#getLinkUrl(org.openmrs.module.reporting.report.definition.ReportDefinition)
@@ -57,10 +54,9 @@ public class CalendarWebRenderer extends SimpleHtmlReportRenderer implements Web
 	}
 	
 	@Override
-	public boolean canRender(ReportDefinition reportDefinition) { 		
-	
-		if(reportDefinition.getName().contains("Appointment"))
-		{
+	public boolean canRender(ReportDefinition reportDefinition) {
+		
+		if (reportDefinition.getName().contains("Appointment")) {
 			return true;
 		}
 		return false;
@@ -68,18 +64,29 @@ public class CalendarWebRenderer extends SimpleHtmlReportRenderer implements Web
 	
 	public Collection<RenderingMode> getRenderingModes(ReportDefinition definition) {
 		List<RenderingMode> ret = new ArrayList<RenderingMode>();
-		if(definition.getName().contains("Appointment"))
-		{
-			ret.add(new RenderingMode(this, this.getLabel() , this.getLabel(), Integer.MAX_VALUE - 5));
+		if (definition.getName().contains("Appointment")) {
+			ret.add(new RenderingMode(this, this.getLabel(), this.getLabel(), Integer.MAX_VALUE - 5));
 		}
 		return ret;
 	}
 	
-	public List<String> getDisplayColumns() { return null; }	
-	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {}
-	public void render(ReportData reportData, OutputStream out) throws IOException, RenderingException {}
-	public void render(ReportData reportData, Writer writer) throws IOException, RenderingException {}
-	public void render(ReportData reportData, String argument, Writer writer)throws IOException, RenderingException {}
-	public void setDisplayColumns(List<String> displayColumns) {}
+	public List<String> getDisplayColumns() {
+		return null;
+	}
+	
+	public void render(ReportData results, String argument, OutputStream out) throws IOException, RenderingException {
+	}
+	
+	public void render(ReportData reportData, OutputStream out) throws IOException, RenderingException {
+	}
+	
+	public void render(ReportData reportData, Writer writer) throws IOException, RenderingException {
+	}
+	
+	public void render(ReportData reportData, String argument, Writer writer) throws IOException, RenderingException {
+	}
+	
+	public void setDisplayColumns(List<String> displayColumns) {
+	}
 	
 }

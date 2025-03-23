@@ -2,27 +2,23 @@ package org.openmrs.module.rwandareports.filter;
 
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ResultFilter;
 
-
 public class PosOrNegFilter implements ResultFilter {
 	
 	public Object filter(Object value) {
-		String enrollment = (String)value;
+		String enrollment = (String) value;
 		
-		if(enrollment.equals("Not Enrolled"))
-		{
+		if (enrollment.equals("Not Enrolled")) {
 			return "Neg";
-		}
-		else if(enrollment.contains("Enrolled"))
-		{
+		} else if (enrollment.contains("Enrolled")) {
 			return "Pos";
 		}
 		
 		return enrollment;
 	}
-
+	
 	public Object filterWhenNull() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

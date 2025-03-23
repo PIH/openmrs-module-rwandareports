@@ -18,21 +18,20 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 
 /**
  * Custom renderer for TracNet Report
- *
  */
 @Handler
 public class TracNetCustomRenderer extends AbstractRwandaWebRenderer {
-
+	
 	@Override
-    public String getLabel() {
-    	return "TracNet Web Report";
-    }
-
+	public String getLabel() {
+		return "TracNet Web Report";
+	}
+	
 	@Override
 	public String getLinkUrl(ReportDefinition arg0) {
 		return "module/rwandareports/renderTracNetDataSet.form";
 	}
-
+	
 	@Override
 	public String getDataSetNameToCheck() {
 		return "TracNet Report Data Set";

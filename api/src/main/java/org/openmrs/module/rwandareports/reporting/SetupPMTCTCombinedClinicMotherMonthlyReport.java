@@ -52,7 +52,7 @@ import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupReport {
 	
 	protected final static Log log = LogFactory.getLog(SetupPMTCTCombinedClinicMotherMonthlyReport.class);
-
+	
 	//Properties retrieved from global variables
 	private Program pmtctCombinedClinicMotherProgram;
 	
@@ -73,12 +73,12 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 	private Concept viralLoad;
 	
 	private List<EncounterType> clinicalEncoutersExcLab;
-
+	
 	@Override
 	public String getReportName() {
 		return "HIV-PMTCT Combined Clinic Mother Report-Monthly";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -91,7 +91,7 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		props.put(
 		    "repeatingSections",
 		    "sheet:1,row:8,dataset:LateVisit|sheet:2,row:8,dataset:LateCD4Count|sheet:3,row:8,dataset:LostToFollowup|sheet:4,row:8,dataset:LowBMI|sheet:5,row:8,dataset:ViralLoadGreaterThan1000InTheLast6Months");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
@@ -129,7 +129,6 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		RowPerPatientDataSetDefinition dataSetDefinition3 = new RowPerPatientDataSetDefinition();
 		dataSetDefinition3.setName("lost to follow-up");
 		
-		
 		//Patients with BMI below 18.5 dataset definition
 		RowPerPatientDataSetDefinition dataSetDefinition4 = new RowPerPatientDataSetDefinition();
 		dataSetDefinition4.setName("BMI below 16.0 ");
@@ -141,11 +140,16 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		//PMTCT Combined clinic program Cohort definition
 		InProgramCohortDefinition pmtctCombinedClinicMotherProgramCohort = Cohorts.createInProgramParameterizableByDate(
 		    "adultHivProgramCohort", pmtctCombinedClinicMotherProgram);
-		dataSetDefinition1.addFilter(pmtctCombinedClinicMotherProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
-		dataSetDefinition2.addFilter(pmtctCombinedClinicMotherProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
-		dataSetDefinition3.addFilter(pmtctCombinedClinicMotherProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
-		dataSetDefinition4.addFilter(pmtctCombinedClinicMotherProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
-		dataSetDefinition6.addFilter(pmtctCombinedClinicMotherProgramCohort, ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition1.addFilter(pmtctCombinedClinicMotherProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition2.addFilter(pmtctCombinedClinicMotherProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition3.addFilter(pmtctCombinedClinicMotherProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition4.addFilter(pmtctCombinedClinicMotherProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition6.addFilter(pmtctCombinedClinicMotherProgramCohort,
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		
 		//==================================================================
 		//                 1. Late visit
@@ -153,24 +157,28 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		
 		// Patients without Any clinical Encounter(Test lab included) in the last 3 months.
 		EncounterCohortDefinition patientsWithClinicalEncountersWithLabTest = Cohorts.createEncounterParameterizedByDate(
-			    "patientsWithClinicalEncountersWithLabTest", "onOrAfter", clinicalEnountersIncLab);
+		    "patientsWithClinicalEncountersWithLabTest", "onOrAfter", clinicalEnountersIncLab);
 		CompositionCohortDefinition patientsWithoutClinicalEncounters = new CompositionCohortDefinition();
 		patientsWithoutClinicalEncounters.setName("patientsWithoutClinicalEncounters");
 		patientsWithoutClinicalEncounters.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		patientsWithoutClinicalEncounters.getSearches().put(  "patientsWithClinicalEncountersWithLabTest",
-				    new Mapped<CohortDefinition>(patientsWithClinicalEncountersWithLabTest, ParameterizableUtil
-				            .createParameterMappings("onOrAfter=${onOrAfter}")));
-				patientsWithoutClinicalEncounters.setCompositionString("NOT patientsWithClinicalEncountersWithLabTest");
-				
+		patientsWithoutClinicalEncounters.getSearches().put(
+		    "patientsWithClinicalEncountersWithLabTest",
+		    new Mapped<CohortDefinition>(patientsWithClinicalEncountersWithLabTest, ParameterizableUtil
+		            .createParameterMappings("onOrAfter=${onOrAfter}")));
+		patientsWithoutClinicalEncounters.setCompositionString("NOT patientsWithClinicalEncountersWithLabTest");
+		
 		dataSetDefinition1.addFilter(patientsWithoutClinicalEncounters,
-				    ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-6m}"));
-				
-		SqlCohortDefinition latevisit=new SqlCohortDefinition("select o.person_id from obs o, (select * from (select * from encounter where encounter_type="+adultFlowVisit.getEncounterTypeId()+" and voided=0 order by encounter_datetime desc) as e group by patient_id) as last_encounters where last_encounters.encounter_id=o.encounter_id and last_encounters.encounter_datetime<o.value_datetime and o.voided=0 and o.concept_id="+nextVisitConcept.getConceptId()+" and DATEDIFF(:endDate,o.value_datetime)>7 ;");
-		latevisit.addParameter(new Parameter("endDate","endDate",Date.class));
+		    ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-6m}"));
+		
+		SqlCohortDefinition latevisit = new SqlCohortDefinition(
+		        "select o.person_id from obs o, (select * from (select * from encounter where encounter_type="
+		                + adultFlowVisit.getEncounterTypeId()
+		                + " and voided=0 order by encounter_datetime desc) as e group by patient_id) as last_encounters where last_encounters.encounter_id=o.encounter_id and last_encounters.encounter_datetime<o.value_datetime and o.voided=0 and o.concept_id="
+		                + nextVisitConcept.getConceptId() + " and DATEDIFF(:endDate,o.value_datetime)>7 ;");
+		latevisit.addParameter(new Parameter("endDate", "endDate", Date.class));
 		
 		dataSetDefinition1.addFilter(latevisit, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
-			
 		//==================================================================
 		//                 2. Late CD4 count
 		//==================================================================
@@ -206,7 +214,6 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		dataSetDefinition3.addFilter(patientsWithoutEncountersInPastYear,
 		    ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m}"));
 		
-		
 		//==================================================================
 		//                 4. BMI below 18.5
 		//==================================================================
@@ -226,12 +233,16 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		//==================================================================
 		//                6 . Patients with Viral Load >1000 in the last 6 months
 		//==================================================================
-		SqlCohortDefinition viralLoadGreaterThan1000InLast12Months = new SqlCohortDefinition("select vload.person_id from (select * from obs where concept_id="+viralLoad.getConceptId()+" and value_numeric>1000 and obs_datetime> :beforeDate and obs_datetime<= :onDate order by obs_datetime desc) as vload group by vload.person_id");
+		SqlCohortDefinition viralLoadGreaterThan1000InLast12Months = new SqlCohortDefinition(
+		        "select vload.person_id from (select * from obs where concept_id="
+		                + viralLoad.getConceptId()
+		                + " and value_numeric>1000 and obs_datetime> :beforeDate and obs_datetime<= :onDate order by obs_datetime desc) as vload group by vload.person_id");
 		viralLoadGreaterThan1000InLast12Months.setName("viralLoadGreaterThan1000InLast12Months");
 		viralLoadGreaterThan1000InLast12Months.addParameter(new Parameter("beforeDate", "beforeDate", Date.class));
 		viralLoadGreaterThan1000InLast12Months.addParameter(new Parameter("onDate", "onDate", Date.class));
 		//viralLoadGreaterThan1000InLast6Months.addParameter(new Parameter("location", "location", Location.class));
-		dataSetDefinition6.addFilter(viralLoadGreaterThan1000InLast12Months,ParameterizableUtil.createParameterMappings("beforeDate=${endDate-12m},onDate=${endDate}"));
+		dataSetDefinition6.addFilter(viralLoadGreaterThan1000InLast12Months,
+		    ParameterizableUtil.createParameterMappings("beforeDate=${endDate-12m},onDate=${endDate}"));
 		
 		//==================================================================
 		//                 Columns of report settings
@@ -279,8 +290,8 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		dataSetDefinition4.addColumn(lastEncounterType, new HashMap<String, Object>());
 		dataSetDefinition6.addColumn(lastEncounterType, new HashMap<String, Object>());
 		
-		DateDiff lateVisitInMonth = RowPerPatientColumns.getDifferenceSinceLastEncounter(
-		    "Late visit in months", clinicalEncoutersExcLab, DateDiffType.MONTHS);
+		DateDiff lateVisitInMonth = RowPerPatientColumns.getDifferenceSinceLastEncounter("Late visit in months",
+		    clinicalEncoutersExcLab, DateDiffType.MONTHS);
 		lateVisitInMonth.addParameter(new Parameter("endDate", "endDate", Date.class));
 		dataSetDefinition1.addColumn(lateVisitInMonth, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		dataSetDefinition2.addColumn(lateVisitInMonth, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
@@ -288,8 +299,8 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		dataSetDefinition4.addColumn(lateVisitInMonth, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		dataSetDefinition6.addColumn(lateVisitInMonth, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
-		StateOfPatient ccmotherGroup = RowPerPatientColumns.getStateOfPatient("ccmotherGroup", pmtctCombinedClinicMotherProgram, treatmentGroup,
-			    new GroupStateFilter());
+		StateOfPatient ccmotherGroup = RowPerPatientColumns.getStateOfPatient("ccmotherGroup",
+		    pmtctCombinedClinicMotherProgram, treatmentGroup, new GroupStateFilter());
 		dataSetDefinition1.addColumn(ccmotherGroup, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(ccmotherGroup, new HashMap<String, Object>());
 		dataSetDefinition3.addColumn(ccmotherGroup, new HashMap<String, Object>());
@@ -309,8 +320,8 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		dataSetDefinition4.addColumn(cd4Count, new HashMap<String, Object>());
 		dataSetDefinition6.addColumn(cd4Count, new HashMap<String, Object>());
 		
-		DateDiff lateCD4InMonths = RowPerPatientColumns.getDifferenceSinceLastObservation(
-		    "Late CD4 in months", cd4, DateDiffType.MONTHS);
+		DateDiff lateCD4InMonths = RowPerPatientColumns.getDifferenceSinceLastObservation("Late CD4 in months", cd4,
+		    DateDiffType.MONTHS);
 		lateCD4InMonths.addParameter(new Parameter("endDate", "endDate", Date.class));
 		dataSetDefinition1.addColumn(lateCD4InMonths, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		dataSetDefinition2.addColumn(lateCD4InMonths, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
@@ -332,7 +343,7 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		dataSetDefinition4.addColumn(address1, new HashMap<String, Object>());
 		dataSetDefinition6.addColumn(address1, new HashMap<String, Object>());
 		
-      MultiplePatientDataDefinitions tracNetId=RowPerPatientColumns.getTracnetId("TRACNET_ID");
+		MultiplePatientDataDefinitions tracNetId = RowPerPatientColumns.getTracnetId("TRACNET_ID");
 		
 		dataSetDefinition1.addColumn(tracNetId, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(tracNetId, new HashMap<String, Object>());
@@ -369,7 +380,8 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		decline.addPatientDataToBeEvaluated(allCD4, new HashMap<String, Object>());
 		decline.setCalculator(new DifferenceBetweenLastTwoObs());
 		
-		FirstDrugOrderStartedRestrictedByConceptSet startArt = RowPerPatientColumns.getDrugOrderForStartOfART("StartART", "dd-MMM-yyyy");
+		FirstDrugOrderStartedRestrictedByConceptSet startArt = RowPerPatientColumns.getDrugOrderForStartOfART("StartART",
+		    "dd-MMM-yyyy");
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions cd4Decline = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		cd4Decline.setName("cd4Decline");
@@ -406,8 +418,8 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 	private void setupProperties() {
 		pmtctCombinedClinicMotherProgram = gp.getProgram(GlobalPropertiesManagement.PMTCT_COMBINED_MOTHER_PROGRAM);
 		
-		treatmentGroup=gp.getProgramWorkflow(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
-			    GlobalPropertiesManagement.PMTCT_COMBINED_MOTHER_PROGRAM);
+		treatmentGroup = gp.getProgramWorkflow(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW,
+		    GlobalPropertiesManagement.PMTCT_COMBINED_MOTHER_PROGRAM);
 		
 		nextVisitConcept = gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE);
 		
@@ -423,7 +435,7 @@ public class SetupPMTCTCombinedClinicMotherMonthlyReport extends SingleSetupRepo
 		
 		viralLoad = gp.getConcept(GlobalPropertiesManagement.VIRAL_LOAD_TEST);
 		
-		clinicalEncoutersExcLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES_EXC_LAB_TEST);		
+		clinicalEncoutersExcLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES_EXC_LAB_TEST);
 		
 	}
 }

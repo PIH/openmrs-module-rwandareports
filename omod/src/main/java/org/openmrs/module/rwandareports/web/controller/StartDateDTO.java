@@ -24,21 +24,22 @@ import org.springframework.stereotype.Controller;
 public class StartDateDTO {
 	
 	private Integer startDay;
+	
 	private Date startDate;
 	
-    public Integer getStartDay() {
-    	return startDay;
-    }
+	public Integer getStartDay() {
+		return startDay;
+	}
 	
-    public void setStartDay(Integer startDay) {
-    	this.startDay = startDay;
-    }
+	public void setStartDay(Integer startDay) {
+		this.startDay = startDay;
+	}
 	
-    public Date getStartDate() {
-    	return startDate;
-    }
+	public Date getStartDate() {
+		return startDate;
+	}
 	
-    public void setStartDate(Date startDate) {
-    	this.startDate = startDate;
-    }
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
 }

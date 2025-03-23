@@ -25,7 +25,7 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupHypertensionConsultationSheet extends SingleSetupReport {
-
+	
 	//properties retrieved from global variables
 	private Program hypertensionProgram;
 	
@@ -39,12 +39,12 @@ public class SetupHypertensionConsultationSheet extends SingleSetupReport {
 
 	private Concept diastolicBP;
 	*/
-	private List<Form> DDBAndRendezvousForms=new ArrayList<Form>();
-
+	private List<Form> DDBAndRendezvousForms = new ArrayList<Form>();
+	
 	private List<EncounterType> hypertensionEncounter = new ArrayList<EncounterType>();
-
+	
 	private RelationshipType HBCP;
-
+	
 	@Override
 	public String getReportName() {
 		return "NCD-Hypertension Consultation Sheet";
@@ -61,7 +61,7 @@ public class SetupHypertensionConsultationSheet extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:7,dataset:dataSet");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		
 		Helper.saveReportDesign(design);
@@ -71,9 +71,10 @@ public class SetupHypertensionConsultationSheet extends SingleSetupReport {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
-				
-		reportDefinition.addParameter(new Parameter("location", "Health Center", Location.class));	
-		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),ParameterizableUtil.createParameterMappings("location=${location}"));
+		
+		reportDefinition.addParameter(new Parameter("location", "Health Center", Location.class));
+		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
+		    ParameterizableUtil.createParameterMappings("location=${location}"));
 		reportDefinition.addParameter(new Parameter("endDate", "Monday", Date.class));
 		createDataSetDefinition(reportDefinition);
 		
@@ -95,17 +96,22 @@ public class SetupHypertensionConsultationSheet extends SingleSetupReport {
 		dataSetDefinition.addParameter(new Parameter("endDate", "Monday", Date.class));
 		
 		//Add filters
-		dataSetDefinition.addFilter(Cohorts.createInProgramParameterizableByDate("Patients in " + hypertensionProgram.getName(), hypertensionProgram), ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition.addFilter(Cohorts.createInProgramParameterizableByDate(
+		    "Patients in " + hypertensionProgram.getName(), hypertensionProgram), ParameterizableUtil
+		        .createParameterMappings("onDate=${endDate}"));
 		
-		dataSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(DDBAndRendezvousForms), ParameterizableUtil.createParameterMappings("end=${endDate+6d},start=${endDate}"));
+		dataSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(DDBAndRendezvousForms),
+		    ParameterizableUtil.createParameterMappings("end=${endDate+6d},start=${endDate}"));
 		
 		DateFormatFilter dateFilter = new DateFormatFilter();
 		dateFilter.setFinalDateFormat("dd-MMM-yyyy");
 		
 		//Add Columns
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", null, dateFilter), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", null, dateFilter),
+		    new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 		
@@ -115,23 +121,24 @@ public class SetupHypertensionConsultationSheet extends SingleSetupReport {
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getAge("age"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());
 		
 		MostRecentObservation systolic = RowPerPatientColumns.getMostRecentSystolicPB("systolic", "dd-MMM-yy");
 		dataSetDefinition.addColumn(systolic, new HashMap<String, Object>());
-
+		
 		MostRecentObservation diastolic = RowPerPatientColumns.getMostRecentDiastolicPB("diastolic", "dd-MMM-yy");
 		dataSetDefinition.addColumn(diastolic, new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientCurrentlyActiveOnDrugOrder("Regimen", null),
-				new HashMap<String, Object>());
-			
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("Accompagnateur"), new HashMap<String, Object>());
-
-		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientRelationship("HBCP",HBCP.getRelationshipTypeId(),"A",null), new HashMap<String, Object>());
-
-
+		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("Accompagnateur"),
+		    new HashMap<String, Object>());
+		
+		dataSetDefinition.addColumn(
+		    RowPerPatientColumns.getPatientRelationship("HBCP", HBCP.getRelationshipTypeId(), "A", null),
+		    new HashMap<String, Object>());
+		
 		//AllObservationValues allSystolicBP = RowPerPatientColumns.getAllObservationValues("systolicLastTwo", systolicBP, null, new LastTwoObsFilter(),
 		//    null);
 		
@@ -145,9 +152,8 @@ public class SetupHypertensionConsultationSheet extends SingleSetupReport {
 		//alert.addPatientDataToBeEvaluated(allSystolicBP, new HashMap<String, Object>());
 		//alert.addPatientDataToBeEvaluated(allDiastolicBP, new HashMap<String, Object>());
 		alert.setCalculator(new HypertensionAlerts());
-		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());	
+		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());
 		
-	
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("location", "${location}");
 		mappings.put("endDate", "${endDate}");
@@ -170,11 +176,11 @@ public class SetupHypertensionConsultationSheet extends SingleSetupReport {
 		//DDBAndRendezvousForms.add(rendevousForm);
 		//DDBAndRendezvousForms.add(hypertensionDDBForm);
 		//DDBAndRendezvousForms.add(followUpForm);
-		DDBAndRendezvousForms=gp.getFormList(GlobalPropertiesManagement.HYPERTENSION_DDB_FLOW_VISIT);
+		DDBAndRendezvousForms = gp.getFormList(GlobalPropertiesManagement.HYPERTENSION_DDB_FLOW_VISIT);
 		hypertensionEncounter.add(gp.getEncounterType(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER));
 		hypertensionEncounter.add(gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE));
-
-		HBCP=gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
+		
+		HBCP = gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
 		
 	}
 }

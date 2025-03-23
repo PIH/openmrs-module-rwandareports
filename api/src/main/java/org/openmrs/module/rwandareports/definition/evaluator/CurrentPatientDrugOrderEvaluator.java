@@ -15,16 +15,17 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataRes
 import org.openmrs.module.rwandareports.definition.CurrentPatientDrugOrder;
 import org.openmrs.module.rwandareports.definition.result.CurrentDrugOrderResults;
 
-@Handler(supports={CurrentPatientDrugOrder.class})
-public class CurrentPatientDrugOrderEvaluator implements RowPerPatientDataEvaluator{
-
+@Handler(supports = { CurrentPatientDrugOrder.class })
+public class CurrentPatientDrugOrderEvaluator implements RowPerPatientDataEvaluator {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
+	
 	StringBuilder result = new StringBuilder();
 	
 	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) {
-	    
+		
 		CurrentDrugOrderResults par = new CurrentDrugOrderResults(patientData, context);
-		CurrentPatientDrugOrder pd = (CurrentPatientDrugOrder)patientData;
+		CurrentPatientDrugOrder pd = (CurrentPatientDrugOrder) patientData;
 		par.setDrugFilter(pd.getResultFilter());
 		List<DrugOrder> orders = OrderEntryUtil.getDrugOrdersByPatient(pd.getPatient());
 		for (Iterator<DrugOrder> i = orders.iterator(); i.hasNext();) {
@@ -34,10 +35,10 @@ public class CurrentPatientDrugOrderEvaluator implements RowPerPatientDataEvalua
 			}
 		}
 		for (DrugOrder drugOrder : orders) {
-             if((drugOrder != null) && ! drugOrder.isDiscontinuedRightNow()){
-			         par.setValue(orders);
-        	 }
-        }
+			if ((drugOrder != null) && !drugOrder.isDiscontinuedRightNow()) {
+				par.setValue(orders);
+			}
+		}
 		return par;
 	}
 }

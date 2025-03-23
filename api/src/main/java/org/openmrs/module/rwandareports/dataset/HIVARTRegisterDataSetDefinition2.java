@@ -24,13 +24,14 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 
 /**
- * This is a simple example of how one might implement a row-per-Patient DataSetDefinition
- * There are no guarantees that this class will be backwards compatible, or exist in a future
- * release, so should be used with caution
+ * This is a simple example of how one might implement a row-per-Patient DataSetDefinition There are
+ * no guarantees that this class will be backwards compatible, or exist in a future release, so
+ * should be used with caution
+ * 
  * @see SimplePatientDataSetEvaluator
  */
 public class HIVARTRegisterDataSetDefinition2 extends BaseDataSetDefinition {
-
+	
 	private static final long serialVersionUID = 6405583324151111487L;
 	
 	@ConfigurationProperty
@@ -38,9 +39,6 @@ public class HIVARTRegisterDataSetDefinition2 extends BaseDataSetDefinition {
 	
 	@ConfigurationProperty
 	private List<CohortDefinition> filters;
-	
-	
-	
 	
 	/**
 	 * Constructor
@@ -55,55 +53,47 @@ public class HIVARTRegisterDataSetDefinition2 extends BaseDataSetDefinition {
 	public HIVARTRegisterDataSetDefinition2(String name, String description) {
 		super(name, description);
 	}
-
 	
-    /**
-     * @return the columns
-     */
-    public List<RowPerPatientData> getColumns() {
-    	if (columns == null) {
+	/**
+	 * @return the columns
+	 */
+	public List<RowPerPatientData> getColumns() {
+		if (columns == null) {
 			columns = new ArrayList<RowPerPatientData>();
 		}
-    	return columns;
-    }
-
+		return columns;
+	}
 	
-    /**
-     * @param columns the columns to set
-     */
-    public void setColumns(List<RowPerPatientData> columns) {
-    	this.columns = columns;
-    }
-
+	/**
+	 * @param columns the columns to set
+	 */
+	public void setColumns(List<RowPerPatientData> columns) {
+		this.columns = columns;
+	}
 	
-	public void addColumn(RowPerPatientData column)
-	{
+	public void addColumn(RowPerPatientData column) {
 		getColumns().add(column);
 	}
-
 	
-    /**
-     * @return the filters
-     */
-    public List<CohortDefinition> getFilters() {
-    	if (filters == null) {
+	/**
+	 * @return the filters
+	 */
+	public List<CohortDefinition> getFilters() {
+		if (filters == null) {
 			filters = new ArrayList<CohortDefinition>();
 		}
-    	return filters;
-    }
-
+		return filters;
+	}
 	
-    /**
-     * @param filters the filters to set
-     */
-    public void setFilters(List<CohortDefinition> filters) {
-    	this.filters = filters;
-    }
-
-    public void addFilter(CohortDefinition cohort)
-    {
-    	getFilters().add(cohort);
-    }
+	/**
+	 * @param filters the filters to set
+	 */
+	public void setFilters(List<CohortDefinition> filters) {
+		this.filters = filters;
+	}
+	
+	public void addFilter(CohortDefinition cohort) {
+		getFilters().add(cohort);
+	}
 	
 }
-

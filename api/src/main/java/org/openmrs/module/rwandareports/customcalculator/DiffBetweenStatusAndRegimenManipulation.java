@@ -12,11 +12,9 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.DrugOrdersResu
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.StringResult;
 
-public class DiffBetweenStatusAndRegimenManipulation implements CustomCalculation{
-
+public class DiffBetweenStatusAndRegimenManipulation implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
-	
-	
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
@@ -25,26 +23,21 @@ public class DiffBetweenStatusAndRegimenManipulation implements CustomCalculatio
 		Date artStart = null;
 		Date regimenStart = null;
 		
-		for(PatientDataResult res: results)
-		{
-			if(res.getName().equals("artWorkflowStart"))
-			{
-				DateResult stateStart = (DateResult)res;
+		for (PatientDataResult res : results) {
+			if (res.getName().equals("artWorkflowStart")) {
+				DateResult stateStart = (DateResult) res;
 				artStart = stateStart.getValue();
 			}
 			
-			if(res.getName().equals("StartART"))
-			{
-				DrugOrdersResult regimen = (DrugOrdersResult)res;
-				if(regimen.getValue() != null)
-				{
+			if (res.getName().equals("StartART")) {
+				DrugOrdersResult regimen = (DrugOrdersResult) res;
+				if (regimen.getValue() != null) {
 					regimenStart = regimen.getValue().getEffectiveStartDate();
 				}
 			}
 		}
 		
-		if(artStart != null && regimenStart != null)
-		{
+		if (artStart != null && regimenStart != null) {
 			long diff = regimenStart.getTime() - artStart.getTime();
 			diff = diff / (24 * 60 * 60 * 1000);
 			result.setValue(String.valueOf(diff));

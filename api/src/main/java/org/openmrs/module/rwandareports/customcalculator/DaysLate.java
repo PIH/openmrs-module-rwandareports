@@ -18,32 +18,31 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.StringResult;
 
 public class DaysLate implements CustomCalculation {
 	
-protected Log log = LogFactory.getLog(DaysLate.class);
+	protected Log log = LogFactory.getLog(DaysLate.class);
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
-		NumberResult nr=new NumberResult(results.get(0).getPatientData(), context);
-		StringResult sr =  new StringResult(results.get(0).getPatientData(), context);
-		for(PatientDataResult result: results)
-		{
-			if(result.getName().equals("nextVisit"))
-			{
-				ObservationResult nextVisit = (ObservationResult)result;
+		NumberResult nr = new NumberResult(results.get(0).getPatientData(), context);
+		StringResult sr = new StringResult(results.get(0).getPatientData(), context);
+		for (PatientDataResult result : results) {
+			if (result.getName().equals("nextVisit")) {
+				ObservationResult nextVisit = (ObservationResult) result;
 				
-				if(nextVisit.getDateOfObservation() != null && nextVisit.getValue() != null)
-				{
-
-					long diff=0;
+				if (nextVisit.getDateOfObservation() != null && nextVisit.getValue() != null) {
+					
+					long diff = 0;
 					DateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
-
-					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + nextVisit + " Date String: " + nextVisit.getValue() + " Date:" + nextVisit.getDateOfObservation());
+					
+					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + nextVisit + " Date String: "
+					        + nextVisit.getValue() + " Date:" + nextVisit.getDateOfObservation());
 					
 					//try to get the return visit date
 					Date returnVisitDate = null;
 					try {
-//						returnVisitDate = dateformat.parse(nextVisit.getValue());
+						//						returnVisitDate = dateformat.parse(nextVisit.getValue());
 						returnVisitDate = nextVisit.getDateOfObservation();
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						log.error("Could not parse return visit date", e);
 						//just tell the user that the difference between dates is not available
 						sr.setValue("Not available");
@@ -52,12 +51,12 @@ protected Log log = LogFactory.getLog(DaysLate.class);
 					Calendar nextVisitDate = Calendar.getInstance();
 					nextVisitDate.setTime(returnVisitDate);
 					
-					Date endDate=(Date)context.getParameterValue("endDate");
+					Date endDate = (Date) context.getParameterValue("endDate");
 					Calendar today = Calendar.getInstance();
 					today.setTime(endDate);
-			
+					
 					//difference in days between the endDate and the return visit date
-					diff= today.getTimeInMillis()-nextVisitDate.getTimeInMillis();
+					diff = today.getTimeInMillis() - nextVisitDate.getTimeInMillis();
 					long d = diff / (24 * 60 * 60 * 1000);
 					nr.setValue(d);
 					return nr;

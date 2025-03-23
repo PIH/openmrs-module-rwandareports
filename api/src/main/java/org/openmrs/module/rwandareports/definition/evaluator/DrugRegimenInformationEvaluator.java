@@ -58,17 +58,15 @@ public class DrugRegimenInformationEvaluator implements RowPerPatientDataEvaluat
 			}
 		} else {
 			
+			List<DrugOrder> drugOrders = Context.getService(OrderExtensionService.class).getDrugOrders(pd.getPatient(),
+			    pd.getIndication(), pd.getAsOfDate(), pd.getUntilDate());
 			
-			List<DrugOrder> drugOrders = Context.getService(OrderExtensionService.class).getDrugOrders(
-			    pd.getPatient(), pd.getIndication(), pd.getAsOfDate(), pd.getUntilDate());
-
 			for (DrugOrder eo : drugOrders) {
 				if (eo.getOrderGroup() != null) {
 					OrderGroup orderGroup = HibernateUtil.getRealObjectFromProxy(eo.getOrderGroup());
 					if (orderGroup instanceof DrugRegimen) {
 						DrugRegimen reg = (DrugRegimen) orderGroup;
-						if(regimen == null || reg.getFirstDrugOrderStartDate().after(regimen.getFirstDrugOrderStartDate()))
-						{
+						if (regimen == null || reg.getFirstDrugOrderStartDate().after(regimen.getFirstDrugOrderStartDate())) {
 							regimen = (DrugRegimen) orderGroup;
 						}
 					}
@@ -78,7 +76,8 @@ public class DrugRegimenInformationEvaluator implements RowPerPatientDataEvaluat
 		if (regimen != null) {
 			StringBuilder result = new StringBuilder();
 			if (regimen.isCyclical()) {
-				Integer maxCycleNum = Context.getService(OrderExtensionService.class).getMaxNumberOfCyclesForRegimen(regimen);
+				Integer maxCycleNum = Context.getService(OrderExtensionService.class)
+				        .getMaxNumberOfCyclesForRegimen(regimen);
 				
 				result.append("Cycle #: ");
 				result.append(regimen.getCycleNumber());
@@ -93,22 +92,23 @@ public class DrugRegimenInformationEvaluator implements RowPerPatientDataEvaluat
 			
 			List<DrugOrder> members = new ArrayList<DrugOrder>();
 			members.addAll(regimen.getMembers());
-			Collections.sort(members, new Comparator<DrugOrder>(){
-
+			Collections.sort(members, new Comparator<DrugOrder>() {
+				
 				@Override
-                public int compare(DrugOrder o1, DrugOrder o2) {
-	                return o1.getDrug().getName().compareTo(o2.getDrug().getName());
-					}
-
-				});
+				public int compare(DrugOrder o1, DrugOrder o2) {
+					return o1.getDrug().getName().compareTo(o2.getDrug().getName());
+				}
+				
+			});
 			
 			Date startDate = null;
 			for (DrugOrder order : members) {
 				
-				if(pd.isShowDrugDetails() && (pd.getIndication() == null || pd.getIndication().equals(order.getOrderReason())))
-				{
-					if((OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0) && (pd.getUntilDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getUntilDate()) <= 0))
-					{
+				if (pd.isShowDrugDetails()
+				        && (pd.getIndication() == null || pd.getIndication().equals(order.getOrderReason()))) {
+					if ((OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0)
+					        && (pd.getUntilDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(),
+					            pd.getUntilDate()) <= 0)) {
 						drugs.append("\n");
 						drugs.append(order.getDrug().getName());
 						drugs.append(" ");
@@ -120,14 +120,14 @@ public class DrugRegimenInformationEvaluator implements RowPerPatientDataEvaluat
 				if (order.getRoute() != null && iv.contains(order.getRoute())) {
 					
 					if (pd.getAsOfDate() != null) {
-						if (((startDate == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0)
-						        || (order.getEffectiveStartDate().before(startDate) && OpenmrsUtil.compare(order.getEffectiveStartDate(),
-						            pd.getAsOfDate()) >= 0)) && (pd.getUntilDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getUntilDate()) <= 0)) {
+						if (((startDate == null || OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0) || (order
+						        .getEffectiveStartDate().before(startDate) && OpenmrsUtil.compare(
+						    order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0))
+						        && (pd.getUntilDate() == null || OpenmrsUtil.compare(order.getEffectiveStartDate(),
+						            pd.getUntilDate()) <= 0)) {
 							startDate = order.getEffectiveStartDate();
 						}
-					}
-					else
-					{
+					} else {
 						if (startDate == null || order.getEffectiveStartDate().after(startDate)) {
 							startDate = order.getEffectiveStartDate();
 						}
@@ -144,12 +144,11 @@ public class DrugRegimenInformationEvaluator implements RowPerPatientDataEvaluat
 				result.append(String.valueOf(cycleDay + 1));
 			}
 			
-			if(pd.isShowDrugDetails())
-			{
+			if (pd.isShowDrugDetails()) {
 				result.append("");
 				result.append(drugs);
 			}
-
+			
 			par.setValue(result.toString());
 		}
 		return par;

@@ -1,25 +1,35 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
-		<groupId>org.openmrs.module</groupId>
-		<artifactId>rwandareports</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>rwandareports-api</artifactId>
-	<packaging>jar</packaging>
-	<name>Rwanda Reports API</name>
-	<description>API project for Rwanda Reports</description>
+        <groupId>org.openmrs.module</groupId>
+        <artifactId>rwandareports</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rwandareports-api</artifactId>
+    <packaging>jar</packaging>
+    <name>Rwanda Reports API</name>
+    <description>API project for Rwanda Reports</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.openmrs.api</groupId>
+            <artifactId>openmrs-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>mamba-core-api</artifactId>
+        </dependency>
+
+    </dependencies>
 
 </project>

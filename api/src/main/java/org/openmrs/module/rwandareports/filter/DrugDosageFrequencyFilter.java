@@ -9,12 +9,11 @@ public class DrugDosageFrequencyFilter implements ResultFilter {
 	private String finalDateFormat = null;
 	
 	public Object filter(Object value) {
-		DrugOrder drugOrder = (DrugOrder)value;
+		DrugOrder drugOrder = (DrugOrder) value;
 		
 		StringBuilder result = new StringBuilder();
 		
-		if(drugOrder != null && drugOrder.getDrug() != null)
-		{
+		if (drugOrder != null && drugOrder.getDrug() != null) {
 			result.append(drugOrder.getDrug().getName());
 			result.append(" ");
 			result.append(drugOrder.getDose());
@@ -26,21 +25,18 @@ public class DrugDosageFrequencyFilter implements ResultFilter {
 		
 		return result.toString();
 	}
-
-
+	
 	public String getFinalDateFormat() {
 		return finalDateFormat;
 	}
-
+	
 	public void setFinalDateFormat(String finalDateFormat) {
 		this.finalDateFormat = finalDateFormat;
 	}
-
-
-	public Object filterWhenNull() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
 	
+	public Object filterWhenNull() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

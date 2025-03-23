@@ -18,33 +18,33 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataRes
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 
 public class DiabetesAlerts implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
+	
 	GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
-	public PatientDataResult calculateResult(List<PatientDataResult> results,
-			EvaluationContext context) {
-
+	
+	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
+		
 		PatientAttributeResult alert = new PatientAttributeResult(null, null);
-
+		
 		StringBuffer alerts = new StringBuffer();
 		
-		Date endDate=(Date)context.getParameterValue("endDate");
+		Date endDate = (Date) context.getParameterValue("endDate");
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(endDate);
 		c1.add(Calendar.MONTH, -6);
-
+		
 		for (PatientDataResult result : results) {
 			
 			if (result.getName().equals("RecentHbA1c")) {
-				ObservationResult HbA1c = (ObservationResult)result;
-				if(HbA1c.getValue() == null || c1.getTime().compareTo(HbA1c.getDateOfObservation()) == 1)
-				{
+				ObservationResult HbA1c = (ObservationResult) result;
+				if (HbA1c.getValue() == null || c1.getTime().compareTo(HbA1c.getDateOfObservation()) == 1) {
 					alerts.append("no HbA1c in last 6 months\n");
 				}
 			}
 			if (result.getName().equals("RecentCreatinine")) {
-				ObservationResult creatinine = (ObservationResult)result;
-				if(creatinine.getValue() == null || c1.getTime().compareTo(creatinine.getDateOfObservation()) == 1)
-				{
+				ObservationResult creatinine = (ObservationResult) result;
+				if (creatinine.getValue() == null || c1.getTime().compareTo(creatinine.getDateOfObservation()) == 1) {
 					alerts.append("no Creatinine in last 6 months\n");
 				}
 			}
@@ -56,11 +56,11 @@ public class DiabetesAlerts implements CustomCalculation {
 						if (value > 160.0) {
 							alerts.append("high BP\n");
 						}
-					} catch (Exception e) {
-					  log.error("Could not parse obs value to double "+e);
+					}
+					catch (Exception e) {
+						log.error("Could not parse obs value to double " + e);
 					}
 					
-
 				}
 				//just put this in here to make sure it is executed only once
 				if (patientHasDiabetesDDBForm(result) == false) {
@@ -73,29 +73,30 @@ public class DiabetesAlerts implements CustomCalculation {
 		return alert;
 	}
 	
-	private boolean patientHasDiabetesDDBForm(PatientDataResult result){
+	private boolean patientHasDiabetesDDBForm(PatientDataResult result) {
 		try {
-
-			//int formId = gp.getForm(GlobalPropertiesManagement.DIABETES_DDB_FORM).getFormId();
-			List<Form> forms=gp.getFormList(GlobalPropertiesManagement.DIABETES_DDBs);
-
-			Patient p = result.getPatientData().getPatient();
-			List<Encounter> patientEncounters =Context.getEncounterService().getEncountersByPatient(p);
 			
-		    for (Encounter encounter : patientEncounters) {
-				if (encounter != null && encounter.getForm() !=null) {
-					for (Form f:forms) {
+			//int formId = gp.getForm(GlobalPropertiesManagement.DIABETES_DDB_FORM).getFormId();
+			List<Form> forms = gp.getFormList(GlobalPropertiesManagement.DIABETES_DDBs);
+			
+			Patient p = result.getPatientData().getPatient();
+			List<Encounter> patientEncounters = Context.getEncounterService().getEncountersByPatient(p);
+			
+			for (Encounter encounter : patientEncounters) {
+				if (encounter != null && encounter.getForm() != null) {
+					for (Form f : forms) {
 						if (encounter.getForm().getFormId() == f.getFormId()) {
 							return true;
 						}
 					}
 				}
 			}
-		} catch (NumberFormatException e) {
-			 log.error("Could not parse value of "+ GlobalPropertiesManagement.DIABETES_DDBs+ "to integer");
 		}
-			
+		catch (NumberFormatException e) {
+			log.error("Could not parse value of " + GlobalPropertiesManagement.DIABETES_DDBs + "to integer");
+		}
+		
 		return false;
 	}
-
+	
 }

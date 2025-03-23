@@ -59,8 +59,7 @@ public class RwandaReportsUtil {
 			        + ".  Take a look at PrimaryCareReportConstants in RwandaReports module to see what's missing or wrong.");
 	}
 	
-	public static boolean patientHasForm(Patient patient, Form form)
-	{
+	public static boolean patientHasForm(Patient patient, Form form) {
 		int formId = form.getFormId();
 		
 		List<Encounter> patientEncounters = Context.getEncounterService().getEncountersByPatient(patient);
@@ -75,7 +74,7 @@ public class RwandaReportsUtil {
 		
 		return false;
 	}
-
+	
 	/**
 	 * @return the List of Concepts that are configured as valid answers to the passed Concept
 	 */
@@ -87,7 +86,7 @@ public class RwandaReportsUtil {
 		}
 		return concepts;
 	}
-
+	
 	/**
 	 * @return the Drugs that are configured with the given Concept
 	 */

@@ -7,23 +7,18 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.ResultFilt
 
 public class OutcomeDateStateFilter implements ResultFilter {
 	
-	
-	
 	public Object filter(Object value) {
 		
-		PatientState state = (PatientState)value;
+		PatientState state = (PatientState) value;
 		
-		if(state != null)
-		{
+		if (state != null) {
 			String stateName = state.getState().getConcept().getName().getName();
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String stateDate = sdf.format(state.getStartDate());
 			
-			if(stateName != null)
-			{
-				if(stateName.equals("ON ANTIRETROVIRALS") || stateName.equals("FOLLOWING"))
-				{
+			if (stateName != null) {
+				if (stateName.equals("ON ANTIRETROVIRALS") || stateName.equals("FOLLOWING")) {
 					stateDate = "";
 				}
 				return stateDate;

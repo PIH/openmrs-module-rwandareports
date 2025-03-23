@@ -27,7 +27,7 @@ import org.openmrs.module.rwandareports.widget.AllLocation;
 import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 
 public class SetupMissingCD4Report extends SingleSetupReport {
-
+	
 	//properties
 	private Concept patientDied;
 	
@@ -46,7 +46,7 @@ public class SetupMissingCD4Report extends SingleSetupReport {
 	private ProgramWorkflow treatmentStatus;
 	
 	private List<EncounterType> clinicalEncoutersExcLab;
-
+	
 	@Override
 	public String getReportName() {
 		return "DQ-HIV CD4 Labs with Missing Data";
@@ -62,8 +62,10 @@ public class SetupMissingCD4Report extends SingleSetupReport {
 		    "XlsMissingCD4ReportTemplate", null);
 		
 		Properties props = new Properties();
-		props.put("repeatingSections", "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:NotCompletedPatientDataSet|sheet:2,dataset:dataSet|sheet:2,row:9,dataset:NoResultPatientDataSet");
-		props.put("sortWeight","5000");
+		props.put(
+		    "repeatingSections",
+		    "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:NotCompletedPatientDataSet|sheet:2,dataset:dataSet|sheet:2,row:9,dataset:NoResultPatientDataSet");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}

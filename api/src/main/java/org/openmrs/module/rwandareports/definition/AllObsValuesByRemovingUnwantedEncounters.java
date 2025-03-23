@@ -13,43 +13,46 @@ import java.util.List;
  * Created by josua on 10/30/18.
  */
 public class AllObsValuesByRemovingUnwantedEncounters extends BasePatientData implements RowPerPatientData {
-    @ConfigurationProperty(required=false)
-    private Concept ConceptOfWantedObs;
-    @ConfigurationProperty(required=false)
-    private Concept ConceptOfUnWantedObs;
-    private List<Form> forms;
-
-    private boolean includeNull = true;
-
-    public List<Form> getForms() {
-        return forms;
-    }
-
-    public void setForms(List<Form> forms) {
-        this.forms = forms;
-    }
-
-    public Concept getConceptOfWantedObs() {
-        return ConceptOfWantedObs;
-    }
-
-    public void setConceptOfWantedObs(Concept conceptOfWantedObs) {
-        ConceptOfWantedObs = conceptOfWantedObs;
-    }
-
-    public Concept getConceptOfUnWantedObs() {
-        return ConceptOfUnWantedObs;
-    }
-
-    public void setConceptOfUnWantedObs(Concept conceptOfUnWantedObs) {
-        ConceptOfUnWantedObs = conceptOfUnWantedObs;
-    }
-
-    public boolean isIncludeNull() {
-        return includeNull;
-    }
-
-    public void setIncludeNull(boolean includeNull) {
-        this.includeNull = includeNull;
-    }
+	
+	@ConfigurationProperty(required = false)
+	private Concept ConceptOfWantedObs;
+	
+	@ConfigurationProperty(required = false)
+	private Concept ConceptOfUnWantedObs;
+	
+	private List<Form> forms;
+	
+	private boolean includeNull = true;
+	
+	public List<Form> getForms() {
+		return forms;
+	}
+	
+	public void setForms(List<Form> forms) {
+		this.forms = forms;
+	}
+	
+	public Concept getConceptOfWantedObs() {
+		return ConceptOfWantedObs;
+	}
+	
+	public void setConceptOfWantedObs(Concept conceptOfWantedObs) {
+		ConceptOfWantedObs = conceptOfWantedObs;
+	}
+	
+	public Concept getConceptOfUnWantedObs() {
+		return ConceptOfUnWantedObs;
+	}
+	
+	public void setConceptOfUnWantedObs(Concept conceptOfUnWantedObs) {
+		ConceptOfUnWantedObs = conceptOfUnWantedObs;
+	}
+	
+	public boolean isIncludeNull() {
+		return includeNull;
+	}
+	
+	public void setIncludeNull(boolean includeNull) {
+		this.includeNull = includeNull;
+	}
 }

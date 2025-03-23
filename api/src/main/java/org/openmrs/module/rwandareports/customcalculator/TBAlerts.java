@@ -13,8 +13,8 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationRes
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttributeResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 
-public class TBAlerts implements CustomCalculation{
-
+public class TBAlerts implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
@@ -26,94 +26,75 @@ public class TBAlerts implements CustomCalculation{
 		double height = 0;
 		double weight = 0;
 		
-		for(PatientDataResult result: results)
-		{
-			if(result.getName().equals("weightObs"))
-			{
-				AllObservationValuesResult wt = (AllObservationValuesResult)result;
+		for (PatientDataResult result : results) {
+			if (result.getName().equals("weightObs")) {
+				AllObservationValuesResult wt = (AllObservationValuesResult) result;
 				
-				if(wt.getValue() != null)
-				{
+				if (wt.getValue() != null) {
 					int decline = calculateDecline(wt.getValue());
 					
-					if(decline > 0)
-					{
+					if (decline > 0) {
 						alerts.append("WT decline(");
 						alerts.append(decline);
 						alerts.append(").\n");
 					}
 					
-					if(wt.getValue().size() > 0)
-					{
-						weight = wt.getValue().get(wt.getValue().size()-1).getValueNumeric();
+					if (wt.getValue().size() > 0) {
+						weight = wt.getValue().get(wt.getValue().size() - 1).getValueNumeric();
 					}
 				}
 			}
 			
-			if(result.getName().equals("RecentHeight"))
-			{
-				ObservationResult heightOb = (ObservationResult)result;
+			if (result.getName().equals("RecentHeight")) {
+				ObservationResult heightOb = (ObservationResult) result;
 				
-				if(heightOb.getValue() == null || heightOb.getValue().trim().length() == 0)
-				{
+				if (heightOb.getValue() == null || heightOb.getValue().trim().length() == 0) {
 					alerts.append("No height recorded.\n");
-				}
-				else
-				{
+				} else {
 					height = Double.parseDouble(heightOb.getValue());
 				}
 			}
 		}
 		
-		if(height > 0 && weight > 0)
-		{
-			double bmi = weight/(height/100*height/100);
+		if (height > 0 && weight > 0) {
+			double bmi = weight / (height / 100 * height / 100);
 			int decimalPlace = 1;
-			BigDecimal bd = new BigDecimal( Double.toString(bmi) );
-			bd = bd.setScale( decimalPlace, BigDecimal.ROUND_HALF_UP );
+			BigDecimal bd = new BigDecimal(Double.toString(bmi));
+			bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
 			
-			if(bmi < 16)
-			{
-				alerts.append("Very low BMI (" + bd.doubleValue()  + ").\n");
+			if (bmi < 16) {
+				alerts.append("Very low BMI (" + bd.doubleValue() + ").\n");
+			} else if (bmi < 18.5) {
+				alerts.append("Low BMI (" + bd.doubleValue() + ").\n");
 			}
-			else if(bmi < 18.5)
-			{
-				alerts.append("Low BMI (" + bd.doubleValue()  + ").\n");
-			}
-				
+			
 		}
 		
 		alert.setValue(alerts.toString().trim());
 		return alert;
 	}
 	
-	private int calculateDecline(List<Obs> obs)
-	{
+	private int calculateDecline(List<Obs> obs) {
 		Obs lastOb = null;
 		Obs nextToLastOb = null;
 		
-		if(obs.size() > 0)
-		{
+		if (obs.size() > 0) {
 			lastOb = obs.get(obs.size() - 1);
 		}
 		
-		if(obs.size() > 1)
-		{
+		if (obs.size() > 1) {
 			nextToLastOb = obs.get(obs.size() - 2);
 		}
 		
-		if(lastOb != null && nextToLastOb != null)
-		{
+		if (lastOb != null && nextToLastOb != null) {
 			Double firstVal = lastOb.getValueNumeric();
 			Double nextToLastVal = nextToLastOb.getValueNumeric();
 			
-			if(firstVal != null && nextToLastVal != null)
-			{
+			if (firstVal != null && nextToLastVal != null) {
 				double decline = nextToLastVal - firstVal;
-			
-				if(decline > 0)
-				{
-					return (int)decline;
+				
+				if (decline > 0) {
+					return (int) decline;
 				}
 			}
 		}

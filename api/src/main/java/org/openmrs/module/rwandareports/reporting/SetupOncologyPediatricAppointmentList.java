@@ -22,21 +22,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class SetupOncologyPediatricAppointmentList extends SingleSetupReport {
-
+	
 	//properties retrieved from global variables
 	private Program oncologyProgram;
 	
 	private Concept pediatricChemotherapy;
+	
 	private Concept pediatricNonChemotherapy;
-
-
+	
 	@Override
 	public String getReportName() {
 		return "ONC-Oncology Pediatric Appointment List";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -45,7 +44,7 @@ public class SetupOncologyPediatricAppointmentList extends SingleSetupReport {
 		
 		createCustomWebRenderer(rd);
 	}
-
+	
 	private ReportDefinition createReportDefinition() {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
@@ -66,57 +65,54 @@ public class SetupOncologyPediatricAppointmentList extends SingleSetupReport {
 		RowPerPatientDataSetDefinition dataSetDefinition = new RowPerPatientDataSetDefinition();
 		dataSetDefinition.setName("Chemotherapy – Pediatric Inpatient Visit Ward");
 		
-
 		dataSetDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
 		
 		SortCriteria sortCriteria = new SortCriteria();
 		sortCriteria.addSortElement("nextRDV", SortDirection.ASC);
 		dataSetDefinition.setSortCriteria(sortCriteria);
-
 		
 		//Add filters
-		dataSetDefinition.addFilter(Cohorts.createDateObsCohortDefinition(pediatricChemotherapy, RangeComparator.GREATER_EQUAL,
-		    RangeComparator.LESS_EQUAL, TimeModifier.LAST), ParameterizableUtil
+		dataSetDefinition.addFilter(Cohorts.createDateObsCohortDefinition(pediatricChemotherapy,
+		    RangeComparator.GREATER_EQUAL, RangeComparator.LESS_EQUAL, TimeModifier.LAST), ParameterizableUtil
 		        .createParameterMappings("value2=${endDate+6M},value1=${endDate-14d}"));
-
-		dataSetDefinition.addFilter(Cohorts.createDateObsCohortDefinition(pediatricNonChemotherapy, RangeComparator.GREATER_EQUAL,
-				RangeComparator.LESS_EQUAL, TimeModifier.LAST), ParameterizableUtil
-				.createParameterMappings("value2=${endDate+6M},value1=${endDate-14d}"));
-
-
+		
+		dataSetDefinition.addFilter(Cohorts.createDateObsCohortDefinition(pediatricNonChemotherapy,
+		    RangeComparator.GREATER_EQUAL, RangeComparator.LESS_EQUAL, TimeModifier.LAST), ParameterizableUtil
+		        .createParameterMappings("value2=${endDate+6M},value1=${endDate-14d}"));
+		
 		//Add Columns
 		dataSetDefinition.addColumn(RowPerPatientColumns.getSystemId("id"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getArchivingId("archivingId"), new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMiddleNameColumn("middleName"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFamilyNameColumn("familyName"), new HashMap<String, Object>());
 		dataSetDefinition.addColumn(RowPerPatientColumns.getAge("age"), new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("date", pediatricChemotherapy, "yyyy-MM-dd"),
 		    new HashMap<String, Object>());
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecent("date", pediatricNonChemotherapy, "yyyy-MM-dd"),
-				new HashMap<String, Object>());
-
+		    new HashMap<String, Object>());
+		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getIMBId("imbId"), new HashMap<String, Object>());
-
+		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("endDate", "${endDate}");
 		
 		reportDefinition.addDataSetDefinition("Chemotherapy – Pediatric Inpatient Visit Ward", dataSetDefinition, mappings);
-
+		
 	}
 	
 	private void setupProperties() {
 		
 		oncologyProgram = gp.getProgram(GlobalPropertiesManagement.ONCOLOGY_PROGRAM);
-
+		
 		pediatricChemotherapy = Context.getConceptService().getConceptByUuid("5efb51db-4e71-497d-822c-91501ac167f6");
 		pediatricNonChemotherapy = Context.getConceptService().getConceptByUuid("8c3b045a-aa94-4361-b2e9-8a80c26ccede");
-
+		
 	}
 	
 	private void createCustomWebRenderer(ReportDefinition rd) throws IOException {

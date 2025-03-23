@@ -47,37 +47,37 @@ import org.openmrs.module.rwandareports.dhis2.model.DHISDataValueSet;
 import org.openmrs.module.rwandareports.widget.AllLocation;
 
 public class DHIS2Util {
-
+	
 	protected final static Log log = LogFactory.getLog(DHIS2Util.class);
-
-	public static void runAndPushReportToDHIS(ReportDefinition reportDefinition, Date startDate, Date endDate, Location location, String orgUnitUid) {
+	
+	public static void runAndPushReportToDHIS(ReportDefinition reportDefinition, Date startDate, Date endDate,
+	        Location location, String orgUnitUid) {
 		Report ranReport = runIndicatorReport(reportDefinition, startDate, endDate, location);
 		if (ranReport != null) {
 			sendReportDataToDHIS(ranReport, orgUnitUid);
 		}
 	}
-
-	public static Report runIndicatorReport(ReportDefinition reportDef, Date startDate, Date endDate,
-			Location location) {
-
+	
+	public static Report runIndicatorReport(ReportDefinition reportDef, Date startDate, Date endDate, Location location) {
+		
 		AllLocation allLocatons = new AllLocation();
 		allLocatons.setHierarchy(AllLocation.LOCATION);
 		allLocatons.setValue(location.getName());
-
-		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(reportDef, null), null,
-				new RenderingMode(new DefaultWebRenderer(), "Web", null, 100), Priority.HIGHEST, null);
-
+		
+		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(reportDef, null), null, new RenderingMode(
+		        new DefaultWebRenderer(), "Web", null, 100), Priority.HIGHEST, null);
+		
 		request.getReportDefinition().addParameterMapping("startDate", startDate);
 		request.getReportDefinition().addParameterMapping("endDate", endDate);
 		request.getReportDefinition().addParameterMapping("location", allLocatons);
 		request.setStatus(Status.PROCESSING);
 		request = Context.getService(ReportService.class).saveReportRequest(request);
-
+		
 		return Context.getService(ReportService.class).runReport(request);
 	}
-
+	
 	public static Object sendReportDataToDHIS(Report ranReport, String orgUnitUid) {
-
+		
 		DHISDataValueSet dataValueSet = new DHISDataValueSet();
 		String datasetToSend = Context.getAdministrationService().getGlobalProperty("reports.HMISDataSetToSend");
 		DataSet ds = ranReport.getReportData().getDataSets().get(datasetToSend);
@@ -85,23 +85,23 @@ public class DHIS2Util {
 		DataSetRow row = ds.iterator().next();
 		List<DHISDataValue> dataValues = new ArrayList<DHISDataValue>();
 		String dataSetId = Context.getAdministrationService().getGlobalProperty("reports.HMISDataSetId");
-
-		String indicatorsMapping = Context.getAdministrationService()
-				.getGlobalProperty("reports.HMISIndicatorToDataElementsMapping");
+		
+		String indicatorsMapping = Context.getAdministrationService().getGlobalProperty(
+		    "reports.HMISIndicatorToDataElementsMapping");
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode actualObj = null;
 		try {
 			actualObj = mapper.readTree(indicatorsMapping);
-
+			
 			for (int i = 0; i < columns.size(); i++) {
 				DHISDataValue dv = new DHISDataValue();
 				String column = columns.get(i).getName();
-
+				
 				if (StringUtils.isNotBlank(column)) {
 					String value = row.getColumnValue(column).toString();
-
+					
 					if (StringUtils.isNotBlank(value)) {
-						if(actualObj.get(column) != null) {
+						if (actualObj.get(column) != null) {
 							dv.setDataElement(actualObj.get(column).get("dataElement").asText());
 							dv.setValue(value);
 							dv.setCategoryOptionCombo(actualObj.get(column).get("categoryOptionCombo").asText());
@@ -111,10 +111,12 @@ public class DHIS2Util {
 					}
 				}
 			}
-		} catch (JsonProcessingException e1) {
+		}
+		catch (JsonProcessingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} catch (IOException e1) {
+		}
+		catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -123,43 +125,46 @@ public class DHIS2Util {
 		dataValueSet.setCompleteData(getCompleteDate(new Date()));
 		dataValueSet.setPeriod(getPeriod(LocalDate.now()));
 		dataValueSet.setDataSet(dataSetId);
-
+		
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		try {
 			String json = ow.writeValueAsString(dataValueSet);
-			log.error("Posting data..."+json);
+			log.error("Posting data..." + json);
 			postDataToDhis2(json);
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AuthenticationException e) {
+		}
+		catch (JsonGenerationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (AuthenticationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
-
-	public static String getCompleteDate(Date completeDate){
+	
+	public static String getCompleteDate(Date completeDate) {
 		String pattern = "yyyy-MM-dd";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		return simpleDateFormat.format(completeDate);
 	}
-
-	public static String getPeriod(LocalDate reportingPeriod){
-		if(reportingPeriod.getMonthValue() -1 < 10) {
-			return (reportingPeriod.getYear()+"0"+(reportingPeriod.getMonthValue() - 1));
+	
+	public static String getPeriod(LocalDate reportingPeriod) {
+		if (reportingPeriod.getMonthValue() - 1 < 10) {
+			return (reportingPeriod.getYear() + "0" + (reportingPeriod.getMonthValue() - 1));
 		}
-		return reportingPeriod.getYear()+""+(reportingPeriod.getMonthValue() - 1);
+		return reportingPeriod.getYear() + "" + (reportingPeriod.getMonthValue() - 1);
 	}
-
-
+	
 	/**
 	 * Creates a JSON post request to a configured URL from "dhis2.postURL" global property.
 	 * 
@@ -168,7 +173,8 @@ public class DHIS2Util {
 	 * @throws IOException
 	 * @throws AuthenticationException
 	 */
-	public static CloseableHttpResponse postDataToDhis2(String jsonData) throws ClientProtocolException, IOException, AuthenticationException {
+	public static CloseableHttpResponse postDataToDhis2(String jsonData) throws ClientProtocolException, IOException,
+	        AuthenticationException {
 		String DHIS2Username = Context.getAdministrationService().getGlobalProperty("reports.DHIS2AuthorizationUsername");
 		String DHIS2Password = Context.getAdministrationService().getGlobalProperty("reports.DHIS2AuthorizationPassword");
 		HttpPost httpPost = new HttpPost(Context.getAdministrationService().getGlobalProperty("reports.DHIS2PostURL"));
@@ -178,7 +184,7 @@ public class DHIS2Util {
 		httpPost.setHeader("Accept", "application/json");
 		httpPost.setHeader("Content-type", "application/json");
 		httpPost.setHeader("Authorization", authenticateScheme.getValue());
-
+		
 		CloseableHttpClient client = HttpClients.createDefault();
 		CloseableHttpResponse response = client.execute(httpPost);
 		client.close();

@@ -15,7 +15,6 @@ package org.openmrs.module.rwandareports.dataset.evaluator;
 
 import org.openmrs.Concept;
 
-
 /**
  *
  */
@@ -28,41 +27,36 @@ public class DrugTotalPOJO {
 	String name;
 	
 	String units;
-
 	
-    public Double getDose() {
-    	return dose;
-    }
-
+	public Double getDose() {
+		return dose;
+	}
 	
-    public void setDose(Double dose) {
-    	this.dose = dose;
-    }
-
+	public void setDose(Double dose) {
+		this.dose = dose;
+	}
 	
-    public Concept getRoute() {
-    	return route;
-    }
-
+	public Concept getRoute() {
+		return route;
+	}
 	
-    public void setRoute(Concept route) {
-    	this.route = route;
-    }
-
+	public void setRoute(Concept route) {
+		this.route = route;
+	}
 	
-    public String getName() {
-    	return name;
-    }
+	public String getName() {
+		return name;
+	}
 	
-    public void setName(String name) {
-    	this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 	
-    public String getUnits() {
-    	return units;
-    }
-
-    public void setUnits(String units) {
-    	this.units = units;
-    }
+	public String getUnits() {
+		return units;
+	}
+	
+	public void setUnits(String units) {
+		this.units = units;
+	}
 }

@@ -8,7 +8,6 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.rwandareports.widget.AllLocation;
 
-
 /**
  *
  */
@@ -21,7 +20,6 @@ public class LocationHierachyIndicatorDataSetDefinition extends BaseDataSetDefin
 	
 	@ConfigurationProperty
 	private AllLocation location;
-	
 	
 	//***** CONSTRUCTORS *****
 	
@@ -42,31 +40,30 @@ public class LocationHierachyIndicatorDataSetDefinition extends BaseDataSetDefin
 	
 	//***** INSTANCE METHODS *****
 	
-	
 	//***** PROPERTY ACCESS *****
 	
-    /**
-     * @return the baseDefinition
-     */
-    public List<DataSetDefinition> getBaseDefinition() {
-    	return baseDefinition;
-    }
+	/**
+	 * @return the baseDefinition
+	 */
+	public List<DataSetDefinition> getBaseDefinition() {
+		return baseDefinition;
+	}
 	
-    /**
-     * @param baseDefinition the baseDefinition to set
-     */
-    public void setBaseDefinition(List<DataSetDefinition> baseDefinition) {
-    	this.baseDefinition = baseDefinition;
-    }
-    
-    public void addBaseDefinition(DataSetDefinition baseDefinition) {
-    	this.baseDefinition.add(baseDefinition);
-    }
-
+	/**
+	 * @param baseDefinition the baseDefinition to set
+	 */
+	public void setBaseDefinition(List<DataSetDefinition> baseDefinition) {
+		this.baseDefinition = baseDefinition;
+	}
+	
+	public void addBaseDefinition(DataSetDefinition baseDefinition) {
+		this.baseDefinition.add(baseDefinition);
+	}
+	
 	public AllLocation getLocation() {
 		return location;
 	}
-
+	
 	public void setLocation(AllLocation location) {
 		this.location = location;
 	}

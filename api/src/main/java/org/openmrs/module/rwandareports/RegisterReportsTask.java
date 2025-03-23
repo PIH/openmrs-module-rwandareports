@@ -25,9 +25,9 @@ import org.openmrs.scheduler.tasks.AbstractTask;
  * Task to aggregate raw data and delete old data
  */
 public class RegisterReportsTask extends AbstractTask {
-
+	
 	private static Log log = LogFactory.getLog(RegisterReportsTask.class);
-
+	
 	/**
 	 * @see org.openmrs.scheduler.tasks.AbstractTask#execute()
 	 */
@@ -35,7 +35,7 @@ public class RegisterReportsTask extends AbstractTask {
 	public void execute() {
 		if (!isExecuting) {
 			log.debug("Starting Register Reports Task...");
-
+			
 			startExecuting();
 			try {
 				onExecute();
@@ -48,7 +48,7 @@ public class RegisterReportsTask extends AbstractTask {
 			}
 		}
 	}
-
+	
 	/**
 	 * Does the actual data aggregation
 	 */
@@ -56,12 +56,11 @@ public class RegisterReportsTask extends AbstractTask {
 		try {
 			String version = ModuleFactory.getModuleById("rwandareports").getVersion();
 			String oldversion = Context.getAdministrationService().getGlobalProperty("reports.moduleVersion");
-			if(!version.equals(oldversion)){
-
+			if (!version.equals(oldversion)) {
+				
 				ReportSetup.cleanTables();
 				ReportSetup.registerReports();
-
-
+				
 				Context.getAdministrationService().saveGlobalProperty(new GlobalProperty("reports.moduleVersion", version));
 			}
 		}

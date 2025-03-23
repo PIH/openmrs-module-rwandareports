@@ -48,7 +48,7 @@ import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 	
 	protected final static Log log = LogFactory.getLog(SetupExposedClinicInfantMonthly.class);
-
+	
 	//Properties retrieved from global variables
 	private Program pmtctinfantProgram;
 	
@@ -63,14 +63,14 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 	private String NVPSuspDrugId;
 	
 	private String bactrimDrugId;
-
+	
 	private Date onDate;
-
+	
 	@Override
 	public String getReportName() {
 		return "HIV-PMTCT Exposed Infant Clinical Report-Monthly";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -83,7 +83,7 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		props.put(
 		    "repeatingSections",
 		    "sheet:1,row:9,dataset:LatePcrTest|sheet:2,row:9,dataset:Latesero|sheet:3,row:9,dataset:LostoFolowup|sheet:4,row:9,dataset:Less6wNotonNvp|sheet:5,row:9,dataset:More6wNotBactrim");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
@@ -93,7 +93,7 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		reportDefinition.setName(getReportName());
 		reportDefinition.addParameter(new Parameter("location", "Location", Location.class));
 		reportDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-
+		
 		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
 		    ParameterizableUtil.createParameterMappings("location=${location}"));
 		
@@ -244,7 +244,7 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		/*SqlCohortDefinition onNevirapineOntime = new SqlCohortDefinition("select DISTINCT o.patient_id from orders o,concept c WHERE o.concept_id=c.concept_id AND c.concept_id="+nevirapine.getConceptId()+" AND o.discontinued=0 AND o.voided=0 AND o.start_date<= :onDate");				
 		onNevirapineOntime.addParameter(new Parameter("onDate", "onDate",Date.class));
 		*/
-
+		
 		SqlCohortDefinition onNevirapineOntime = new SqlCohortDefinition(
 		        "select DISTINCT  o.patient_id from drug_order do, orders o where do.order_id=o.order_id and do.drug_inventory_id="
 		                + NVPSuspDrugId + " and o.discontinued=0 and o.voided=0 AND o.start_date<= :onDate");
@@ -282,7 +282,7 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		/*SqlCohortDefinition infantsonBactrim = new SqlCohortDefinition("select DISTINCT o.patient_id from orders o,concept c WHERE o.concept_id=c.concept_id AND c.concept_id="+cotrimoxazole.getConceptId()+" AND o.discontinued=0 AND o.voided=0 AND o.start_date<= :onDate");
 		infantsonBactrim.addParameter(new Parameter("onDate", "onDate",Date.class));
 		*/
-
+		
 		SqlCohortDefinition infantsonBactrim = new SqlCohortDefinition(
 		        "select DISTINCT  o.patient_id from drug_order do, orders o where do.order_id=o.order_id and do.drug_inventory_id="
 		                + bactrimDrugId + " and o.discontinued=0 and o.voided=0 AND o.start_date<= :onDate");
@@ -345,7 +345,7 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		    new HashMap<String, Object>());
 		dataSetDefinition5.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", "dd-MMM-yyyy", null),
 		    new HashMap<String, Object>());
-
+		
 		dataSetDefinition1.addColumn(RowPerPatientColumns.getAgeInMonths("ageInMonths"), new HashMap<String, Object>());
 		dataSetDefinition1.addColumn(
 		    RowPerPatientColumns.getStateOfPatient("FeedingGroup", pmtctinfantProgram, feedingState, new BorFStateFilter()),
@@ -415,15 +415,13 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		dataSetDefinition4.addColumn(address, new HashMap<String, Object>());
 		dataSetDefinition5.addColumn(address, new HashMap<String, Object>());
 		
-		
-		MultiplePatientDataDefinitions tracNetId=RowPerPatientColumns.getTracnetId("TRACNET_ID");
+		MultiplePatientDataDefinitions tracNetId = RowPerPatientColumns.getTracnetId("TRACNET_ID");
 		
 		dataSetDefinition1.addColumn(tracNetId, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(tracNetId, new HashMap<String, Object>());
 		dataSetDefinition3.addColumn(tracNetId, new HashMap<String, Object>());
 		dataSetDefinition4.addColumn(tracNetId, new HashMap<String, Object>());
 		dataSetDefinition5.addColumn(tracNetId, new HashMap<String, Object>());
-
 		
 		PatientRelationship accompagnateur = RowPerPatientColumns.getAccompRelationship("AccompName");
 		dataSetDefinition1.addColumn(accompagnateur, new HashMap<String, Object>());
@@ -443,7 +441,7 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		dataSetDefinition3.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dataSetDefinition4.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dataSetDefinition5.addParameter(new Parameter("endDate", "End Date", Date.class));
-
+		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("location", "${location}");
 		mappings.put("endDate", "${endDate}");
@@ -466,7 +464,6 @@ public class SetupExposedClinicInfantMonthly extends SingleSetupReport {
 		cotrimoxazole = gp.getConcept(GlobalPropertiesManagement.COTRIMOXAZOLE_DRUG);
 		NVPSuspDrugId = Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.NVP_Susp);
 		bactrimDrugId = Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.BACTRIM);
-
 		
 	}
 	

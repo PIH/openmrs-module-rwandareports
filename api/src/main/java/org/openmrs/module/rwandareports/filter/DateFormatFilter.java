@@ -11,38 +11,40 @@ public class DateFormatFilter implements ResultFilter {
 	private String finalDateFormat = null;
 	
 	public Object filter(Object value) {
-		String result = (String)value;
-		if(result != null && result.indexOf("00:") > -1)
-		{
+		String result = (String) value;
+		if (result != null && result.indexOf("00:") > -1) {
 			result = result.substring(0, result.indexOf("00:")).trim();
 		}
 		
-		if(finalDateFormat != null)
-		{
+		if (finalDateFormat != null) {
 			
 			Date resultDate = null;
 			try {
 				SimpleDateFormat sdf = new SimpleDateFormat();
 				resultDate = sdf.parse(result);
-			} catch (ParseException e) {
+			}
+			catch (ParseException e) {
 				
-				try{
+				try {
 					SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MMM-yyyy");
 					resultDate = sdf1.parse(result);
-				} catch(ParseException e1)
-				{
-					try{
+				}
+				catch (ParseException e1) {
+					try {
 						SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
 						resultDate = sdf1.parse(result);
-					} catch(ParseException e2) {
+					}
+					catch (ParseException e2) {
 						try {
 							SimpleDateFormat sdf2 = new SimpleDateFormat("dd MMMMM yyyy");
 							resultDate = sdf2.parse(result);
-						} catch (ParseException e3) {
+						}
+						catch (ParseException e3) {
 							try {
 								SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd");
 								resultDate = sdf4.parse(result);
-							} catch (ParseException e4) {
+							}
+							catch (ParseException e4) {
 								e4.printStackTrace();
 							}
 						}
@@ -50,8 +52,7 @@ public class DateFormatFilter implements ResultFilter {
 				}
 			}
 			
-			if(resultDate != null)
-			{
+			if (resultDate != null) {
 				result = new SimpleDateFormat(finalDateFormat).format(resultDate);
 			}
 			
@@ -59,21 +60,18 @@ public class DateFormatFilter implements ResultFilter {
 		
 		return result;
 	}
-
-
+	
 	public String getFinalDateFormat() {
 		return finalDateFormat;
 	}
-
+	
 	public void setFinalDateFormat(String finalDateFormat) {
 		this.finalDateFormat = finalDateFormat;
 	}
-
-
-	public Object filterWhenNull() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
 	
+	public Object filterWhenNull() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

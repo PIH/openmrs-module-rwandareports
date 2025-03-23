@@ -10,10 +10,8 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.BasePatien
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 
-
-
 public class ArtSwitch extends BasePatientData implements RowPerPatientData {
-
+	
 	@ConfigurationProperty
 	private Date endDate = null;
 	
@@ -22,41 +20,39 @@ public class ArtSwitch extends BasePatientData implements RowPerPatientData {
 	private Mapped<RowPerPatientData> artData;
 	
 	private GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
-   
-	public ArtSwitch()
-	{
+	
+	public ArtSwitch() {
 		drugConceptSetConcept = gp.getConcept(GlobalPropertiesManagement.ART_DRUGS_SET);
 	}
 	
 	/**
-     * @return the drugConceptSet
-     */
-    public Concept getDrugConceptSetConcept() {
-    	return drugConceptSetConcept;
-    }
+	 * @return the drugConceptSet
+	 */
+	public Concept getDrugConceptSetConcept() {
+		return drugConceptSetConcept;
+	}
 	
-    public Date getEndDate() {
-    	return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-    	this.endDate = endDate;
-    }
-
-    public Mapped<RowPerPatientData> getArtData() {
-    	return artData;
-    }
-
-    public void setArtData(Mapped<RowPerPatientData> artData) {
-    	this.artData = artData;
-    }
-    
-    /**
-     * @param dateOfPatientData the dateOfPatientData to set
-     */
-    public void setArtData(RowPerPatientData artData, Map<String, Object> mappings) {
-    	this.artData = new Mapped<RowPerPatientData>(artData, mappings);
-    }
-
-    
+	public Date getEndDate() {
+		return endDate;
+	}
+	
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	
+	public Mapped<RowPerPatientData> getArtData() {
+		return artData;
+	}
+	
+	public void setArtData(Mapped<RowPerPatientData> artData) {
+		this.artData = artData;
+	}
+	
+	/**
+	 * @param dateOfPatientData the dateOfPatientData to set
+	 */
+	public void setArtData(RowPerPatientData artData, Map<String, Object> mappings) {
+		this.artData = new Mapped<RowPerPatientData>(artData, mappings);
+	}
+	
 }

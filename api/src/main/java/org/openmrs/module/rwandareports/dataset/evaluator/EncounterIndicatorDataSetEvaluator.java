@@ -16,14 +16,14 @@ import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.rwandareports.dataset.EncounterIndicatorDataSetDefinition;
 import org.openmrs.module.rwandareports.indicator.EncounterIndicator;
 
-@Handler(supports={EncounterIndicatorDataSetDefinition.class})
+@Handler(supports = { EncounterIndicatorDataSetDefinition.class })
 public class EncounterIndicatorDataSetEvaluator implements DataSetEvaluator {
 	
-	
-	public EncounterIndicatorDataSetEvaluator() { }
+	public EncounterIndicatorDataSetEvaluator() {
+	}
 	
 	/**
-	 * @throws EvaluationException 
+	 * @throws EvaluationException
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a EncounterIndicatorDataSetDefinition
 	 */
@@ -34,12 +34,11 @@ public class EncounterIndicatorDataSetEvaluator implements DataSetEvaluator {
 			context = new EvaluationContext();
 		}
 		
-		EncounterIndicatorDataSetDefinition edsd = (EncounterIndicatorDataSetDefinition)dataSetDefinition;
+		EncounterIndicatorDataSetDefinition edsd = (EncounterIndicatorDataSetDefinition) dataSetDefinition;
 		
 		SimpleDataSet ret = new SimpleDataSet(dataSetDefinition, context);
-	
-		for(EncounterIndicator ei: edsd.getColumns())
-		{
+		
+		for (EncounterIndicator ei : edsd.getColumns()) {
 			IndicatorResult result = Context.getService(IndicatorService.class).evaluate(ei, context);
 			DataSetRow row = new DataSetRow();
 			row.addColumnValue(new DataSetColumn(ei.getName(), ei.getName(), Object.class), result);

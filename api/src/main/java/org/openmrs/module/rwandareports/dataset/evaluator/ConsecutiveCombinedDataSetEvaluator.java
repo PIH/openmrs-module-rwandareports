@@ -43,33 +43,30 @@ public class ConsecutiveCombinedDataSetEvaluator implements DataSetEvaluator {
 		
 		boolean sample = true;
 		
-		for(int i = 0; i < dsd.getNumberOfIterations(); i++)
-		{
+		for (int i = 0; i < dsd.getNumberOfIterations(); i++) {
 			context = ObjectUtil.nvl(context, new EvaluationContext());
 			if (context == null) {
 				context = new EvaluationContext();
 			}
-		
+			
 			String parameter = "${startDate}";
 			
-			if(i > 0)
-			{
+			if (i > 0) {
 				parameter = "${startDate+" + i + "d}";
 			}
 			Map<String, Object> mappings = new HashMap<String, Object>();
 			mappings.put("endDate", parameter);
 			
 			EvaluationContext ec = EvaluationContext.cloneForChild(context, new Mapped<RowPerPatientDataSetDefinition>(base,
-		        mappings));
-		
+			        mappings));
+			
 			SimpleDataSet day = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(base, ec);
-		
-			if(day.getRows().size() > 0 && sample)
-			{
+			
+			if (day.getRows().size() > 0 && sample) {
 				addColumns(result, day);
 				sample = false;
 			}
-		
+			
 			DataSetRowList rows = day.getRows();
 			for (DataSetRow dataSetRow : rows) {
 				List<DataSetColumn> columns = result.getMetaData().getColumns();

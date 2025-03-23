@@ -62,11 +62,9 @@ public class Helper {
 		}
 	}
 	
-	
-	public static ReportDesign createRowPerPatientXlsOverviewReportDesign(ReportDefinition rd, String resourceName, String name,
-	                                                               Map<? extends Object, ? extends Object> properties)
-	    throws IOException {
-
+	public static ReportDesign createRowPerPatientXlsOverviewReportDesign(ReportDefinition rd, String resourceName,
+	        String name, Map<? extends Object, ? extends Object> properties) throws IOException {
+		
 		ReportService rs = Context.getService(ReportService.class);
 		for (ReportDesign rdd : rs.getReportDesigns(rd, null, true)) {
 			if (name.equals(rdd.getName())) {
@@ -95,16 +93,17 @@ public class Helper {
 	/**
 	 * @return a new ReportDesign for a standard Excel output
 	 */
-	public static ReportDesign createExcelDesign(ReportDefinition reportDefinition, String reportDesignName,boolean includeParameters) {
+	public static ReportDesign createExcelDesign(ReportDefinition reportDefinition, String reportDesignName,
+	        boolean includeParameters) {
 		ReportDesign design = new ReportDesign();
 		design.setName(reportDesignName);
 		design.setReportDefinition(reportDefinition);
 		design.setRendererType(XlsReportRenderer.class);
-		if(includeParameters)
-		   design.addPropertyValue(XlsReportRenderer.INCLUDE_DATASET_NAME_AND_PARAMETERS_PROPERTY, "true");
+		if (includeParameters)
+			design.addPropertyValue(XlsReportRenderer.INCLUDE_DATASET_NAME_AND_PARAMETERS_PROPERTY, "true");
 		return design;
 	}
-
+	
 	/**
 	 * @return a new ReportDesign for a standard CSV output
 	 */

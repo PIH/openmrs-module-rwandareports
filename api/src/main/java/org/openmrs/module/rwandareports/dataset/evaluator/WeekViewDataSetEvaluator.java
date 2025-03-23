@@ -116,7 +116,7 @@ public class WeekViewDataSetEvaluator implements DataSetEvaluator {
 			for (SimpleDataSet day : week.keySet()) {
 				String dayName = week.get(day);
 				DataSetRowList rows = day.getRows();
-					
+				
 				List<DataSetColumn> columns = result.getMetaData().getColumns();
 				for (DataSetColumn column : columns) {
 					if (column.getName().contains(dayName)) {

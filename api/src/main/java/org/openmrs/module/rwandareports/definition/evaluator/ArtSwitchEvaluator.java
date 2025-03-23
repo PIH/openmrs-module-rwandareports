@@ -24,78 +24,70 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataRes
 import org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatientDataService;
 import org.openmrs.module.rwandareports.definition.ArtSwitch;
 
-@Handler(supports={ArtSwitch.class})
-public class ArtSwitchEvaluator implements RowPerPatientDataEvaluator{
-
+@Handler(supports = { ArtSwitch.class })
+public class ArtSwitchEvaluator implements RowPerPatientDataEvaluator {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) throws EvaluationException {
-	    
+		
 		AllDrugOrdersResult par = new AllDrugOrdersResult(patientData, context);
-		ArtSwitch pd = (ArtSwitch)patientData;
+		ArtSwitch pd = (ArtSwitch) patientData;
 		
 		par.setDateFormat(pd.getDateFormat());
 		
 		Mapped<RowPerPatientData> definition = pd.getArtData();
 		
-		AllDrugOrdersResult patientDataResult = (AllDrugOrdersResult)Context.getService(RowPerPatientDataService.class).evaluate(definition, context);
+		AllDrugOrdersResult patientDataResult = (AllDrugOrdersResult) Context.getService(RowPerPatientDataService.class)
+		        .evaluate(definition, context);
 		
 		List<DrugOrder> existing = patientDataResult.getValue();
 		
 		List<DrugOrder> results = new ArrayList<DrugOrder>();
 		
-		if(existing != null && existing.size() > 0)
-		{
+		if (existing != null && existing.size() > 0) {
 			List<Drug> existingDrugs = new ArrayList<Drug>();
 			
-			for(DrugOrder o: existing)
-			{
+			for (DrugOrder o : existing) {
 				existingDrugs.add(o.getDrug());
 			}
 			
 			Date currentStart = null;
-			for(DrugOrder ex: existing)
-			{
-				if(currentStart == null || ex.getEffectiveStartDate().after(currentStart))
-				{
+			for (DrugOrder ex : existing) {
+				if (currentStart == null || ex.getEffectiveStartDate().after(currentStart)) {
 					currentStart = ex.getEffectiveStartDate();
 				}
 			}
 			
 			List<DrugOrder> orders = OrderEntryUtil.getDrugOrdersByPatient(pd.getPatient());
 			
-	        if(orders != null && orders.size() > 0)
-	        {   	
-				if(pd.getDrugConceptSetConcept() != null)
-				{
-					List<Concept> drugConcepts = Context.getConceptService().getConceptsByConceptSet(pd.getDrugConceptSetConcept());
-					if(drugConcepts != null)
-					{
+			if (orders != null && orders.size() > 0) {
+				if (pd.getDrugConceptSetConcept() != null) {
+					List<Concept> drugConcepts = Context.getConceptService().getConceptsByConceptSet(
+					    pd.getDrugConceptSetConcept());
+					if (drugConcepts != null) {
 						Date startingDate = null;
 						
 						List<DrugOrder> arts = new ArrayList<DrugOrder>();
-						for(DrugOrder order: orders)
-						{
+						for (DrugOrder order : orders) {
 							Concept drug = null;
-							try{
+							try {
 								drug = order.getDrug().getConcept();
 							}
-							catch(Exception e)
-							{
+							catch (Exception e) {
 								log.error("Unable to retrieve a drug from the drug order: " + e.getMessage());
 							}
-							if(drug != null)
-							{
+							if (drug != null) {
 								//make sure it is art and not a drug the patient is already on (to remove change in dosages)
-								if(drugConcepts.contains(drug))
-								{	
+								if (drugConcepts.contains(drug)) {
 									arts.add(order);
-									if(!existingDrugs.contains(order.getDrug()))
-									{
-										if(order.getEffectiveStartDate() != null)
-										{		
-											if(order.getEffectiveStartDate().after(currentStart) && (startingDate == null || startingDate.after(order.getEffectiveStartDate())) && (pd.getEndDate() == null || order.getEffectiveStartDate().before(pd.getEndDate())))
-											{
+									if (!existingDrugs.contains(order.getDrug())) {
+										if (order.getEffectiveStartDate() != null) {
+											if (order.getEffectiveStartDate().after(currentStart)
+											        && (startingDate == null || startingDate.after(order
+											                .getEffectiveStartDate()))
+											        && (pd.getEndDate() == null || order.getEffectiveStartDate().before(
+											            pd.getEndDate()))) {
 												startingDate = order.getEffectiveStartDate();
 											}
 										}
@@ -105,20 +97,17 @@ public class ArtSwitchEvaluator implements RowPerPatientDataEvaluator{
 						}
 						
 						//now check to see if any of the current drugs have been stopped before the next starting date
-						for(DrugOrder eo: existing)
-						{
-							if((eo.getEffectiveStopDate() != null && eo.getEffectiveStopDate().after(currentStart)) && (startingDate == null || startingDate.after(eo.getEffectiveStopDate())) && (pd.getEndDate() == null || eo.getEffectiveStopDate().before(pd.getEndDate())))
-							{
+						for (DrugOrder eo : existing) {
+							if ((eo.getEffectiveStopDate() != null && eo.getEffectiveStopDate().after(currentStart))
+							        && (startingDate == null || startingDate.after(eo.getEffectiveStopDate()))
+							        && (pd.getEndDate() == null || eo.getEffectiveStopDate().before(pd.getEndDate()))) {
 								startingDate = eo.getEffectiveStopDate();
 							}
 						}
 						
-						if(startingDate != null)
-						{
-							for(DrugOrder art: arts)
-							{
-								if(OrderEntryUtil.isCurrent(art, startingDate))
-								{
+						if (startingDate != null) {
+							for (DrugOrder art : arts) {
+								if (OrderEntryUtil.isCurrent(art, startingDate)) {
 									results.add(art);
 								}
 							}
@@ -127,18 +116,18 @@ public class ArtSwitchEvaluator implements RowPerPatientDataEvaluator{
 				}
 			}
 		}
-        
-        Collections.sort(results, new Comparator<DrugOrder>() {
-        	
-        	@Override
+		
+		Collections.sort(results, new Comparator<DrugOrder>() {
+			
+			@Override
 			public int compare(DrugOrder d1, DrugOrder d2) {
 				
-        		return d1.getDrug().getName().toLowerCase().compareTo(d2.getDrug().getName().toLowerCase());
+				return d1.getDrug().getName().toLowerCase().compareTo(d2.getDrug().getName().toLowerCase());
 			}
-        });
-        
-        par.setValue(results);
+		});
+		
+		par.setValue(results);
 		
 		return par;
-    }
+	}
 }

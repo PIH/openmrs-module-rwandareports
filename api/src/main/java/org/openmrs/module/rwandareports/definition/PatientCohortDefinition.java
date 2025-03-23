@@ -21,21 +21,19 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * 
  */
 public class PatientCohortDefinition extends BaseCohortDefinition {
-
-    private static final long serialVersionUID = 1L;
-    
+	
+	private static final long serialVersionUID = 1L;
+	
 	//***** PROPERTIES *****
-
-	@ConfigurationProperty(required=false)
+	
+	@ConfigurationProperty(required = false)
 	private Patient patient;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private String patientId;
 	
-	
-
 	//***** CONSTRUCTORS *****
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -49,26 +47,25 @@ public class PatientCohortDefinition extends BaseCohortDefinition {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-
+		
 		return "Individual patient cohort";
 	}
-
+	
 	//***** PROPERTY ACCESS *****
 	
-    public Patient getPatient() {
-    	return patient;
-    }
-
+	public Patient getPatient() {
+		return patient;
+	}
 	
-    public void setPatient(Patient patient) {
-    	this.patient = patient;
-    }
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
 	
-    public String getPatientId() {
-    	return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-    	this.patientId = patientId;
-    }
+	public String getPatientId() {
+		return patientId;
+	}
+	
+	public void setPatientId(String patientId) {
+		this.patientId = patientId;
+	}
 }

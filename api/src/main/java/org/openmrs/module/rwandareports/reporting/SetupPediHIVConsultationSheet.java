@@ -31,7 +31,7 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupPediHIVConsultationSheet extends SingleSetupReport {
-
+	
 	//properties
 	private Program pediProgram;
 	
@@ -44,12 +44,12 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 	private EncounterType pediFlowsheet;
 	
 	private List<EncounterType> clinicalEnountersIncLab;
-
+	
 	@Override
 	public String getReportName() {
 		return "HIV-Pedi Consultation Sheet";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setUpProperties();
@@ -61,7 +61,7 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:7,dataset:dataSet");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 		
@@ -70,7 +70,7 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		
 		Properties props2 = new Properties();
 		props2.put("repeatingSections", "sheet:1,row:8,dataset:dataSet");
-		props2.put("sortWeight","5000");
+		props2.put("sortWeight", "5000");
 		design2.setProperties(props2);
 		Helper.saveReportDesign(design2);
 		
@@ -95,11 +95,11 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		//so the user is only presented with the treatment group options
 		Properties stateProperties = new Properties();
 		stateProperties.setProperty("Program", pediProgram.getName());
-		stateProperties.setProperty("Workflow", Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW));
+		stateProperties.setProperty("Workflow",
+		    Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW));
 		reportDefinition.addParameter(new Parameter("state", "Group", ProgramWorkflowState.class, stateProperties));
 		reportDefinition.getParameter("state").setRequired(false);
-
-
+		
 		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
 		    ParameterizableUtil.createParameterMappings("location=${location}"));
 		
@@ -116,7 +116,7 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		dataSetDefinition.setName(reportDefinition.getName() + " Data Set");
 		dataSetDefinition.addParameter(new Parameter("state", "State", ProgramWorkflowState.class));
 		dataSetDefinition.getParameter("state").setRequired(false);
-
+		
 		dataSetDefinition.addParameter(new Parameter("onDate", "On Date", Date.class));
 		dataSetDefinition.getParameter("onDate").setRequired(false);
 		
@@ -125,10 +125,9 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		
 		dataSetDefinition.addFilter(Cohorts.createInProgramParameterizableByDate("pediHIV: In Program", pediProgram),
 		    ParameterizableUtil.createParameterMappings("onDate=${now}"));
-
+		
 		dataSetDefinition.addFilter(Cohorts.getPatientsWithVisitDateGivenOrNot("Patient with visit by date", pediFlowsheet),
-				ParameterizableUtil.createParameterMappings("onDate=${onDate}"));
-
+		    ParameterizableUtil.createParameterMappings("onDate=${onDate}"));
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 		
@@ -147,13 +146,12 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		dataSetDefinition.addColumn(RowPerPatientColumns.getDateOfBirth("DOB", "dd-MMM-yyyy", "yyyy"),
 		    new HashMap<String, Object>());
 		
-		MostRecentObservation cd4Test=RowPerPatientColumns.getMostRecentCD4("CD4Test", "dd-MMM-yyyy", 
-		new RemoveDecimalFilter());
+		MostRecentObservation cd4Test = RowPerPatientColumns.getMostRecentCD4("CD4Test", "dd-MMM-yyyy",
+		    new RemoveDecimalFilter());
 		dataSetDefinition.addColumn(cd4Test, new HashMap<String, Object>());
 		
 		MostRecentObservation cd4Percent = RowPerPatientColumns.getMostRecentCD4Percentage("CD4Percent", "dd-MMM-yyyy");
-		dataSetDefinition.addColumn(cd4Percent,
-		    new HashMap<String, Object>());
+		dataSetDefinition.addColumn(cd4Percent, new HashMap<String, Object>());
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions nextCD4 = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		nextCD4.addPatientDataToBeEvaluated(cd4Test, new HashMap<String, Object>());
@@ -185,39 +183,40 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		dataSetDefinition.addColumn(
 		    RowPerPatientColumns.getCurrentTBOrders("TB Treatment", "dd-MMM-yyyy", new DrugNameFilter()),
 		    new HashMap<String, Object>());
-
+		
 		dataSetDefinition.addColumn(
-				RowPerPatientColumns.getStateOfPatient("informed", pediProgram, informed, new InformedStateFilter()),
+		    RowPerPatientColumns.getStateOfPatient("informed", pediProgram, informed, new InformedStateFilter()),
 		    new HashMap<String, Object>());
-
-		StateOfPatient counsellingState = RowPerPatientColumns.getStateOfPatient("counselling", pediProgram, counsellingWorkflow, null);
-		dataSetDefinition.addColumn(counsellingState,new HashMap<String, Object>());
-
+		
+		StateOfPatient counsellingState = RowPerPatientColumns.getStateOfPatient("counselling", pediProgram,
+		    counsellingWorkflow, null);
+		dataSetDefinition.addColumn(counsellingState, new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(
 		    RowPerPatientColumns.getCurrentARTOrders("Regimen", "dd-MMM-yyyy", new DrugDosageFrequencyFilter()),
 		    new HashMap<String, Object>());
 		
-		FirstDrugOrderStartedRestrictedByConceptSet startArt = RowPerPatientColumns.getDrugOrderForStartOfART("StartART", "dd-MMM-yyyy");
-		dataSetDefinition.addColumn(startArt,
-		    new HashMap<String, Object>());
+		FirstDrugOrderStartedRestrictedByConceptSet startArt = RowPerPatientColumns.getDrugOrderForStartOfART("StartART",
+		    "dd-MMM-yyyy");
+		dataSetDefinition.addColumn(startArt, new HashMap<String, Object>());
 		
 		AllObservationValues allWeights = RowPerPatientColumns.getAllWeightValues("weightObs", "ddMMMyy",
 		    new LastThreeObsFilter(), null);
 		
-		AllObservationValues allCD4 = RowPerPatientColumns.getAllCD4Values("allCD4Obs", "ddMMMyy",
-		    null, null);
+		AllObservationValues allCD4 = RowPerPatientColumns.getAllCD4Values("allCD4Obs", "ddMMMyy", null, null);
 		
 		ObservationInMostRecentEncounterOfType io = RowPerPatientColumns.getIOInMostRecentEncounterOfType("IO",
 		    pediFlowsheet);
 		
 		ObservationInMostRecentEncounterOfType sideEffect = RowPerPatientColumns.getSideEffectInMostRecentEncounterOfType(
 		    "SideEffects", pediFlowsheet);
-		AllObservationValues viralLoadTest = RowPerPatientColumns.getAllViralLoadsValues("viralLoadTest", "ddMMMyy", null,null);	
+		AllObservationValues viralLoadTest = RowPerPatientColumns.getAllViralLoadsValues("viralLoadTest", "ddMMMyy", null,
+		    null);
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("AccompName"), new HashMap<String, Object>());
-		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
-
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",
+		    clinicalEnountersIncLab, null, null);
+		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
 		alert.addPatientDataToBeEvaluated(cd4Test, new HashMap<String, Object>());
@@ -231,14 +230,14 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		alert.addPatientDataToBeEvaluated(viralLoadTest, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(lastEncInMonth, new HashMap<String, Object>());
 		alert.setCalculator(new HIVPediAlerts());
-//		if(reportDefinition.getParameter("state")!=null){
-		alert.addParameter(new Parameter("state", "State",Date.class));
-		dataSetDefinition.addColumn(alert,ParameterizableUtil.createParameterMappings("state=${state}"));
-//		}
-//		else{
-//
-//		}
-
+		//		if(reportDefinition.getParameter("state")!=null){
+		alert.addParameter(new Parameter("state", "State", Date.class));
+		dataSetDefinition.addColumn(alert, ParameterizableUtil.createParameterMappings("state=${state}"));
+		//		}
+		//		else{
+		//
+		//		}
+		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions cd4Decline = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		cd4Decline.setName("cd4Decline");
 		cd4Decline.addPatientDataToBeEvaluated(allCD4, new HashMap<String, Object>());
@@ -252,7 +251,7 @@ public class SetupPediHIVConsultationSheet extends SingleSetupReport {
 		mappings.put("state", "${state}");
 		mappings.put("onDate", "${onDate}");
 		alert.getParameter("state").setRequired(false);
-
+		
 		reportDefinition.addDataSetDefinition("dataSet", dataSetDefinition, mappings);
 	}
 	

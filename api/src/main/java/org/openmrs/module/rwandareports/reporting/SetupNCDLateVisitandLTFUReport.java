@@ -37,22 +37,28 @@ import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 	
 	protected final static Log log = LogFactory.getLog(SetupNCDLateVisitandLTFUReport.class);
-
+	
 	// properties retrieved from global variables
 	private List<Program> diseases;
 	
 	private List<EncounterType> clinicalEncoutersExcLab = new ArrayList<EncounterType>();
 	
 	private Concept returnVisitDateConcept;
-
+	
 	private EncounterType hypertesionEncounter;
+	
 	private EncounterType heartFailureEncounter;
+	
 	private EncounterType asthmaEncounter;
+	
 	private EncounterType diabetesEncounter;
+	
 	private EncounterType CKDEncounter;
+	
 	private EncounterType epilepsyEncounter;
+	
 	private EncounterType HFHTNCKDEncounter;
-
+	
 	@Override
 	public String getReportName() {
 		return "NCD Late Visit and Lost to Follow Up";
@@ -68,7 +74,7 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 		props.put(
 		    "repeatingSections",
 		    "sheet:1,row:13,dataset:LATE_VISITdataset0|sheet:1,row:17,dataset:LATE_VISITdataset1|sheet:1,row:21,dataset:LATE_VISITdataset2|sheet:1,row:25,dataset:LATE_VISITdataset3|sheet:1,row:29,dataset:LATE_VISITdataset4|sheet:2,row:13,dataset:LTFUdataset0|sheet:2,row:15,dataset:LTFUdataset1|sheet:2,row:17,dataset:LTFUdataset2|sheet:2,row:19,dataset:LTFUdataset3|sheet:2,row:21,dataset:LTFUdataset4");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
@@ -81,37 +87,37 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 		reportDefinition.addParameter(new Parameter("endDate", "Date", Date.class));
 		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
 		    ParameterizableUtil.createParameterMappings("location=${location}"));
-
+		
 		for (Program program : diseases) {
 			for (FilterType filterType : FilterType.values()) {
-
+				
 				createDataSetDefinition(reportDefinition, program, filterType, diseases.indexOf(program));
 			}
 		}
-
+		
 		Helper.saveReportDefinition(reportDefinition);
 		
 		return reportDefinition;
 	}
 	
 	private void createDataSetDefinition(ReportDefinition reportDefinition, Program program, FilterType filterType,
-	                                     int datasetIndex) {
-
+	        int datasetIndex) {
+		
 		// Create new dataset definition
 		RowPerPatientDataSetDefinition dataSetDefinition = new RowPerPatientDataSetDefinition();
-
+		
 		dataSetDefinition.setName(program.getName() + " Data Set");
 		dataSetDefinition.addParameter(new Parameter("location", "Location", Location.class));
 		dataSetDefinition.addParameter(new Parameter("endDate", "enDate", Date.class));
-
+		
 		// Add Filters
-//		if (filterType.equals(FilterType.LATE_VISIT))
-
-			addLateVisitFilter(dataSetDefinition, program);
-
-//		if (filterType.equals(FilterType.LTFU))
-//			addLTFUFilter(dataSetDefinition, program);
-
+		//		if (filterType.equals(FilterType.LATE_VISIT))
+		
+		addLateVisitFilter(dataSetDefinition, program);
+		
+		//		if (filterType.equals(FilterType.LTFU))
+		//			addLTFUFilter(dataSetDefinition, program);
+		
 		DateFormatFilter dateFilter = new DateFormatFilter();
 		dateFilter.setFinalDateFormat("yyyy/MM/dd");
 		
@@ -130,10 +136,10 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 		dataSetDefinition.addColumn(RowPerPatientColumns.getCurrentPatientProgram("currentProgram", program),
 		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("AccompName", 
-			new AccompagnateurDisplayFilter()), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(
+		    RowPerPatientColumns.getAccompRelationship("AccompName", new AccompagnateurDisplayFilter()),
+		    new HashMap<String, Object>());
 		
-
 		dataSetDefinition.addColumn(RowPerPatientColumns.getRecentEncounterType("Last visit type", clinicalEncoutersExcLab,
 		    new LastEncounterFilter()), new HashMap<String, Object>());
 		
@@ -147,33 +153,33 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		daysLate.setName("daysLate");
 		daysLate.setCalculator(new DaysLate());
-		daysLate.addParameter(new Parameter("endDate","endDate",Date.class));
-		dataSetDefinition.addColumn(daysLate,ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		daysLate.addParameter(new Parameter("endDate", "endDate", Date.class));
+		dataSetDefinition.addColumn(daysLate, ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("location", "${location}");
 		mappings.put("endDate", "${endDate}");
 		
 		reportDefinition.addDataSetDefinition(filterType + "dataset" + datasetIndex, dataSetDefinition, mappings);
-
 		
 	}
 	
 	private RowPerPatientDataSetDefinition addLateVisitFilter(RowPerPatientDataSetDefinition dataSetDefinition,
-	                                                          Program program) {
-
+	        Program program) {
+		
 		// only patients who are not LTFU
 		EncounterCohortDefinition patientsWithClinicalEncountersWithoutLabTest = Cohorts.createEncounterParameterizedByDate(
 		    "patientsWithClinicalEncountersWithoutLabTest", "onOrAfter", clinicalEncoutersExcLab);
-
+		
 		dataSetDefinition.addFilter(patientsWithClinicalEncountersWithoutLabTest,
 		    ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-12m}"));
-
+		
 		// only patient enrolled in the current program
 		dataSetDefinition.addFilter(Cohorts.createInProgramParameterizableByDate(program.getName() + "Cohort", program),
-			ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		
-		DateObsCohortDefinition dueThatWeek = Cohorts.createDateObsCohortDefinition(returnVisitDateConcept, RangeComparator.GREATER_EQUAL, RangeComparator.LESS_THAN, TimeModifier.ANY);
+		DateObsCohortDefinition dueThatWeek = Cohorts.createDateObsCohortDefinition(returnVisitDateConcept,
+		    RangeComparator.GREATER_EQUAL, RangeComparator.LESS_THAN, TimeModifier.ANY);
 		
 		List<String> parameterNames = new ArrayList<String>();
 		parameterNames.add("onOrAfter");
@@ -199,7 +205,7 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 		
 		patientsWithoutClinicalEncounters
 		        .setCompositionString("patientsDueLastweek AND (NOT patientsWithClinicalEncountersLastWeek)");
-
+		
 		dataSetDefinition.addFilter(patientsWithoutClinicalEncounters,
 		    ParameterizableUtil.createParameterMappings("onOrAfter=${endDate-7d},onOrBefore=${endDate}"));
 		return dataSetDefinition;
@@ -229,19 +235,16 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 	}
 	
 	private List<Program> setupPrograms() {
-//		clinicalEncoutersExcLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES_EXC_LAB_TEST);
+		//		clinicalEncoutersExcLab = gp.getEncounterTypeList(GlobalPropertiesManagement.CLINICAL_ENCOUNTER_TYPES_EXC_LAB_TEST);
 		returnVisitDateConcept = gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE);
-		hypertesionEncounter =  gp.getEncounterType(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER);
-		heartFailureEncounter =  gp.getEncounterType(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTER);
-		asthmaEncounter =  gp.getEncounterType(GlobalPropertiesManagement.ASTHMA_VISIT);
-		diabetesEncounter =  gp.getEncounterType(GlobalPropertiesManagement.DIABETES_VISIT);
-		CKDEncounter =  gp.getEncounterType(GlobalPropertiesManagement.CKD_ENCOUNTER_TYPE);
-		epilepsyEncounter =  gp.getEncounterType(GlobalPropertiesManagement.EPILEPSY_VISIT);
-		HFHTNCKDEncounter =  gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE);
-
-
-
-
+		hypertesionEncounter = gp.getEncounterType(GlobalPropertiesManagement.HYPERTENSION_ENCOUNTER);
+		heartFailureEncounter = gp.getEncounterType(GlobalPropertiesManagement.HEART_FAILURE_ENCOUNTER);
+		asthmaEncounter = gp.getEncounterType(GlobalPropertiesManagement.ASTHMA_VISIT);
+		diabetesEncounter = gp.getEncounterType(GlobalPropertiesManagement.DIABETES_VISIT);
+		CKDEncounter = gp.getEncounterType(GlobalPropertiesManagement.CKD_ENCOUNTER_TYPE);
+		epilepsyEncounter = gp.getEncounterType(GlobalPropertiesManagement.EPILEPSY_VISIT);
+		HFHTNCKDEncounter = gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE);
+		
 		clinicalEncoutersExcLab.add(hypertesionEncounter);
 		clinicalEncoutersExcLab.add(heartFailureEncounter);
 		clinicalEncoutersExcLab.add(asthmaEncounter);
@@ -249,9 +252,7 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 		clinicalEncoutersExcLab.add(CKDEncounter);
 		clinicalEncoutersExcLab.add(epilepsyEncounter);
 		clinicalEncoutersExcLab.add(HFHTNCKDEncounter);
-
-
-
+		
 		diseases = new ArrayList<Program>();
 		diseases.add(gp.getProgram(GlobalPropertiesManagement.DM_PROGRAM));
 		diseases.add(gp.getProgram(GlobalPropertiesManagement.CRD_PROGRAM));
@@ -259,7 +260,7 @@ public class SetupNCDLateVisitandLTFUReport extends SingleSetupReport {
 		diseases.add(gp.getProgram(GlobalPropertiesManagement.HYPERTENSION_PROGRAM));
 		diseases.add(gp.getProgram(GlobalPropertiesManagement.EPILEPSY_PROGRAM));
 		diseases.add(gp.getProgram(GlobalPropertiesManagement.CKD_PROGRAM));
-
+		
 		return diseases;
 	}
 	

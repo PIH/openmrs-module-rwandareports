@@ -23,19 +23,19 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * 
  */
 public class MissedChemotherapyCohortDefinition extends BaseCohortDefinition {
-
-    private static final long serialVersionUID = 1L;
-    
+	
+	private static final long serialVersionUID = 1L;
+	
 	//***** PROPERTIES *****	
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private Date beforeDate;
 	
-	@ConfigurationProperty(required=true)
+	@ConfigurationProperty(required = true)
 	private Concept chemotherapyIndication;
-
+	
 	//***** CONSTRUCTORS *****
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -49,27 +49,27 @@ public class MissedChemotherapyCohortDefinition extends BaseCohortDefinition {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-
+		
 		StringBuilder ret = new StringBuilder();
-		ret.append("Patients that have missed chemotherapy cylce");		
+		ret.append("Patients that have missed chemotherapy cylce");
 		return ret.toString();
 	}
-
+	
 	//***** PROPERTY ACCESS *****
-    
+	
 	public Date getBeforeDate() {
 		return beforeDate;
 	}
-
+	
 	public void setBeforeDate(Date beforeDate) {
 		this.beforeDate = beforeDate;
 	}
-
-    public Concept getChemotherapyIndication() {
-    	return chemotherapyIndication;
-    }
-    
-    public void setChemotherapyIndication(Concept chemotherapyIndication) {
-    	this.chemotherapyIndication = chemotherapyIndication;
-    }
+	
+	public Concept getChemotherapyIndication() {
+		return chemotherapyIndication;
+	}
+	
+	public void setChemotherapyIndication(Concept chemotherapyIndication) {
+		this.chemotherapyIndication = chemotherapyIndication;
+	}
 }

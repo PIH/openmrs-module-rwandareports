@@ -8,8 +8,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class RwandaRegisterAllReportsFormController {
+	
 	@RequestMapping("/module/rwandareports/register_allReports")
-	public ModelAndView registerAllReports() throws Exception{
+	public ModelAndView registerAllReports() throws Exception {
 		ReportSetup.registerHIVReports();
 		ReportSetup.registerNCDReports();
 		ReportSetup.registerCentralReports();
@@ -20,53 +21,53 @@ public class RwandaRegisterAllReportsFormController {
 		ReportSetup.registerMHReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
+	
 	@RequestMapping("/module/rwandareports/register_allHIVReports")
-	public ModelAndView registerAllHIVReports() throws Exception{
+	public ModelAndView registerAllHIVReports() throws Exception {
 		ReportSetup.registerHIVReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 	
 	@RequestMapping("/module/rwandareports/register_allNCDReports")
-	public ModelAndView registerAllNCDReports() throws Exception{
+	public ModelAndView registerAllNCDReports() throws Exception {
 		ReportSetup.registerNCDReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 	
 	@RequestMapping("/module/rwandareports/register_allCentralReports")
-	public ModelAndView registerAllCentralReports() throws Exception{
+	public ModelAndView registerAllCentralReports() throws Exception {
 		ReportSetup.registerCentralReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 	
 	@RequestMapping("/module/rwandareports/register_allSiteReports")
-	public ModelAndView registerAllSiteReports() throws Exception{
+	public ModelAndView registerAllSiteReports() throws Exception {
 		ReportSetup.registerSiteReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 	
 	@RequestMapping("/module/rwandareports/register_allOncologyReport")
-	public ModelAndView registerAllOncologyReports() throws Exception{
+	public ModelAndView registerAllOncologyReports() throws Exception {
 		ReportSetup.registerOncologyReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 	
 	@RequestMapping("/module/rwandareports/register_allCHWReport")
-	public ModelAndView registerAllCHWReports() throws Exception{
+	public ModelAndView registerAllCHWReports() throws Exception {
 		ReportSetup.registerCHWReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 	
 	@RequestMapping("/module/rwandareports/register_allPDCReport")
-	public ModelAndView registerAllregisterPDCReports() throws Exception{
+	public ModelAndView registerAllregisterPDCReports() throws Exception {
 		ReportSetup.registerPDCReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
-
+	
 	@RequestMapping("/module/rwandareports/register_allMHReport")
-	public ModelAndView registerAllregisterMHReports() throws Exception{
+	public ModelAndView registerAllregisterMHReports() throws Exception {
 		ReportSetup.registerMHReports();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
-	
 	
 }

@@ -61,8 +61,7 @@ public class MissedChemotherapyCohortDefinitionEvaluator implements CohortDefini
 		MissedChemotherapyCohortDefinition definition = (MissedChemotherapyCohortDefinition) cohortDefinition;
 		
 		Calendar from = Calendar.getInstance();
-		if(definition.getBeforeDate() != null)
-		{
+		if (definition.getBeforeDate() != null) {
 			from.setTime(definition.getBeforeDate());
 		}
 		from.add(Calendar.MONTH, -6);

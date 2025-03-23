@@ -33,7 +33,7 @@ public class SetupTBConsultationSheet extends SingleSetupReport {
 	private Program tbProgram;
 	
 	private EncounterType flowsheetAdult;
-
+	
 	@Override
 	public String getReportName() {
 		return "TB-Consultation Sheet";
@@ -49,7 +49,7 @@ public class SetupTBConsultationSheet extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:6,dataset:dataSet");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
@@ -65,7 +65,8 @@ public class SetupTBConsultationSheet extends SingleSetupReport {
 		//so the user is only presented with the treatment group options
 		Properties stateProperties = new Properties();
 		stateProperties.setProperty("Program", tbProgram.getName());
-		stateProperties.setProperty("Workflow", Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.TB_TREATMENT_GROUP_WORKFLOW));
+		stateProperties.setProperty("Workflow",
+		    Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.TB_TREATMENT_GROUP_WORKFLOW));
 		reportDefinition.addParameter(new Parameter("state", "Group", ProgramWorkflowState.class, stateProperties));
 		
 		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
@@ -143,8 +144,8 @@ public class SetupTBConsultationSheet extends SingleSetupReport {
 		alert.addPatientDataToBeEvaluated(io, new HashMap<String, Object>());
 		alert.addPatientDataToBeEvaluated(sideEffect, new HashMap<String, Object>());
 		alert.setCalculator(new HIVAdultAlerts());
-		alert.addParameter(new Parameter("state", "State",Date.class));
-		dataSetDefinition.addColumn(alert,ParameterizableUtil.createParameterMappings("state=${state}"));
+		alert.addParameter(new Parameter("state", "State", Date.class));
+		dataSetDefinition.addColumn(alert, ParameterizableUtil.createParameterMappings("state=${state}"));
 		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("state", "${state}");

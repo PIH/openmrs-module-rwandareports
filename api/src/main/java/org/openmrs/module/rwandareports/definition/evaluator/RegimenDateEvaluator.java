@@ -43,8 +43,8 @@ public class RegimenDateEvaluator implements RowPerPatientDataEvaluator {
 			Integer regimenId = Integer.parseInt(pd.getRegimen());
 			regimen = Context.getService(OrderExtensionService.class).getDrugRegimen(regimenId);
 		} else {
-			List<DrugOrder> drugOrders = Context.getService(OrderExtensionService.class).getDrugOrders(
-			    pd.getPatient(), pd.getIndication(), pd.getAsOfDate(), pd.getUntilDate());
+			List<DrugOrder> drugOrders = Context.getService(OrderExtensionService.class).getDrugOrders(pd.getPatient(),
+			    pd.getIndication(), pd.getAsOfDate(), pd.getUntilDate());
 			
 			for (DrugOrder eo : drugOrders) {
 				if (eo.getOrderGroup() != null) {
@@ -65,15 +65,13 @@ public class RegimenDateEvaluator implements RowPerPatientDataEvaluator {
 			Date startDate = null;
 			for (DrugOrder order : regimen.getMembers()) {
 				if (order.getRoute() != null && iv.contains(order.getRoute())) {
-										
+					
 					if (pd.getAsOfDate() != null) {
 						
-						if (startDate == null && OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0)
-						{
+						if (startDate == null && OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0) {
 							startDate = order.getEffectiveStartDate();
-						}
-						else if (startDate != null && order.getEffectiveStartDate().before(startDate) && OpenmrsUtil.compare(order.getEffectiveStartDate(),
-						            pd.getAsOfDate()) >= 0) {
+						} else if (startDate != null && order.getEffectiveStartDate().before(startDate)
+						        && OpenmrsUtil.compare(order.getEffectiveStartDate(), pd.getAsOfDate()) >= 0) {
 							startDate = order.getEffectiveStartDate();
 						}
 					} else {
@@ -84,7 +82,7 @@ public class RegimenDateEvaluator implements RowPerPatientDataEvaluator {
 				}
 			}
 			par.setValue(startDate);
-		} 
+		}
 		
 		return par;
 	}

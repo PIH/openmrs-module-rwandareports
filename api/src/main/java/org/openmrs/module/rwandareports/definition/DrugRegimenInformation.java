@@ -8,87 +8,82 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.BasePatien
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 
 public class DrugRegimenInformation extends BasePatientData implements RowPerPatientData {
-
-	@ConfigurationProperty(required=false)
+	
+	@ConfigurationProperty(required = false)
 	private String regimen = null;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private Concept indication = null;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private String dateFormat = "dd/MM/yyyy";
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private Date asOfDate = null;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private Date untilDate = null;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private boolean showStartDate = true;
 	
-	@ConfigurationProperty(required=false)
+	@ConfigurationProperty(required = false)
 	private boolean showDrugDetails = false;
-
 	
-    public String getRegimen() {
-    	return regimen;
-    }
+	public String getRegimen() {
+		return regimen;
+	}
 	
-    public void setRegimen(String regimen) {
-    	this.regimen = regimen;
-    }
+	public void setRegimen(String regimen) {
+		this.regimen = regimen;
+	}
 	
-    public Concept getIndication() {
-    	return indication;
-    }
-
-    public void setIndication(Concept indication) {
-    	this.indication = indication;
-    }
+	public Concept getIndication() {
+		return indication;
+	}
 	
-    public String getDateFormat() {
-    	return dateFormat;
-    }
-
-    public void setDateFormat(String dateFormat) {
-    	this.dateFormat = dateFormat;
-    }
-
+	public void setIndication(Concept indication) {
+		this.indication = indication;
+	}
 	
-    public Date getAsOfDate() {
-    	return asOfDate;
-    }
-
+	public String getDateFormat() {
+		return dateFormat;
+	}
 	
-    public void setAsOfDate(Date asOfDate) {
-    	this.asOfDate = asOfDate;
-    }
-
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
 	
-    public Date getUntilDate() {
-    	return untilDate;
-    }
-
-    public void setUntilDate(Date untilDate) {
-    	this.untilDate = untilDate;
-    }
+	public Date getAsOfDate() {
+		return asOfDate;
+	}
 	
-    public boolean isShowStartDate() {
-    	return showStartDate;
-    }
-
-    public void setShowStartDate(boolean showStartDate) {
-    	this.showStartDate = showStartDate;
-    }
+	public void setAsOfDate(Date asOfDate) {
+		this.asOfDate = asOfDate;
+	}
 	
-    public boolean isShowDrugDetails() {
-    	return showDrugDetails;
-    }
-
-    public void setShowDrugDetails(boolean showDrugDetails) {
-    	this.showDrugDetails = showDrugDetails;
-    }
-    
-    
+	public Date getUntilDate() {
+		return untilDate;
+	}
+	
+	public void setUntilDate(Date untilDate) {
+		this.untilDate = untilDate;
+	}
+	
+	public boolean isShowStartDate() {
+		return showStartDate;
+	}
+	
+	public void setShowStartDate(boolean showStartDate) {
+		this.showStartDate = showStartDate;
+	}
+	
+	public boolean isShowDrugDetails() {
+		return showDrugDetails;
+	}
+	
+	public void setShowDrugDetails(boolean showDrugDetails) {
+		this.showDrugDetails = showDrugDetails;
+	}
+	
 }

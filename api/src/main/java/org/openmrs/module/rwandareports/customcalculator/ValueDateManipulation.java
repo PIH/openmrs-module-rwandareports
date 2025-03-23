@@ -13,12 +13,11 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.CustomCalc
 import org.openmrs.module.rowperpatientreports.patientdata.result.DateResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 
-public class ValueDateManipulation implements CustomCalculation{
-
+public class ValueDateManipulation implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
-	public ValueDateManipulation(String name, Integer dateChange, Integer dateUnit, String dateFormat)
-	{
+	public ValueDateManipulation(String name, Integer dateChange, Integer dateUnit, String dateFormat) {
 		this.name = name;
 		this.dateChange = dateChange;
 		this.dateUnit = dateUnit;
@@ -26,26 +25,26 @@ public class ValueDateManipulation implements CustomCalculation{
 	}
 	
 	private Integer dateChange;
+	
 	private Integer dateUnit;
+	
 	private String name;
+	
 	private String dateFormat;
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
 		
 		DateResult dateResult = new DateResult(null, null);
 		
-		for(PatientDataResult result: results)
-		{
-			if(result.getName().equals(name))
-			{
-				if(result != null && result.getValue() != null && result.getValueAsString() != null)
-				{
+		for (PatientDataResult result : results) {
+			if (result.getName().equals(name)) {
+				if (result != null && result.getValue() != null && result.getValueAsString() != null) {
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-				    Date convertedDate;
-                    try {
-	                    
-                    	convertedDate = simpleDateFormat.parse(result.getValueAsString());
-	                    Calendar adjustedDate = Calendar.getInstance();
+					Date convertedDate;
+					try {
+						
+						convertedDate = simpleDateFormat.parse(result.getValueAsString());
+						Calendar adjustedDate = Calendar.getInstance();
 						adjustedDate.setTime(convertedDate);
 						
 						adjustedDate.add(dateUnit, dateChange);
@@ -53,11 +52,11 @@ public class ValueDateManipulation implements CustomCalculation{
 						dateResult.setValue(adjustedDate.getTime());
 						
 						dateResult.setFormat(dateFormat);
-                    }
-                    catch (ParseException e) {
-	                   
-	                    log.error("Error generated", e);
-                    } 
+					}
+					catch (ParseException e) {
+						
+						log.error("Error generated", e);
+					}
 				}
 			}
 		}

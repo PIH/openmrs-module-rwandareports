@@ -20,14 +20,14 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.rwandareports.dataset.PeriodIndicatorDataSetDefinition;
 
-@Handler(supports={PeriodIndicatorDataSetDefinition.class})
+@Handler(supports = { PeriodIndicatorDataSetDefinition.class })
 public class PeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 	
-	
-	public PeriodIndicatorDataSetEvaluator() { }
+	public PeriodIndicatorDataSetEvaluator() {
+	}
 	
 	/**
-	 * @throws EvaluationException 
+	 * @throws EvaluationException
 	 * @see DataSetEvaluator#evaluate(DataSetDefinition, EvaluationContext)
 	 * @should evaluate a MultiPeriodIndicatorDataSetDefinition
 	 */
@@ -40,8 +40,8 @@ public class PeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 			context = new EvaluationContext();
 		}
 		
-		PeriodIndicatorDataSetDefinition pidsd = (PeriodIndicatorDataSetDefinition)dataSetDefinition;
-	
+		PeriodIndicatorDataSetDefinition pidsd = (PeriodIndicatorDataSetDefinition) dataSetDefinition;
+		
 		MultiPeriodIndicatorDataSetDefinition mpdsd = new MultiPeriodIndicatorDataSetDefinition();
 		mpdsd.setBaseDefinition(pidsd.getBaseDefinition());
 		mpdsd.setName(pidsd.getName());
@@ -52,8 +52,7 @@ public class PeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 		startDate.setTime(endDate.getTime());
 		startDate.add(Calendar.MONTH, -3);
 		
-		for(int i = 0; i <= pidsd.getQuarters(); i++)
-		{
+		for (int i = 0; i <= pidsd.getQuarters(); i++) {
 			Iteration iter = new Iteration(startDate.getTime(), endDate.getTime(), pidsd.getLocation());
 			iterations.add(iter);
 			
@@ -61,13 +60,12 @@ public class PeriodIndicatorDataSetEvaluator implements DataSetEvaluator {
 			endDate.add(Calendar.MONTH, -3);
 		}
 		
-		for(int i=pidsd.getQuarters() -1; i >= 0; i--)
-		{
+		for (int i = pidsd.getQuarters() - 1; i >= 0; i--) {
 			mpdsd.addIteration(iterations.get(i));
 		}
 		
-		EvaluationContext ec = EvaluationContext.cloneForChild(context, new Mapped<MultiPeriodIndicatorDataSetDefinition>(mpdsd, new HashMap<String, Object>()));
-		
+		EvaluationContext ec = EvaluationContext.cloneForChild(context, new Mapped<MultiPeriodIndicatorDataSetDefinition>(
+		        mpdsd, new HashMap<String, Object>()));
 		
 		return Context.getService(DataSetDefinitionService.class).evaluate(mpdsd, ec);
 	}

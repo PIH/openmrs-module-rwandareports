@@ -38,7 +38,7 @@ public class MultiLocationRowPerPatientTest extends BaseModuleContextSensitiveTe
 	public void setup() throws Exception {
 		authenticate();
 	}
-
+	
 	/**
 	 * @see BaseContextSensitiveTest#useInMemoryDatabase()
 	 */
@@ -46,7 +46,7 @@ public class MultiLocationRowPerPatientTest extends BaseModuleContextSensitiveTe
 	public Boolean useInMemoryDatabase() {
 		return false;
 	}
-
+	
 	@Test
 	public void runReport() throws Exception {
 		
@@ -56,7 +56,6 @@ public class MultiLocationRowPerPatientTest extends BaseModuleContextSensitiveTe
 		// Create Report Definition
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName("Missing CD4 All Sites Report");
-
 		
 		// Parameters
 		reportDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -66,8 +65,7 @@ public class MultiLocationRowPerPatientTest extends BaseModuleContextSensitiveTe
 		reportDefinition.addParameter(new Parameter("location", "Location", AllLocation.class, prop));
 		
 		// Base Cohort
-	
-
+		
 		// Data Set
 		
 		RowPerPatientDataSetDefinition noResultDataSet = new RowPerPatientDataSetDefinition();
@@ -76,43 +74,43 @@ public class MultiLocationRowPerPatientTest extends BaseModuleContextSensitiveTe
 		noResultDataSet.addParameter(new Parameter("location", "Location", Location.class));
 		
 		noResultDataSet.addParameter(new Parameter("endDate", "End Date", Date.class));
-	
+		
 		noResultDataSet.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		
-		
 		// Row Filters
-		SqlCohortDefinition patientDied=new SqlCohortDefinition("SELECT DISTINCT person_id FROM obs o WHERE o.concept_id='" + properties.get("PATIENT_DIED_CONCEPT") + "'");
-		InverseCohortDefinition patientAlive=new InverseCohortDefinition(patientDied);
-		noResultDataSet.addFilter(patientAlive, new HashMap<String,Object>());
+		SqlCohortDefinition patientDied = new SqlCohortDefinition(
+		        "SELECT DISTINCT person_id FROM obs o WHERE o.concept_id='" + properties.get("PATIENT_DIED_CONCEPT") + "'");
+		InverseCohortDefinition patientAlive = new InverseCohortDefinition(patientDied);
+		noResultDataSet.addFilter(patientAlive, new HashMap<String, Object>());
 		
-//		SqlCohortDefinition noResult = new SqlCohortDefinition();
-//		noResult
-//		        .setQuery("select person_id from obs where comments in ('Re-order', 'Closed', 'Failed') and obs_datetime < :endDate " +
-//						"and concept_id =" +
-//						properties.get("CD4_CONCEPT") + 
-//						" and obs_id in (select o.obs_id from (select person_id as pi, max(obs_datetime) od from obs where concept_id=" +
-//						 properties.get("CD4_CONCEPT") + 
-//						" and voided = 0 group by person_id)RecentObs inner join obs o on o.obs_datetime = RecentObs.od and o.person_id = RecentObs.pi)");	
+		//		SqlCohortDefinition noResult = new SqlCohortDefinition();
+		//		noResult
+		//		        .setQuery("select person_id from obs where comments in ('Re-order', 'Closed', 'Failed') and obs_datetime < :endDate " +
+		//						"and concept_id =" +
+		//						properties.get("CD4_CONCEPT") + 
+		//						" and obs_id in (select o.obs_id from (select person_id as pi, max(obs_datetime) od from obs where concept_id=" +
+		//						 properties.get("CD4_CONCEPT") + 
+		//						" and voided = 0 group by person_id)RecentObs inner join obs o on o.obs_datetime = RecentObs.od and o.person_id = RecentObs.pi)");	
 		
-//		noResult.addParameter(new Parameter("endDate", "endDate", Date.class));
-//		noResultDataSet.addFilter(noResult, ParameterizableUtil.createParameterMappings("endDate=${endDate-1w}"));
+		//		noResult.addParameter(new Parameter("endDate", "endDate", Date.class));
+		//		noResultDataSet.addFilter(noResult, ParameterizableUtil.createParameterMappings("endDate=${endDate-1w}"));
 		
 		// Column Data Definitions
 		PatientIdentifierType imbType = Context.getPatientService().getPatientIdentifierTypeByName("IMB ID");
 		PatientIdentifier imbId = new PatientIdentifier(imbType);
 		imbId.setName("IMB ID");
 		imbId.setDescription("IMB ID");
-		noResultDataSet.addColumn(imbId, new HashMap<String,Object>());
+		noResultDataSet.addColumn(imbId, new HashMap<String, Object>());
 		
 		PatientAttribute healthCenter = new PatientAttribute();
 		healthCenter.setAttribute("Health Center");
-		noResultDataSet.addColumn(healthCenter, new HashMap<String,Object>());
+		noResultDataSet.addColumn(healthCenter, new HashMap<String, Object>());
 		
 		Map<String, Object> mappings1 = new HashMap<String, Object>();
 		mappings1.put("location", "${location}");
 		mappings1.put("endDate", "${endDate}");
 		mappings1.put("startDate", "${startDate}");
-
+		
 		LocationHierachyIndicatorDataSetDefinition ldsd = new LocationHierachyIndicatorDataSetDefinition(noResultDataSet);
 		ldsd.setName("NotCompleted Data Set");
 		ldsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -135,15 +133,15 @@ public class MultiLocationRowPerPatientTest extends BaseModuleContextSensitiveTe
 		
 		ReportDefinitionService rs = Context.getService(ReportDefinitionService.class);
 		ReportData data = rs.evaluate(reportDefinition, context);
-
+		
 		String outFile = System.getProperty("java.io.tmpdir") + File.separator + "test.xls";
 		FileOutputStream fos = new FileOutputStream(outFile);
-
+		
 		XlsReportRenderer renderer = new XlsReportRenderer();
 		renderer.render(data, "xxx:xls", fos);
 		fos.close();
 	}
-
+	
 	public Map<String, String> getRequiredGlobalProperties() {
 		Map<String, String> properties = new HashMap<String, String>();
 		
@@ -172,5 +170,5 @@ public class MultiLocationRowPerPatientTest extends BaseModuleContextSensitiveTe
 		properties.put("LAB_ORDER_TYPE", labOrderType);
 		
 		return properties;
-	}	
+	}
 }

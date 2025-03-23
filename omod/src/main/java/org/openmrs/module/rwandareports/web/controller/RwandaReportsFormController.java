@@ -42,7 +42,7 @@ public class RwandaReportsFormController extends SimpleFormController {
 	 */
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object,
-	                                BindException exceptions) throws Exception {
+	        BindException exceptions) throws Exception {
 		//HttpSession httpSession = request.getSession();
 		
 		return new ModelAndView(new RedirectView(getSuccessView()));

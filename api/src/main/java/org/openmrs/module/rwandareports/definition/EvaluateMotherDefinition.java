@@ -8,7 +8,6 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.BasePatien
 import org.openmrs.module.rowperpatientreports.patientdata.definition.PersonData;
 import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPatientData;
 
-
 public class EvaluateMotherDefinition extends BasePatientData implements RowPerPatientData {
 	
 	private Mapped<PersonData> personData;
@@ -16,42 +15,41 @@ public class EvaluateMotherDefinition extends BasePatientData implements RowPerP
 	private Mapped<RowPerPatientData> definition;
 	
 	private List<Obs> value;
-
-    /**
-     * @return the personData
-     */
-    public Mapped<PersonData> getPersonData() {
-    	return personData;
-    }
-    /**
-     * @param personData the personData to set
-     */
-    public void setPersonData(PersonData personData, Map<String, Object> mappings) {
-    	this.personData = new Mapped<PersonData>(personData, mappings);
-    }
-
 	
-    /**
-     * @return the definition
-     */
-    public Mapped<RowPerPatientData> getDefinition() {
-    	return definition;
-    }
-
+	/**
+	 * @return the personData
+	 */
+	public Mapped<PersonData> getPersonData() {
+		return personData;
+	}
 	
-    /**
-     * @param definition the definition to set
-     */
-    public void setDefinition(RowPerPatientData definition, Map<String, Object> mappings) {
-    	this.definition = new Mapped<RowPerPatientData>(definition, mappings);
-    }
-    
-    public List<Obs> getValue() {
+	/**
+	 * @param personData the personData to set
+	 */
+	public void setPersonData(PersonData personData, Map<String, Object> mappings) {
+		this.personData = new Mapped<PersonData>(personData, mappings);
+	}
+	
+	/**
+	 * @return the definition
+	 */
+	public Mapped<RowPerPatientData> getDefinition() {
+		return definition;
+	}
+	
+	/**
+	 * @param definition the definition to set
+	 */
+	public void setDefinition(RowPerPatientData definition, Map<String, Object> mappings) {
+		this.definition = new Mapped<RowPerPatientData>(definition, mappings);
+	}
+	
+	public List<Obs> getValue() {
 		return value;
 	}
-    
-    public void setValue(List<Obs> value) {
-    	this.value = value;
-    }
-    
+	
+	public void setValue(List<Obs> value) {
+		this.value = value;
+	}
+	
 }

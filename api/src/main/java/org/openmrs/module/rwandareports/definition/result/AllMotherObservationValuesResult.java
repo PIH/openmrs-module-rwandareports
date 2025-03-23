@@ -12,7 +12,6 @@ import org.openmrs.module.rowperpatientreports.patientdata.definition.RowPerPati
 import org.openmrs.module.rowperpatientreports.patientdata.definition.ResultFilter;
 import org.openmrs.module.rowperpatientreports.patientdata.result.BasePatientDataResult;
 
-
 public class AllMotherObservationValuesResult extends BasePatientDataResult {
 	
 	protected Log log = LogFactory.getLog(this.getClass());
@@ -26,10 +25,10 @@ public class AllMotherObservationValuesResult extends BasePatientDataResult {
 	private int minResultsOutput = -1;
 	
 	public AllMotherObservationValuesResult(RowPerPatientData patientData, EvaluationContext ec) {
-	    super(patientData, ec);
-	    dateFormat = patientData.getDateFormat();
-    }
-
+		super(patientData, ec);
+		dateFormat = patientData.getDateFormat();
+	}
+	
 	public Class<?> getColumnClass() {
 		return String.class;
 	}
@@ -41,65 +40,56 @@ public class AllMotherObservationValuesResult extends BasePatientDataResult {
 	public boolean isMultiple() {
 		return true;
 	}
-
-    
+	
 	/**
-     * @param value the value to set
-     */
-    public void setValue(List<Obs> value) {
-    	this.value = value;
-    }
-    
-    
-    public String getValueAsString() {
-	    StringBuilder result = new StringBuilder(" ");
-	    
-	    for(Obs o: getValue())
-	    {
-    		try{
-    			if(filter != null)
-    			{
-    				result.append(filter.filter(o));
-    			}
-    			else
-    			{
-	    			result.append(o.getValueAsString(Context.getLocale()));
-	    			result.append(" ");
-	    			result.append(new SimpleDateFormat(dateFormat).format(o.getObsDatetime()));
-	    			result.append(" ");	
-    			}
-    		}
-    		catch(Exception e)
-    		{
-    			log.info("Error retrieving obs info", e);
-    		} 	
-	    }
-	    return result.toString().trim();
-    }
-
+	 * @param value the value to set
+	 */
+	public void setValue(List<Obs> value) {
+		this.value = value;
+	}
+	
+	public String getValueAsString() {
+		StringBuilder result = new StringBuilder(" ");
+		
+		for (Obs o : getValue()) {
+			try {
+				if (filter != null) {
+					result.append(filter.filter(o));
+				} else {
+					result.append(o.getValueAsString(Context.getLocale()));
+					result.append(" ");
+					result.append(new SimpleDateFormat(dateFormat).format(o.getObsDatetime()));
+					result.append(" ");
+				}
+			}
+			catch (Exception e) {
+				log.info("Error retrieving obs info", e);
+			}
+		}
+		return result.toString().trim();
+	}
+	
 	public ResultFilter getFilter() {
 		return filter;
 	}
-
+	
 	public void setFilter(ResultFilter filter) {
 		this.filter = filter;
 	}
 	
-    public String getDateFormat() {
-    	return dateFormat;
-    }
-
-    public void setDateFormat(String dateFormat) {
-    	this.dateFormat = dateFormat;
-    }
-
+	public String getDateFormat() {
+		return dateFormat;
+	}
 	
-    public int getMinResultsOutput() {
-    	return minResultsOutput;
-    }
-
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
 	
-    public void setMinResultsOutput(int minResultsOutput) {
-    	this.minResultsOutput = minResultsOutput;
-    }
+	public int getMinResultsOutput() {
+		return minResultsOutput;
+	}
+	
+	public void setMinResultsOutput(int minResultsOutput) {
+		this.minResultsOutput = minResultsOutput;
+	}
 }

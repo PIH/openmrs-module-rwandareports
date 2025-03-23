@@ -25,25 +25,25 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * 
  */
 public class DrugsActiveCohortDefinition extends BaseCohortDefinition {
-
-    private static final long serialVersionUID = 1L;
-    
-	//***** PROPERTIES *****
-
-	@ConfigurationProperty(required=false)
-	private List<Concept> drugSets;
-
-	@ConfigurationProperty(required=false)
-	private List<Drug> drugs;
-
-	@ConfigurationProperty(required=false)
-	private List<Drug> excludeDrugs;	
 	
-	@ConfigurationProperty(required=false)
+	private static final long serialVersionUID = 1L;
+	
+	//***** PROPERTIES *****
+	
+	@ConfigurationProperty(required = false)
+	private List<Concept> drugSets;
+	
+	@ConfigurationProperty(required = false)
+	private List<Drug> drugs;
+	
+	@ConfigurationProperty(required = false)
+	private List<Drug> excludeDrugs;
+	
+	@ConfigurationProperty(required = false)
 	private Date asOfDate;
-
+	
 	//***** CONSTRUCTORS *****
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -57,44 +57,44 @@ public class DrugsActiveCohortDefinition extends BaseCohortDefinition {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-
+		
 		StringBuilder ret = new StringBuilder();
-		ret.append("Patients that have active drugs.");		
+		ret.append("Patients that have active drugs.");
 		return ret.toString();
 	}
-
+	
 	//***** PROPERTY ACCESS *****
 	
-    public List<Drug> getDrugs() {
-    	return drugs;
-    }
-    
-    public void setDrugs(List<Drug> drugs) {
-    	this.drugs = drugs;
-    }
-    
+	public List<Drug> getDrugs() {
+		return drugs;
+	}
+	
+	public void setDrugs(List<Drug> drugs) {
+		this.drugs = drugs;
+	}
+	
 	public List<Concept> getDrugSets() {
 		return drugSets;
 	}
-
+	
 	public void setDrugSets(List<Concept> drugSets) {
 		this.drugSets = drugSets;
 	}
-
+	
 	public List<Drug> getExcludeDrugs() {
 		return excludeDrugs;
 	}
-
+	
 	public void setExcludeDrugs(List<Drug> excludeDrugs) {
 		this.excludeDrugs = excludeDrugs;
 	}
-    
+	
 	public Date getAsOfDate() {
 		return asOfDate;
 	}
-
+	
 	public void setAsOfDate(Date asOfDate) {
 		this.asOfDate = asOfDate;
 	}
-    
+	
 }

@@ -34,7 +34,7 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupPMTCTPregnancyConsultationReport extends SingleSetupReport {
-
+	
 	//properties
 	private Program pmtct;
 	
@@ -49,12 +49,12 @@ public class SetupPMTCTPregnancyConsultationReport extends SingleSetupReport {
 	private EncounterType flowsheetEncounter;
 	
 	private List<EncounterType> clinicalEnountersIncLab;
-
+	
 	@Override
 	public String getReportName() {
 		return "HIV-PMTCT Pregnancy consultation sheet";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setUpProperties();
@@ -66,7 +66,7 @@ public class SetupPMTCTPregnancyConsultationReport extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:5,dataset:dataSet");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 	}
@@ -75,17 +75,13 @@ public class SetupPMTCTPregnancyConsultationReport extends SingleSetupReport {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
 		
-		reportDefinition.addParameter(new Parameter("location", "Location", Location.class));		
+		reportDefinition.addParameter(new Parameter("location", "Location", Location.class));
 		
-		
-
 		Properties stateProperties = new Properties();
 		stateProperties.setProperty("Program", pmtct.getName());
-		stateProperties.setProperty("Workflow", Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW));
+		stateProperties.setProperty("Workflow",
+		    Context.getAdministrationService().getGlobalProperty(GlobalPropertiesManagement.TREATMENT_GROUP_WORKFLOW));
 		reportDefinition.addParameter(new Parameter("state", "Group", ProgramWorkflowState.class, stateProperties));
-		
-		
-		
 		
 		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
 		    ParameterizableUtil.createParameterMappings("location=${location}"));
@@ -102,12 +98,10 @@ public class SetupPMTCTPregnancyConsultationReport extends SingleSetupReport {
 		RowPerPatientDataSetDefinition dataSetDefinition = new RowPerPatientDataSetDefinition();
 		dataSetDefinition.setName(reportDefinition.getName() + " Data Set");
 		
-		
 		dataSetDefinition.addParameter(new Parameter("state", "State", ProgramWorkflowState.class));
 		
 		dataSetDefinition.addFilter(Cohorts.createInCurrentStateParameterized("pmtctPreg group", "states"),
 		    ParameterizableUtil.createParameterMappings("states=${state},onDate=${now}"));
-		
 		
 		SortCriteria sortCriteria = new SortCriteria();
 		sortCriteria.addSortElement("nextRDV", SortDirection.ASC);
@@ -204,7 +198,8 @@ public class SetupPMTCTPregnancyConsultationReport extends SingleSetupReport {
 		
 		ObservationInMostRecentEncounterOfType sideEffect = RowPerPatientColumns.getSideEffectInMostRecentEncounterOfType(
 		    "SideEffects", flowsheetEncounter);*/
-		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",clinicalEnountersIncLab,null, null);
+		RecentEncounterType lastEncInMonth = RowPerPatientColumns.getRecentEncounterType("lastEncInMonth",
+		    clinicalEnountersIncLab, null, null);
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");

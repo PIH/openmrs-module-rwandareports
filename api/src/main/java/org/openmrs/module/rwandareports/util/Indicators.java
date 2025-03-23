@@ -13,7 +13,7 @@ import org.openmrs.module.reportingobjectgroup.objectgroup.definition.SqlObjectG
 import org.openmrs.module.reportingobjectgroup.objectgroup.indicator.ObjectGroupIndicator;
 
 public class Indicators {
-
+	
 	public static CohortIndicator newCountIndicator(String name, CohortDefinition cohort, Map<String, Object> map) {
 		CohortIndicator i = CohortIndicator.newCountIndicator(name, new Mapped<CohortDefinition>(cohort, map), null);
 		i.addParameter(new Parameter("startDate", "Start date", Date.class));
@@ -22,8 +22,8 @@ public class Indicators {
 		return i;
 	}
 	
-	public static CohortIndicator newFractionIndicator(String name, CohortDefinition numerator, Map<String, Object> numeratorMap,
-	                                            CohortDefinition denominator, Map<String, Object> denominatorMap) {
+	public static CohortIndicator newFractionIndicator(String name, CohortDefinition numerator,
+	        Map<String, Object> numeratorMap, CohortDefinition denominator, Map<String, Object> denominatorMap) {
 		CohortIndicator i = CohortIndicator.newFractionIndicator(name,
 		    new Mapped<CohortDefinition>(numerator, numeratorMap),
 		    new Mapped<CohortDefinition>(denominator, denominatorMap), null);
@@ -34,7 +34,7 @@ public class Indicators {
 	}
 	
 	public static CohortIndicator newLogicIndicator(String name, CohortDefinition logic, Map<String, Object> map,
-	                                         Class<? extends Aggregator> aggregator, String logicName) {
+	        Class<? extends Aggregator> aggregator, String logicName) {
 		CohortIndicator i = CohortIndicator.newLogicIndicator(name, new Mapped<CohortDefinition>(logic, map), null,
 		    aggregator, logicName);
 		i.addParameter(new Parameter("startDate", "Start date", Date.class));
@@ -53,10 +53,9 @@ public class Indicators {
 		return i;
 	}
 	
-	public static ObjectGroupIndicator newFractionIndicatorObjectGroupIndicator(String name, ObjectGroupDefinition numerator,
-	                                                                     Map<String, Object> numeratorMap,
-	                                                                     ObjectGroupDefinition denominator,
-	                                                                     Map<String, Object> denominatorMap) {
+	public static ObjectGroupIndicator newFractionIndicatorObjectGroupIndicator(String name,
+	        ObjectGroupDefinition numerator, Map<String, Object> numeratorMap, ObjectGroupDefinition denominator,
+	        Map<String, Object> denominatorMap) {
 		ObjectGroupIndicator i = ObjectGroupIndicator.newFractionIndicator(name, new Mapped<ObjectGroupDefinition>(
 		        numerator, numeratorMap), new Mapped<ObjectGroupDefinition>(denominator, denominatorMap), null);
 		i.addParameter(new Parameter("startDate", "Start date", Date.class));
@@ -66,7 +65,7 @@ public class Indicators {
 	}
 	
 	public static ObjectGroupIndicator newDailyDivisionIndicatorPerWeekDays(String name, ObjectGroupDefinition definition,
-	                                                                 Map<String, Object> mappings, Integer value) {
+	        Map<String, Object> mappings, Integer value) {
 		ObjectGroupIndicator peakHoursAndPeakDaysIndicator = ObjectGroupIndicator.newDailyDivisionIndicator(
 		    "peakHoursIndicator", new Mapped<ObjectGroupDefinition>(definition, mappings), value,
 		    ObjectGroupIndicator.IndicatorType.PER_WEEKDAYS, null);
@@ -77,8 +76,8 @@ public class Indicators {
 		return peakHoursAndPeakDaysIndicator;
 	}
 	
-	public static ObjectGroupIndicator newCountIndicatorObjectGroupIndicator(String name, SqlObjectGroupDefinition definition,
-	                                                                  Map<String, Object> mappings) {
+	public static ObjectGroupIndicator newCountIndicatorObjectGroupIndicator(String name,
+	        SqlObjectGroupDefinition definition, Map<String, Object> mappings) {
 		ObjectGroupIndicator countIndicator = ObjectGroupIndicator.newCountIndicator(name,
 		    new Mapped<SqlObjectGroupDefinition>(definition, mappings), null);
 		countIndicator.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -88,7 +87,7 @@ public class Indicators {
 	}
 	
 	public static ObjectGroupIndicator objectGroupIndicator(String name, SqlObjectGroupDefinition definition,
-	                                                 Map<String, Object> mappings) {
+	        Map<String, Object> mappings) {
 		ObjectGroupIndicator objectIndicator = new ObjectGroupIndicator();
 		objectIndicator.setName("femalePatientsrequestPrimCareInRegistrationIndicator");
 		objectIndicator.addParameter(new Parameter("startDate", "startDate", Date.class));

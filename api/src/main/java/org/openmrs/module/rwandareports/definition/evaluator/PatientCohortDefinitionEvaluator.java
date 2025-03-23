@@ -26,32 +26,31 @@ import org.openmrs.module.rwandareports.definition.PatientCohortDefinition;
 /**
  * 
  */
-@Handler(supports={PatientCohortDefinition.class})
+@Handler(supports = { PatientCohortDefinition.class })
 public class PatientCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-
+	
 	/**
 	 * Default Constructor
 	 */
-	public PatientCohortDefinitionEvaluator() {}
+	public PatientCohortDefinitionEvaluator() {
+	}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
-     */
-    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	PatientCohortDefinition definition = (PatientCohortDefinition) cohortDefinition;
+	 * @see CohortDefinitionEvaluator#evaluateCohort(CohortDefinition, EvaluationContext)
+	 */
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+		PatientCohortDefinition definition = (PatientCohortDefinition) cohortDefinition;
 		
-    	if(definition.getPatient() == null)
-    	{
-    		if(definition.getPatientId() != null)
-    		{
-    			Patient patient = Context.getPatientService().getPatient(Integer.parseInt(definition.getPatientId()));
-    			definition.setPatient(patient);
-    		}
-    	}
-    	//TODO fix paramter stuff
-    	Cohort c =  new Cohort();
-    	c.addMember(definition.getPatient().getId());
-    	
-    	return new EvaluatedCohort(c, cohortDefinition, context);
-    }
+		if (definition.getPatient() == null) {
+			if (definition.getPatientId() != null) {
+				Patient patient = Context.getPatientService().getPatient(Integer.parseInt(definition.getPatientId()));
+				definition.setPatient(patient);
+			}
+		}
+		//TODO fix paramter stuff
+		Cohort c = new Cohort();
+		c.addMember(definition.getPatient().getId());
+		
+		return new EvaluatedCohort(c, cohortDefinition, context);
+	}
 }

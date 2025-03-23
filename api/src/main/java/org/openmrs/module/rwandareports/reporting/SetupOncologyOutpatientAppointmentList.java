@@ -22,7 +22,7 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupOncologyOutpatientAppointmentList extends SingleSetupReport {
-
+	
 	//properties retrieved from global variables
 	private Program oncologyProgram;
 	
@@ -33,12 +33,12 @@ public class SetupOncologyOutpatientAppointmentList extends SingleSetupReport {
 	private Concept specialVisit;
 	
 	private Concept biopsyVisit;
-
+	
 	@Override
 	public String getReportName() {
 		return "ONC-Oncology Outpatient Clinic Appointment List";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -47,7 +47,7 @@ public class SetupOncologyOutpatientAppointmentList extends SingleSetupReport {
 		
 		createCustomWebRenderer(rd);
 	}
-
+	
 	private ReportDefinition createReportDefinition() {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
@@ -76,7 +76,7 @@ public class SetupOncologyOutpatientAppointmentList extends SingleSetupReport {
 		
 		RowPerPatientDataSetDefinition dataSetDefinition4 = new RowPerPatientDataSetDefinition();
 		dataSetDefinition4.setName("Biopsy to be performed");
-
+		
 		dataSetDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
 		dataSetDefinition2.addParameter(new Parameter("endDate", "endDate", Date.class));
 		dataSetDefinition3.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -102,7 +102,6 @@ public class SetupOncologyOutpatientAppointmentList extends SingleSetupReport {
 		dataSetDefinition4.addFilter(Cohorts.createDateObsCohortDefinition(biopsyVisit, RangeComparator.GREATER_EQUAL,
 		    RangeComparator.LESS_EQUAL, TimeModifier.LAST), ParameterizableUtil
 		        .createParameterMappings("value2=${endDate+6M},value1=${endDate-14d}"));
-		
 		
 		//Add Columns
 		dataSetDefinition.addColumn(RowPerPatientColumns.getSystemId("id"), new HashMap<String, Object>());
@@ -170,8 +169,8 @@ public class SetupOncologyOutpatientAppointmentList extends SingleSetupReport {
 		design.setName("Calendar");
 		design.setReportDefinition(rd);
 		design.setRendererType(CalendarWebRenderer.class);
-
+		
 		Helper.saveReportDesign(design);
-
+		
 	}
 }

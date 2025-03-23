@@ -7,12 +7,10 @@ import org.openmrs.module.reporting.dataset.definition.BaseDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-
 /**
  *
  */
 public class PeriodIndicatorDataSetDefinition extends BaseDataSetDefinition {
-	
 	
 	//***** PROPERTIES *****
 	
@@ -47,43 +45,42 @@ public class PeriodIndicatorDataSetDefinition extends BaseDataSetDefinition {
 	
 	//***** INSTANCE METHODS *****
 	
-	
 	//***** PROPERTY ACCESS *****
 	
-    /**
-     * @return the baseDefinition
-     */
-    public CohortIndicatorDataSetDefinition getBaseDefinition() {
-    	return baseDefinition;
-    }
+	/**
+	 * @return the baseDefinition
+	 */
+	public CohortIndicatorDataSetDefinition getBaseDefinition() {
+		return baseDefinition;
+	}
 	
-    /**
-     * @param baseDefinition the baseDefinition to set
-     */
-    public void setBaseDefinition(CohortIndicatorDataSetDefinition baseDefinition) {
-    	this.baseDefinition = baseDefinition;
-    }
-
+	/**
+	 * @param baseDefinition the baseDefinition to set
+	 */
+	public void setBaseDefinition(CohortIndicatorDataSetDefinition baseDefinition) {
+		this.baseDefinition = baseDefinition;
+	}
+	
 	public Integer getQuarters() {
 		return quarters;
 	}
-
+	
 	public void setQuarters(Integer quarters) {
 		this.quarters = quarters;
 	}
-
+	
 	public Date getEndDate() {
 		return endDate;
 	}
-
+	
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
+	
 	public Location getLocation() {
 		return location;
 	}
-
+	
 	public void setLocation(Location location) {
 		this.location = location;
 	}

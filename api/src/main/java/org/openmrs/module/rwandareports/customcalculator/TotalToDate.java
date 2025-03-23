@@ -12,8 +12,8 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.AllObservation
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.StringResult;
 
-public class TotalToDate implements CustomCalculation{
-
+public class TotalToDate implements CustomCalculation {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
 	public PatientDataResult calculateResult(List<PatientDataResult> results, EvaluationContext context) {
@@ -23,25 +23,20 @@ public class TotalToDate implements CustomCalculation{
 		Double total = 0.0;
 		DecimalFormat f = new DecimalFormat("0.#");
 		
-		for(PatientDataResult result: results)
-		{
-			AllObservationValuesResult resultValues = (AllObservationValuesResult)result;
-			if(resultValues != null)
-			{
+		for (PatientDataResult result : results) {
+			AllObservationValuesResult resultValues = (AllObservationValuesResult) result;
+			if (resultValues != null) {
 				List<Obs> values = resultValues.getValue();
 				
-				for(Obs o: values)
-				{
-					if(o.getValueNumeric() != null)
-					{
+				for (Obs o : values) {
+					if (o.getValueNumeric() != null) {
 						total = total + o.getValueNumeric();
 					}
 				}
 			}
 		}
 		
-		if(total > 0)
-		{
+		if (total > 0) {
 			totalResult.setValue(f.format(total));
 		}
 		

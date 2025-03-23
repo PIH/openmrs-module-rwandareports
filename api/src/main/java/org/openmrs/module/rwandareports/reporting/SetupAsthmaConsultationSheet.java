@@ -35,16 +35,18 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 	private Program asthmaProgram;
 	
 	List<EncounterType> asthmaEncounter;
+	
 	private Form rendevousForm;
+	
 	private Form asthmaDDBForm;
+	
 	private Form followUpForm;
-
+	
 	private RelationshipType HBCP;
-
-
+	
 	//private Concept returnVisitDate;
 	
-	private List<Form> DDBAndRendezvousForms=new ArrayList<Form>();
+	private List<Form> DDBAndRendezvousForms = new ArrayList<Form>();
 	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
@@ -57,12 +59,12 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:9,dataset:dataSet");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		
 		Helper.saveReportDesign(design);
 	}
-
+	
 	@Override
 	public String getReportName() {
 		return "NCD-Asthma Consultation Sheet";
@@ -72,9 +74,10 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
-				
-		reportDefinition.addParameter(new Parameter("location", "Health Center", Location.class));	
-		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),ParameterizableUtil.createParameterMappings("location=${location}"));
+		
+		reportDefinition.addParameter(new Parameter("location", "Health Center", Location.class));
+		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
+		    ParameterizableUtil.createParameterMappings("location=${location}"));
 		reportDefinition.addParameter(new Parameter("endDate", "Monday", Date.class));
 		createDataSetDefinition(reportDefinition);
 		
@@ -96,23 +99,25 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 		dataSetDefinition.addParameter(new Parameter("endDate", "Monday", Date.class));
 		
 		//Add filters
-		dataSetDefinition.addFilter(Cohorts.createInProgramParameterizableByDate("Patients in "+asthmaProgram.getName(), asthmaProgram), ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition.addFilter(
+		    Cohorts.createInProgramParameterizableByDate("Patients in " + asthmaProgram.getName(), asthmaProgram),
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		
-		dataSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(DDBAndRendezvousForms), ParameterizableUtil.createParameterMappings("end=${endDate+6d},start=${endDate}"));
+		dataSetDefinition.addFilter(Cohorts.getMondayToSundayPatientReturnVisit(DDBAndRendezvousForms),
+		    ParameterizableUtil.createParameterMappings("end=${endDate+6d},start=${endDate}"));
 		
 		//dataSetDefinition.addFilter(getMondayToSundayPatientReturnVisit(), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
 		
-		
 		DateFormatFilter dateFilter = new DateFormatFilter();
-		dateFilter.setFinalDateFormat("dd-MMM-yyyy");		
-		
+		dateFilter.setFinalDateFormat("dd-MMM-yyyy");
 		
 		//Add Columns
 		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null),
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
-		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", "dd-MMM-yyyy", null), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", "dd-MMM-yyyy", null),
+		    new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 		
@@ -120,36 +125,35 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getIMBId("Id"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getAge("age"), new HashMap<String, Object>());		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getAge("age"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentPeakFlow("Last peak flow", "dd-MMM-yyyy"), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentPeakFlow("Last peak flow", "dd-MMM-yyyy"),
+		    new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientCurrentlyActiveOnDrugOrder("Regimen", null),
-				new HashMap<String, Object>());
+		    new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("Accompagnateur"), new HashMap<String, Object>());
-
-		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientRelationship("HBCP",HBCP.getRelationshipTypeId(),"A",null), new HashMap<String, Object>());
-
-
-		AllObservationValues asthmaClassification = RowPerPatientColumns.getAllAsthmaClassificationValues("asthmaClassification", null, new LastTwoObsFilter(),
-				null);
+		dataSetDefinition.addColumn(RowPerPatientColumns.getAccompRelationship("Accompagnateur"),
+		    new HashMap<String, Object>());
 		
+		dataSetDefinition.addColumn(
+		    RowPerPatientColumns.getPatientRelationship("HBCP", HBCP.getRelationshipTypeId(), "A", null),
+		    new HashMap<String, Object>());
 		
-				
+		AllObservationValues asthmaClassification = RowPerPatientColumns.getAllAsthmaClassificationValues(
+		    "asthmaClassification", null, new LastTwoObsFilter(), null);
+		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
 		alert.addPatientDataToBeEvaluated(asthmaClassification, new HashMap<String, Object>());
 		alert.setCalculator(new AsthmaClassificationAlerts());
-		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());	
+		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());
 		
-	
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("location", "${location}");
 		mappings.put("endDate", "${endDate}");
-		
 		
 		reportDefinition.addDataSetDefinition("dataSet", dataSetDefinition, mappings);
 	}
@@ -160,12 +164,12 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 		//rendevousForm=gp.getForm(GlobalPropertiesManagement.ASTHMA_RENDEVOUS_VISIT_FORM);
 		//asthmaDDBForm=gp.getForm(GlobalPropertiesManagement.ASTHMA_DDB);
 		//followUpForm=gp.getForm(GlobalPropertiesManagement.NCD_FOLLOWUP_FORM);
-		DDBAndRendezvousForms=gp.getFormList(GlobalPropertiesManagement.ASTHMA_DDB_RENDEVOUS_VISIT_FORMS);
+		DDBAndRendezvousForms = gp.getFormList(GlobalPropertiesManagement.ASTHMA_DDB_RENDEVOUS_VISIT_FORMS);
 		//DDBAndRendezvousForms.add(rendevousForm);
 		//DDBAndRendezvousForms.add(asthmaDDBForm);
 		//DDBAndRendezvousForms.add(followUpForm);
-		HBCP=gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
-
+		HBCP = gp.getRelationshipType(GlobalPropertiesManagement.HBCP_RELATIONSHIP);
+		
 	}
 	
 	/*
@@ -178,6 +182,6 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 	    cohortquery.addParameter(new Parameter("end","end",Date.class));	    
 	    //cohortquery.addParameter(new Parameter("endDate","endDate",Date.class));
 	    return cohortquery;
-    }
+	}
 	*/
 }

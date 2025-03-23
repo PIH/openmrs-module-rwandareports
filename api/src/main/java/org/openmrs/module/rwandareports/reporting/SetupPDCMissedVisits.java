@@ -35,26 +35,35 @@ import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.RowPerPatientColumns;
 
 public class SetupPDCMissedVisits extends SingleSetupReport {
-
+	
 	//properties retrieved from global variables
 	private Program PDCProgram;
 	
 	List<EncounterType> pdcEncounters;
-	private ArrayList<Form> intakeForm=new ArrayList<Form>();
+	
+	private ArrayList<Form> intakeForm = new ArrayList<Form>();
+	
 	private EncounterType pdcEncType;
-	private List<Form> referralAndVisitForms=new ArrayList<Form>();
+	
+	private List<Form> referralAndVisitForms = new ArrayList<Form>();
+	
 	private Form referralForm;
+	
 	private List<Form> referralFormList = new ArrayList<Form>();
-    private Form visitForm;
-    private Concept returnVisitDate;
-    private Concept namesAndFirstNamesOfContact;
-    private Concept telephoneNumberOfContact;
-
+	
+	private Form visitForm;
+	
+	private Concept returnVisitDate;
+	
+	private Concept namesAndFirstNamesOfContact;
+	
+	private Concept telephoneNumberOfContact;
+	
 	@Override
 	public String getReportName() {
 		return "PDC Missed Visits";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		setupProperties();
@@ -66,19 +75,20 @@ public class SetupPDCMissedVisits extends SingleSetupReport {
 		
 		Properties props = new Properties();
 		props.put("repeatingSections", "sheet:1,row:9,dataset:dataSet|sheet:1,row:13,dataset:dataSet2");
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		
 		Helper.saveReportDesign(design);
 	}
-
+	
 	private ReportDefinition createReportDefinition() {
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
-				
-		reportDefinition.addParameter(new Parameter("location", "Health Center", Location.class));	
-		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),ParameterizableUtil.createParameterMappings("location=${location}"));
+		
+		reportDefinition.addParameter(new Parameter("location", "Health Center", Location.class));
+		reportDefinition.setBaseCohortDefinition(Cohorts.createParameterizedLocationCohort("At Location"),
+		    ParameterizableUtil.createParameterMappings("location=${location}"));
 		reportDefinition.addParameter(new Parameter("endDate", "Monday", Date.class));
 		createDataSetDefinition(reportDefinition);
 		
@@ -102,18 +112,21 @@ public class SetupPDCMissedVisits extends SingleSetupReport {
 		dataSetDefinition.addParameter(new Parameter("endDate", "Monday", Date.class));
 		dataSetDefinition2.addParameter(new Parameter("location", "Location", Location.class));
 		dataSetDefinition2.addParameter(new Parameter("endDate", "Monday", Date.class));
-
 		
 		//Add filters
-		dataSetDefinition.addFilter(Cohorts.createInProgramParameterizableByDate("Patients in "+PDCProgram.getName(), PDCProgram), ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
+		dataSetDefinition.addFilter(
+		    Cohorts.createInProgramParameterizableByDate("Patients in " + PDCProgram.getName(), PDCProgram),
+		    ParameterizableUtil.createParameterMappings("onDate=${endDate}"));
 		//dataSetDefinition.addFilter(Cohorts.createPatientsLateForPDCVisit(pdcEncType,1), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
-		dataSetDefinition.addFilter(Cohorts.createPatientsLateForVisit(pdcEncType,1), ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
-		dataSetDefinition2.addFilter(Cohorts.createPatientsLateForVisit(referralFormList,pdcEncType),ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
-		InProgramCohortDefinition inprogram = Cohorts.createInProgramParameterizableByDate("Patients in "+PDCProgram.getName(), PDCProgram);
+		dataSetDefinition.addFilter(Cohorts.createPatientsLateForVisit(pdcEncType, 1),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		dataSetDefinition2.addFilter(Cohorts.createPatientsLateForVisit(referralFormList, pdcEncType),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate}"));
+		InProgramCohortDefinition inprogram = Cohorts.createInProgramParameterizableByDate(
+		    "Patients in " + PDCProgram.getName(), PDCProgram);
 		InverseCohortDefinition notInProgram = new InverseCohortDefinition(inprogram);
-		dataSetDefinition2.addFilter(notInProgram,new HashMap<String, Object>());
-
-
+		dataSetDefinition2.addFilter(notInProgram, new HashMap<String, Object>());
+		
 		//Add Columns
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
@@ -121,26 +134,25 @@ public class SetupPDCMissedVisits extends SingleSetupReport {
 		dataSetDefinition2.addColumn(RowPerPatientColumns.getFamilyNameColumn("familyName"), new HashMap<String, Object>());
 		dataSetDefinition.addColumn(RowPerPatientColumns.getIMBId("Id"), new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(RowPerPatientColumns.getIMBId("Id"), new HashMap<String, Object>());
-
-
-		PatientAgeInMonths ageinMonths=RowPerPatientColumns.getAgeInMonths("age");
+		
+		PatientAgeInMonths ageinMonths = RowPerPatientColumns.getAgeInMonths("age");
 		dataSetDefinition.addColumn(ageinMonths, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(ageinMonths, new HashMap<String, Object>());
 		
-		PatientProperty ageinYrs=RowPerPatientColumns.getAge("ageinYrs");
+		PatientProperty ageinYrs = RowPerPatientColumns.getAge("ageinYrs");
 		dataSetDefinition.addColumn(ageinYrs, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(ageinYrs, new HashMap<String, Object>());
-
-    	dataSetDefinition.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());
+		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());
-
-
-		MostRecentObservation intervalgrowth = RowPerPatientColumns.getMostRecentIntervalGrowth("intervalgrowth", "@ddMMMyy");
+		
+		MostRecentObservation intervalgrowth = RowPerPatientColumns
+		        .getMostRecentIntervalGrowth("intervalgrowth", "@ddMMMyy");
 		dataSetDefinition.addColumn(intervalgrowth, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(intervalgrowth, new HashMap<String, Object>());
-
-
-		MostRecentObservation intervalgrowthcoded = RowPerPatientColumns.getMostRecentCodedIntGrowth("inadequate", "@ddMMMyy");
+		
+		MostRecentObservation intervalgrowthcoded = RowPerPatientColumns.getMostRecentCodedIntGrowth("inadequate",
+		    "@ddMMMyy");
 		dataSetDefinition.addColumn(intervalgrowthcoded, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(intervalgrowthcoded, new HashMap<String, Object>());
 		
@@ -152,53 +164,60 @@ public class SetupPDCMissedVisits extends SingleSetupReport {
 		dataSetDefinition.addColumn(wtHeightzcore, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(wtHeightzcore, new HashMap<String, Object>());
 		
-		MostRecentObservation temperaturesign = RowPerPatientColumns.getMostRecentTemperature("temperature","@ddMMMMyy");
+		MostRecentObservation temperaturesign = RowPerPatientColumns.getMostRecentTemperature("temperature", "@ddMMMMyy");
 		dataSetDefinition.addColumn(temperaturesign, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(temperaturesign, new HashMap<String, Object>());
 		
-		MostRecentObservation respitatorysign = RowPerPatientColumns.getMostRecentRespiratoryRate("respitatorysign","@ddMMMMyy");
+		MostRecentObservation respitatorysign = RowPerPatientColumns.getMostRecentRespiratoryRate("respitatorysign",
+		    "@ddMMMMyy");
 		dataSetDefinition.addColumn(respitatorysign, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(respitatorysign, new HashMap<String, Object>());
 		
-		MostRecentObservation asqScore = RowPerPatientColumns.getMostRecentASQ("asqscore","@ddMMMMyy");
+		MostRecentObservation asqScore = RowPerPatientColumns.getMostRecentASQ("asqscore", "@ddMMMMyy");
 		dataSetDefinition.addColumn(asqScore, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(asqScore, new HashMap<String, Object>());
 		
-		MostRecentObservation swAssesment = RowPerPatientColumns.getMostRecentSWA("swa","@ddMMMMyy");
+		MostRecentObservation swAssesment = RowPerPatientColumns.getMostRecentSWA("swa", "@ddMMMMyy");
 		dataSetDefinition.addColumn(swAssesment, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(swAssesment, new HashMap<String, Object>());
 		
-		MostRecentObservation ecdeducation = RowPerPatientColumns.getMostRecentECDEDUC("ecdeducation","@ddMMMMyy");
+		MostRecentObservation ecdeducation = RowPerPatientColumns.getMostRecentECDEDUC("ecdeducation", "@ddMMMMyy");
 		dataSetDefinition.addColumn(ecdeducation, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(ecdeducation, new HashMap<String, Object>());
 		
-		MostRecentObservation discharged = RowPerPatientColumns.getMostRecentCondition("dischargedmet","@ddMMMMyy");
+		MostRecentObservation discharged = RowPerPatientColumns.getMostRecentCondition("dischargedmet", "@ddMMMMyy");
 		dataSetDefinition.addColumn(discharged, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(discharged, new HashMap<String, Object>());
 		
-		ObservationInMostRecentEncounterOfType nextVisit = RowPerPatientColumns.getReturnVisitInMostRecentEncounterOfType("nextVisit",pdcEncType);
+		ObservationInMostRecentEncounterOfType nextVisit = RowPerPatientColumns.getReturnVisitInMostRecentEncounterOfType(
+		    "nextVisit", pdcEncType);
 		dataSetDefinition.addColumn(nextVisit, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(nextVisit, new HashMap<String, Object>());
 		
-		RecentEncounter lastpdcIntake = RowPerPatientColumns.getRecentEncounter("lastintake",intakeForm, pdcEncounters,"dd-MMM-yyyy", null);
+		RecentEncounter lastpdcIntake = RowPerPatientColumns.getRecentEncounter("lastintake", intakeForm, pdcEncounters,
+		    "dd-MMM-yyyy", null);
 		dataSetDefinition.addColumn(lastpdcIntake, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(lastpdcIntake, new HashMap<String, Object>());
 		
-		RecentEncounterType lastEncounterType = RowPerPatientColumns.getRecentEncounterType("LastVisit",pdcEncounters, null, new LastEncounterFilter());
+		RecentEncounterType lastEncounterType = RowPerPatientColumns.getRecentEncounterType("LastVisit", pdcEncounters,
+		    null, new LastEncounterFilter());
 		dataSetDefinition.addColumn(lastEncounterType, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(lastEncounterType, new HashMap<String, Object>());
-
-		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientAddress("address",true,true,true,true),new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getPatientAddress("address",true,true,true,true),new HashMap<String, Object>());
-
-
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Name", namesAndFirstNamesOfContact,null,null, "dd-MMM-yyyy"), new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Name", namesAndFirstNamesOfContact,null,null, "dd-MMM-yyyy"), new HashMap<String, Object>());
-
-
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Tel Number", telephoneNumberOfContact,null,null, "dd-MMM-yyyy"),new HashMap<String, Object>());
-		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Tel Number", telephoneNumberOfContact,null,null, "dd-MMM-yyyy"),new HashMap<String, Object>());
-
+		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getPatientAddress("address", true, true, true, true),
+		    new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getPatientAddress("address", true, true, true, true),
+		    new HashMap<String, Object>());
+		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Name",
+		    namesAndFirstNamesOfContact, null, null, "dd-MMM-yyyy"), new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Name",
+		    namesAndFirstNamesOfContact, null, null, "dd-MMM-yyyy"), new HashMap<String, Object>());
+		
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Tel Number",
+		    telephoneNumberOfContact, null, null, "dd-MMM-yyyy"), new HashMap<String, Object>());
+		dataSetDefinition2.addColumn(RowPerPatientColumns.getMostRecentInPeriod("Next Of Kin Tel Number",
+		    telephoneNumberOfContact, null, null, "dd-MMM-yyyy"), new HashMap<String, Object>());
 		
 		CustomCalculationBasedOnMultiplePatientDataDefinitions alert = new CustomCalculationBasedOnMultiplePatientDataDefinitions();
 		alert.setName("alert");
@@ -218,8 +237,7 @@ public class SetupPDCMissedVisits extends SingleSetupReport {
 		alert.setCalculator(new PDCAlerts());
 		dataSetDefinition.addColumn(alert, new HashMap<String, Object>());
 		dataSetDefinition2.addColumn(alert, new HashMap<String, Object>());
-
-
+		
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("location", "${location}");
 		mappings.put("endDate", "${endDate}");
@@ -230,19 +248,18 @@ public class SetupPDCMissedVisits extends SingleSetupReport {
 	
 	private void setupProperties() {
 		PDCProgram = gp.getProgram(GlobalPropertiesManagement.PDC_PROGRAM);
-	    pdcEncounters = gp.getEncounterTypeList(GlobalPropertiesManagement.PDC_VISIT);
-	    pdcEncType = gp.getEncounterType(GlobalPropertiesManagement.PDC_VISIT);
-	    intakeForm.add(gp.getForm(GlobalPropertiesManagement.PDC_INTAKE_FORM));
-	    referralForm=gp.getForm(GlobalPropertiesManagement.PDC_REFERRAL_FORM);
-	    visitForm=gp.getForm(GlobalPropertiesManagement.PDC_VISIT_FORM);
+		pdcEncounters = gp.getEncounterTypeList(GlobalPropertiesManagement.PDC_VISIT);
+		pdcEncType = gp.getEncounterType(GlobalPropertiesManagement.PDC_VISIT);
+		intakeForm.add(gp.getForm(GlobalPropertiesManagement.PDC_INTAKE_FORM));
+		referralForm = gp.getForm(GlobalPropertiesManagement.PDC_REFERRAL_FORM);
+		visitForm = gp.getForm(GlobalPropertiesManagement.PDC_VISIT_FORM);
 		referralFormList.add(referralForm);
-	    referralAndVisitForms.add(referralForm);
-	    referralAndVisitForms.add(visitForm);
-	    returnVisitDate = gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE);
+		referralAndVisitForms.add(referralForm);
+		referralAndVisitForms.add(visitForm);
+		returnVisitDate = gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE);
 		namesAndFirstNamesOfContact = gp.getConcept(GlobalPropertiesManagement.NAMESANDFIRSTNAMESOFCONTACT);
-
+		
 		telephoneNumberOfContact = gp.getConcept(GlobalPropertiesManagement.TELEPHONE_NUMBER_OF_CONTACT);
-	   
 		
 	}
 	

@@ -31,56 +31,57 @@ import org.openmrs.module.rwandareports.definition.DrugsActiveCohortDefinition;
 /**
  * 
  */
-@Handler(supports={DrugsActiveCohortDefinition.class})
+@Handler(supports = { DrugsActiveCohortDefinition.class })
 public class DrugsActiveCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-
+	
 	/**
 	 * Default Constructor
 	 */
-	public DrugsActiveCohortDefinitionEvaluator() {}
+	public DrugsActiveCohortDefinitionEvaluator() {
+	}
 	
 	/**
-     * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
-     */
-    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
-    	DrugsActiveCohortDefinition definition = (DrugsActiveCohortDefinition) cohortDefinition;
-
-	    List<Integer> drugIds = new ArrayList<Integer>();
-	    for (Drug drug : definition.getDrugs()) {
-		    drugIds.add(drug.getDrugId());
-	    }
-
-	    // Create SQL query
-	    SqlQueryBuilder sb = new SqlQueryBuilder();
-	    sb.append("select orders.patient_id ");
-	    sb.append("from drug, drug_order, orders ");
-	    sb.append("where orders.order_id = drug_order.order_id ");
-	    sb.append("and drug.drug_id = drug_order.drug_inventory_id ");
-	    if (drugIds != null && !drugIds.isEmpty()) {
-		    sb.append("and drug_order.drug_inventory_id in (:drugIds) ");
-	    }
-	    sb.append("and ifnull(orders.scheduled_date, orders.date_activated) is not null ");
-	    if (definition.getAsOfDate() != null) {
-		    sb.append("and ifnull(orders.scheduled_date, orders.date_activated) <= :asOfDate ");
-		    sb.append("and (");
-		    sb.append("  ifnull(orders.date_stopped, orders.auto_expire_date) is null or ");
-		    sb.append("  ifnull(orders.date_stopped, orders.auto_expire_date) > :asOfDate ");
-		    sb.append(") ");
-	    }
-	    sb.append("and drug.retired = false ");
-	    sb.append("and orders.voided = false ");
-	    sb.append("group by orders.patient_id ");
-
-	    sb.addParameter("drugIds", drugIds);
-	    sb.addParameter("asOfDate", definition.getAsOfDate());
-
-	    List<Integer> l = Context.getService(EvaluationService.class).evaluateToList(sb, Integer.class, context);
-	    if (context.getBaseCohort() != null) {
-		    l.retainAll(context.getBaseCohort().getMemberIds());
-	    }
-
-	    EvaluatedCohort ret = new EvaluatedCohort(cohortDefinition, context);
-	    ret.setMemberIds(new HashSet<Integer>(l));
-	    return ret;
-    }
+	 * @see CohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)
+	 */
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) {
+		DrugsActiveCohortDefinition definition = (DrugsActiveCohortDefinition) cohortDefinition;
+		
+		List<Integer> drugIds = new ArrayList<Integer>();
+		for (Drug drug : definition.getDrugs()) {
+			drugIds.add(drug.getDrugId());
+		}
+		
+		// Create SQL query
+		SqlQueryBuilder sb = new SqlQueryBuilder();
+		sb.append("select orders.patient_id ");
+		sb.append("from drug, drug_order, orders ");
+		sb.append("where orders.order_id = drug_order.order_id ");
+		sb.append("and drug.drug_id = drug_order.drug_inventory_id ");
+		if (drugIds != null && !drugIds.isEmpty()) {
+			sb.append("and drug_order.drug_inventory_id in (:drugIds) ");
+		}
+		sb.append("and ifnull(orders.scheduled_date, orders.date_activated) is not null ");
+		if (definition.getAsOfDate() != null) {
+			sb.append("and ifnull(orders.scheduled_date, orders.date_activated) <= :asOfDate ");
+			sb.append("and (");
+			sb.append("  ifnull(orders.date_stopped, orders.auto_expire_date) is null or ");
+			sb.append("  ifnull(orders.date_stopped, orders.auto_expire_date) > :asOfDate ");
+			sb.append(") ");
+		}
+		sb.append("and drug.retired = false ");
+		sb.append("and orders.voided = false ");
+		sb.append("group by orders.patient_id ");
+		
+		sb.addParameter("drugIds", drugIds);
+		sb.addParameter("asOfDate", definition.getAsOfDate());
+		
+		List<Integer> l = Context.getService(EvaluationService.class).evaluateToList(sb, Integer.class, context);
+		if (context.getBaseCohort() != null) {
+			l.retainAll(context.getBaseCohort().getMemberIds());
+		}
+		
+		EvaluatedCohort ret = new EvaluatedCohort(cohortDefinition, context);
+		ret.setMemberIds(new HashSet<Integer>(l));
+		return ret;
+	}
 }

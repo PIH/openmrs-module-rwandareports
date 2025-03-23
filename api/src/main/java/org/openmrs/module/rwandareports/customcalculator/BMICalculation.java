@@ -11,9 +11,10 @@ import org.openmrs.module.rowperpatientreports.patientdata.result.ObservationRes
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientAttributeResult;
 import org.openmrs.module.rowperpatientreports.patientdata.result.PatientDataResult;
 
-public class BMICalculation implements CustomCalculation{
-
+public class BMICalculation implements CustomCalculation {
+	
 	private String heightName = "height";
+	
 	private String weightName = "weight";
 	
 	protected Log log = LogFactory.getLog(this.getClass());
@@ -25,65 +26,53 @@ public class BMICalculation implements CustomCalculation{
 		double height = 0;
 		double weight = 0;
 		
-		for(PatientDataResult result: results)
-		{
+		for (PatientDataResult result : results) {
 			
-			if(result.getName().equals(weightName))
-			{
-				ObservationResult wt = (ObservationResult)result;
+			if (result.getName().equals(weightName)) {
+				ObservationResult wt = (ObservationResult) result;
 				
-				if(wt.getValue() != null && wt.getValue().trim().length() != 0)
-				{
+				if (wt.getValue() != null && wt.getValue().trim().length() != 0) {
 					weight = Double.parseDouble(wt.getValue());
 				}
 			}
 			
-			if(result.getName().equals(heightName))
-			{
-				ObservationResult heightOb = (ObservationResult)result;
+			if (result.getName().equals(heightName)) {
+				ObservationResult heightOb = (ObservationResult) result;
 				
-				if(heightOb.getValue() != null && heightOb.getValue().trim().length() != 0)
-				{
-					if(heightOb.getObs().getPerson().getAge(heightOb.getObs().getObsDatetime()) >= 18)
-					{
+				if (heightOb.getValue() != null && heightOb.getValue().trim().length() != 0) {
+					if (heightOb.getObs().getPerson().getAge(heightOb.getObs().getObsDatetime()) >= 18) {
 						height = Double.parseDouble(heightOb.getValue());
 					}
 				}
 			}
 		}
 		
-		if(height > 0 && weight > 0)
-		{
-			double bmi = weight/(height/100*height/100);
+		if (height > 0 && weight > 0) {
+			double bmi = weight / (height / 100 * height / 100);
 			int decimalPlace = 1;
-			BigDecimal bd = new BigDecimal( Double.toString(bmi) );
-			bd = bd.setScale( decimalPlace, BigDecimal.ROUND_HALF_UP );
+			BigDecimal bd = new BigDecimal(Double.toString(bmi));
+			bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
 			
-			res.setValue(bd.toString());	
+			res.setValue(bd.toString());
 		}
 		
 		return res;
 	}
-
 	
-    public String getHeightName() {
-    	return heightName;
-    }
-
+	public String getHeightName() {
+		return heightName;
+	}
 	
-    public void setHeightName(String heightName) {
-    	this.heightName = heightName;
-    }
-
+	public void setHeightName(String heightName) {
+		this.heightName = heightName;
+	}
 	
-    public String getWeightName() {
-    	return weightName;
-    }
-
+	public String getWeightName() {
+		return weightName;
+	}
 	
-    public void setWeightName(String weightName) {
-    	this.weightName = weightName;
-    }
-	
+	public void setWeightName(String weightName) {
+		this.weightName = weightName;
+	}
 	
 }

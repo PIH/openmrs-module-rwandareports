@@ -19,63 +19,57 @@ import org.openmrs.module.rowperpatientreports.patientdata.service.RowPerPatient
 import org.openmrs.module.rwandareports.definition.EvaluateMotherDefinition;
 import org.openmrs.module.rwandareports.definition.result.EvaluateMotherDefinitionResult;
 
-@Handler(supports={EvaluateMotherDefinition.class})
-public class EvaluateMotherDefinitionEvaluator implements RowPerPatientDataEvaluator{
-
+@Handler(supports = { EvaluateMotherDefinition.class })
+public class EvaluateMotherDefinitionEvaluator implements RowPerPatientDataEvaluator {
+	
 	protected Log log = LogFactory.getLog(this.getClass());
 	
-	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) throws EvaluationException{
-	    
-		EvaluateMotherDefinition pd = (EvaluateMotherDefinition)patientData;
+	public PatientDataResult evaluate(RowPerPatientData patientData, EvaluationContext context) throws EvaluationException {
+		
+		EvaluateMotherDefinition pd = (EvaluateMotherDefinition) patientData;
 		EvaluateMotherDefinitionResult result = new EvaluateMotherDefinitionResult(pd, context);
 		
 		//find all the people we need to evaluate this for
-		if(pd.getPersonData() != null)
-		{
+		if (pd.getPersonData() != null) {
 			PersonData personData = pd.getPersonData().getParameterizable();
 			personData.setPatientId(pd.getPatientId());
 			personData.setPatient(pd.getPatient());
-			PersonResult personResults = (PersonResult)Context.getService(RowPerPatientDataService.class).evaluate(pd.getPersonData(), context);
+			PersonResult personResults = (PersonResult) Context.getService(RowPerPatientDataService.class).evaluate(
+			    pd.getPersonData(), context);
 			
-			if(pd.getDefinition() != null)
-			{
+			if (pd.getDefinition() != null) {
 				Mapped<RowPerPatientData> mapped = pd.getDefinition();
 				
 				int count = 1;
-				for(Person p: personResults.getValue())
-				{
+				for (Person p : personResults.getValue()) {
 					RowPerPatientData definition = mapped.getParameterizable();
 					definition.setPatientId(p.getId());
-					try{
+					try {
 						definition.setPatient(Context.getPatientService().getPatient(p.getId()));
 						mapped.setParameterizable(definition);
-						PatientDataResult value = Context.getService(RowPerPatientDataService.class).evaluate(mapped, context);
+						PatientDataResult value = Context.getService(RowPerPatientDataService.class).evaluate(mapped,
+						    context);
 						
-						if(count > 1)
-						{
+						if (count > 1) {
 							value.setName(pd.getName() + count);
 							value.setDefinition(pd.getDescription() + count);
-						}
-						else
-						{
+						} else {
 							value.setName(pd.getName());
 							value.setDefinition(pd.getDescription());
 						}
-						if(value.getValue() != null)
-						{
+						if (value.getValue() != null) {
 							result.addResult(value);
 						}
 					}
-					catch(Exception e)
-					{
+					catch (Exception e) {
 						log.info("Unable to retrieve and evaluate for patient id " + p.getId(), e);
 					}
 					
 					count++;
-				}			
+				}
 			}
 		}
-	
+		
 		return result;
-    }
+	}
 }

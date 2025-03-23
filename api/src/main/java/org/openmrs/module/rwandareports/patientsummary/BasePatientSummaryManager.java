@@ -12,7 +12,6 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-
 package org.openmrs.module.rwandareports.patientsummary;
 
 import org.openmrs.Program;
@@ -29,49 +28,49 @@ import java.util.List;
  * Base implementation of ReportManager that provides some common method implementations
  */
 public abstract class BasePatientSummaryManager implements PatientSummaryManager {
-
+	
 	@Override
 	public String getName() {
 		return translate("name");
 	}
-
+	
 	@Override
 	public String getDescription() {
 		return translate("description");
 	}
-
+	
 	@Override
 	public List<Parameter> getParameters() {
 		return new ArrayList<Parameter>();
 	}
-
+	
 	@Override
 	public List<Program> getRequiredPrograms() {
 		return null;
 	}
-
+	
 	@Override
 	public String getRequiredPrivilege() {
 		return null;
 	}
-
+	
 	protected String translate(String code) {
-		String messageCode = "rwandareports."+getKey()+"."+code;
+		String messageCode = "rwandareports." + getKey() + "." + code;
 		String translation = MessageUtil.translate(messageCode);
 		if (messageCode.equals(translation)) {
 			return messageCode;
 		}
 		return translation;
 	}
-
-    public <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
-        if (parameterizable == null) {
-            throw new NullPointerException("Programming error: missing parameterizable");
-        }
-        if (mappings == null) {
-            mappings = ""; // probably not necessary, just to be safe
-        }
-        return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
-    }
-
+	
+	public <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
+		if (parameterizable == null) {
+			throw new NullPointerException("Programming error: missing parameterizable");
+		}
+		if (mappings == null) {
+			mappings = ""; // probably not necessary, just to be safe
+		}
+		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
+	}
+	
 }

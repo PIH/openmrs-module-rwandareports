@@ -18,17 +18,17 @@ import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 public class SetupDataEntryDelayReport extends SingleSetupReport {
 	
 	protected final static Log log = LogFactory.getLog(SetupDataEntryDelayReport.class);
-
+	
 	@Override
 	public String getReportName() {
 		return "DQ-Data Entry Delay Report";
 	}
-
+	
 	public void setup() throws Exception {
 		log.info("Setting up report: " + getReportName());
 		ReportDefinition rd = createReportDefinition();
-		ReportDesign design = Helper.createRowPerPatientXlsOverviewReportDesign(rd, "DataEntryDelay.xls", "XlsDataEntryDelay",
-		    null);
+		ReportDesign design = Helper.createRowPerPatientXlsOverviewReportDesign(rd, "DataEntryDelay.xls",
+		    "XlsDataEntryDelay", null);
 		
 		createDataSetDefinition(rd);
 		
@@ -39,8 +39,7 @@ public class SetupDataEntryDelayReport extends SingleSetupReport {
 		    "repeatingSections",
 		    "sheet:1,dataset:dataSet|sheet:1,row:9,dataset:summary|sheet:1,row:15,dataset:Adult HIV|sheet:1,row:21,dataset:Pediatric HIV|sheet:1,row:27,dataset:ASTHMA VISIT|sheet:1,row:33,dataset:DIABETES VISIT|sheet:1,row:40,dataset:EPILEPSY VISIT|sheet:1,row:46,dataset:HEART FAILURE VISIT|sheet:1,row:52,dataset:HYPERTENSION VISIT|sheet:1,row:58,dataset:Inpatient Oncology|sheet:1,row:64,dataset:Outpatient Oncology|sheet:1,row:70,dataset:PDC Visit|sheet:1,row:76,dataset:Exposed Infant|sheet:1,row:82,dataset:POST CARDIAC SURGERY VISIT|sheet:1,row:82,dataset:POST CARDIAC SURGERY VISIT|sheet:1,row:88,dataset:HF HTN CKD|sheet:1,row:94,dataset:CHRONIC KIDNEY DISEASE VISIT|sheet:1,row:100,dataset:Mental Health visit|sheet:1,row:106,dataset:Diagnosis|sheet:1,row:112,dataset:LAB TEST|sheet:1,row:118,dataset:PHARMACY|sheet:1,row:124,dataset:delayCases");
 		
-	
-		props.put("sortWeight","5000");
+		props.put("sortWeight", "5000");
 		design.setProperties(props);
 		Helper.saveReportDesign(design);
 		
@@ -49,7 +48,7 @@ public class SetupDataEntryDelayReport extends SingleSetupReport {
 	private ReportDefinition createReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
-
+		
 		Properties properties = new Properties();
 		properties.setProperty("hierarchyFields", "countyDistrict:District");
 		reportDefinition.addParameter(new Parameter("location", "Location", AllLocation.class, properties));
@@ -83,11 +82,9 @@ public class SetupDataEntryDelayReport extends SingleSetupReport {
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.MENTAL_HEALTH_VISIT));
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.OPD_VISIT));
 		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.LAB_ENCOUNTER_TYPE));
-        dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.PHARMACY_VISIT));
-
-
-
-        Map<String, Object> mappings = new HashMap<String, Object>();
+		dataEntryDelay.addEncounterType(gp.getEncounterType(GlobalPropertiesManagement.PHARMACY_VISIT));
+		
+		Map<String, Object> mappings = new HashMap<String, Object>();
 		mappings.put("location", "${location}");
 		mappings.put("endDate", "${endDate+1d}");
 		mappings.put("startDate", "${startDate}");

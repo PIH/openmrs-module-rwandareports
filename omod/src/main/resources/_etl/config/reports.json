@@ -1,7 +1,7 @@
 {
   "report_definitions": [
     {
-      "report_name": "Billing Insurance report",
+      "report_name": "Billing Insurance Report",
       "report_id": "insurance_bill",
       "report_sql": {
         "sql_query": "SELECT * FROM mamba_view_fact_insurance_report WHERE insurance_id = insurance_identifier AND admission_date BETWEEN start_date AND end_date",
@@ -9,6 +9,27 @@
           {
             "name": "insurance_identifier",
             "type": "INT"
+          },
+          {
+            "name": "start_date",
+            "type": "DATE"
+          },
+          {
+            "name": "end_date",
+            "type": "DATE"
+          }
+        ]
+      }
+    },
+    {
+      "report_name": "Billing Consommation Report",
+      "report_id": "consommation_report",
+      "report_sql": {
+        "sql_query": "SELECT * FROM mamba_view_fact_consommation_report WHERE insurancename = company AND date BETWEEN start_date AND end_date",
+        "query_params": [
+          {
+            "name": "company",
+            "type": "VARCHAR(255)"
           },
           {
             "name": "start_date",

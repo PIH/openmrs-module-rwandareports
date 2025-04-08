@@ -9,7 +9,7 @@ BEGIN
 
     -- Create or Replace View
     SET @select_stmt =
-        'CREATE OR REPLACE VIEW mamba_view_fact_beneficiary_report AS
+        'CREATE OR REPLACE VIEW mamba_view_fact_consommation_report AS
         SELECT DISTINCT
             CAST(mdgb.created_date AS DATE) AS date,
             mdd.name,

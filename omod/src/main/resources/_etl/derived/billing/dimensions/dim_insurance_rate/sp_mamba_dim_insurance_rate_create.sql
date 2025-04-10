@@ -9,7 +9,7 @@ CREATE TABLE mamba_dim_insurance_rate
     flatFee           decimal(20, 2) null,
     start_date        date           not null,
     end_date          date           null,
-    created_date      date           not null,
+    created_date      date           not null DEFAULT '1900-01-01',
     retired           smallint       not null,
     retire_date       date           null,
 

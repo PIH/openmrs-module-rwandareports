@@ -6,7 +6,7 @@ CREATE TABLE mamba_dim_hop_service
     service_id   INT         NOT NULL,
     name         varchar(50) null,
     description  varchar(50) null,
-    created_date DATETIME    not null,
+    created_date DATETIME    not null DEFAULT '1900-01-01 00:00:00',
 
     PRIMARY KEY (id)
 )

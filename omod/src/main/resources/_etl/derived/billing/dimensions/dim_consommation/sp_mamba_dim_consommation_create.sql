@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS mamba_dim_consommation
     patient_bill_id     INT      NOT NULL,
     insurance_bill_id   INT      NULL,
     third_party_bill_id INT      NULL,
-    created_date        DATETIME NOT NULL,
+    created_date        DATETIME NOT NULL DEFAULT '1900-01-01 00:00:00',
 
     PRIMARY KEY (id)
 )

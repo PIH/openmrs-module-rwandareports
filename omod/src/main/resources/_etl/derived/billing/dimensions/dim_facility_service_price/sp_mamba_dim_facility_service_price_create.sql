@@ -15,7 +15,7 @@ CREATE TABLE mamba_dim_facility_service_price
     end_date                  date           null,
     item_type                 tinyint(1)     null,
     hide_item                 tinyint(1)     null,
-    created_date              date           not null,
+    created_date              date           not null DEFAULT '1900-01-01',
 
     PRIMARY KEY (id)
 )

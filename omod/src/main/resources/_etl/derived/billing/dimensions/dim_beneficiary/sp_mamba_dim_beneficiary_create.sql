@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS mamba_dim_beneficiary
     patient_id          INT          NOT NULL,
     insurance_policy_id INT          NOT NULL,
     policy_id_number    VARCHAR(250) NULL,
-    created_date        DATE         NOT NULL,
+    created_date        DATE         NOT NULL DEFAULT '1900-01-01',
     creator             INT          NOT NULL,
     owner_name          VARCHAR(150) NULL,
     owner_code          VARCHAR(150) NULL,

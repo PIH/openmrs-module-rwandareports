@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS mamba_dim_bill_payment
     amount_paid     decimal(20, 2) not null,
     date_received   DATETIME       null,
     collector       int            not null,
-    created_date    DATETIME       not null,
+    created_date    DATETIME       null DEFAULT '1900-01-01 00:00:00',
 
     PRIMARY KEY (id)
 )

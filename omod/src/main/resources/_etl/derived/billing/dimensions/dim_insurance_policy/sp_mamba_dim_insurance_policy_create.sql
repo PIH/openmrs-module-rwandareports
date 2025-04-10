@@ -10,7 +10,7 @@ CREATE TABLE mamba_dim_insurance_policy
     owner               int          not null,
     coverage_start_date date         not null,
     expiration_date     date         null,
-    created_date        DATETIME     not null,
+    created_date        DATETIME     not null DEFAULT '1900-01-01 00:00:00',
 
     constraint mamba_dim_insurance_policy_insurance_card_no_UNIQUE
         unique (insurance_card_no),

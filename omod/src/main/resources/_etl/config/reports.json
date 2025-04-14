@@ -18,7 +18,8 @@
             "name": "end_date",
             "type": "DATE"
           }
-        ]
+        ],
+        "paginate": true
       }
     },
     {
@@ -39,16 +40,17 @@
             "name": "end_date",
             "type": "DATE"
           }
-        ]
+        ],
+        "paginate": true
       }
     },
-
     {
       "report_name": "Billing Insurance firms Report",
       "report_id": "insurance_firm_report",
       "report_sql": {
         "sql_query": " SELECT insurance_id, mamba_dim_insurance.current_insurance_rate, mamba_dim_insurance.current_insurance_rate_flat_fee, category, name FROM mamba_dim_insurance",
-        "query_params": []
+        "query_params": [],
+        "paginate": false
       }
     }
   ]

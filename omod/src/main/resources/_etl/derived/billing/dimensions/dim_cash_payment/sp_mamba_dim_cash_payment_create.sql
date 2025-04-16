@@ -2,7 +2,7 @@
 
 CREATE TABLE IF NOT EXISTS mamba_dim_cash_payment
 (
-    cash_payment_id INT             NOT NULL AUTO_INCREMENT,
+    cash_payment_id INT             NOT NULL,
     creator         INT             NOT NULL,
     created_date    DATETIME        NOT NULL,
     voided          SMALLINT        NOT NULL,

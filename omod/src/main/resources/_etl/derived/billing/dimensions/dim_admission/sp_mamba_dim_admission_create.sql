@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS mamba_dim_admission
     discharged_by       int          null,
     disease_type        varchar(100) null,
     admission_type      tinyint(1)   null,
-    created_date        DATETIME     not null,
+    created_date        DATETIME     not null DEFAULT '1900-01-01 00:00:00',
 
     PRIMARY KEY (id)
 )

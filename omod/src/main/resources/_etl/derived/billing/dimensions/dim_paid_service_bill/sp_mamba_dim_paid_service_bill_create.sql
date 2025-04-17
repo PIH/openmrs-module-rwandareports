@@ -8,7 +8,7 @@ CREATE TABLE mamba_dim_paid_service_bill
     patient_service_bill_id int      not null,
     paid_quantity           decimal  not null,
     voided                  smallint not null,
-    created_date            DATETIME not null,
+    created_date            DATETIME not null DEFAULT '1900-01-01 00:00:00',
 
     PRIMARY KEY (id)
 )

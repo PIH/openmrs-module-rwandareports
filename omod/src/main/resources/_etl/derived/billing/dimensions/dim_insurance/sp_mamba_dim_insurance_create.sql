@@ -11,7 +11,7 @@ CREATE TABLE mamba_dim_insurance
     name                            varchar(50)  not null,
     address                         varchar(150) null,
     phone                           varchar(100) null,
-    created_date                    date         not null,
+    created_date                    date         not null DEFAULT '1900-01-01',
 
     PRIMARY KEY (id)
 )

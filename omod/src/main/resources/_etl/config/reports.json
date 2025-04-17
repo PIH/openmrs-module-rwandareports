@@ -18,7 +18,61 @@
             "name": "end_date",
             "type": "DATE"
           }
-        ]
+        ],
+        "paginate": true
+      }
+    },
+    {
+      "report_name": "Billing Consommation Report",
+      "report_id": "consommation_report",
+      "report_sql": {
+        "sql_query": "SELECT * FROM mamba_view_fact_consommation_report WHERE insurancename = company AND date BETWEEN start_date AND end_date",
+        "query_params": [
+          {
+            "name": "company",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "start_date",
+            "type": "DATE"
+          },
+          {
+            "name": "end_date",
+            "type": "DATE"
+          }
+        ],
+        "paginate": true
+      }
+    },
+    {
+      "report_name": "Third Party Report",
+      "report_id": "thirdparty_report",
+      "report_sql": {
+        "sql_query": "SELECT * FROM mamba_view_fact_thirdparty_report WHERE thirdparty_name = thirdparty_name AND admission_date BETWEEN start_date AND end_date",
+        "query_params": [
+          {
+            "name": "thirdparty_name",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "start_date",
+            "type": "DATE"
+          },
+          {
+            "name": "end_date",
+            "type": "DATE"
+          }
+        ],
+        "paginate": true
+      }
+    },
+    {
+      "report_name": "Billing Insurance firms Report",
+      "report_id": "insurance_firm_report",
+      "report_sql": {
+        "sql_query": " SELECT insurance_id, mamba_dim_insurance.current_insurance_rate, mamba_dim_insurance.current_insurance_rate_flat_fee, category, name FROM mamba_dim_insurance",
+        "query_params": [],
+        "paginate": false
       }
     }
   ]

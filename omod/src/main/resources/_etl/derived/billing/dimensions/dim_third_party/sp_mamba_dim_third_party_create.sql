@@ -6,7 +6,7 @@ CREATE TABLE mamba_dim_third_party
     third_party_id INT          NOT NULL,
     name           VARCHAR(150) NOT NULL,
     rate           FLOAT        NOT NULL,
-    created_date   DATE         NOT NULL,
+    created_date   DATE         NOT NULL DEFAULT '1900-01-01',
 
     PRIMARY KEY (id)
 )

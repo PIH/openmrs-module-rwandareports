@@ -15,7 +15,7 @@ CREATE TABLE mamba_dim_global_bill
     closed_reason   varchar(150) NULL,
     edited_by       INT          NULL,
     edit_reason     varchar(150) NULL,
-    created_date    DATETIME     NOT NULL,
+    created_date    DATETIME     NOT NULL DEFAULT '1900-01-01 00:00:00',
 
     PRIMARY KEY (id)
 )

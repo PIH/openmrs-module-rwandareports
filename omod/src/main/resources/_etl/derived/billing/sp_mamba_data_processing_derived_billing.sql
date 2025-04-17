@@ -21,6 +21,13 @@ CALL sp_mamba_dim_service_category;
 CALL sp_mamba_dim_third_party_bill;
 CALL sp_mamba_dim_third_party;
 CALL sp_mamba_dim_billing_report_columns;
+CALL sp_mamba_dim_paid_service_bill_refund;
+CALL sp_mamba_dim_cash_payment;
+CALL sp_mamba_dim_deposit_payment;
+CALL sp_mamba_dim_patient_account;
+CALL sp_mamba_dim_payment_refund;
+CALL sp_mamba_dim_recovery;
+CALL sp_mamba_dim_transaction;
 
 -- Facts
 CALL sp_mamba_fact_patient_service_bill;

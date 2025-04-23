@@ -38,6 +38,7 @@ public class SetupHeartFailureConsultSheet extends SingleSetupReport {
 	private List<Form> DDBAndRendezvousForms=new ArrayList<Form>();
 	private List<EncounterType> heartFailureEncounter;
 	private RelationshipType HBCP;
+	List<EncounterType> HF_HTN_CKD_Encounter_TYPE;
 
 	@Override
 	public String getReportName() {
@@ -100,10 +101,13 @@ public class SetupHeartFailureConsultSheet extends SingleSetupReport {
 		
 		//Add Columns
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
-		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", null, dateFilter), new HashMap<String, Object>());
-		
+//		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
+//
+//		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", null, dateFilter), new HashMap<String, Object>());
+
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentEncounterOfSpecificEncountertypeInperiod("nextVisit",gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE),
+				null,null,HF_HTN_CKD_Encounter_TYPE,null,"yyyy/MM/dd"), new HashMap<String, Object>());
+
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFamilyNameColumn("familyName"), new HashMap<String, Object>());
@@ -171,6 +175,7 @@ public class SetupHeartFailureConsultSheet extends SingleSetupReport {
 		heartFailureProgram = gp.getProgram(GlobalPropertiesManagement.HEART_FAILURE_PROGRAM_NAME);
 		rendevousForm=gp.getForm(GlobalPropertiesManagement.HEARTFAILURE_FLOW_VISIT);
 		heartFailureDDBForm=gp.getForm(GlobalPropertiesManagement.HEARTFAILURE_DDB);
+		HF_HTN_CKD_Encounter_TYPE.add(gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE));
 		//followUpForm=gp.getForm(GlobalPropertiesManagement.NCD_FOLLOWUP_FORM);
 		//postOpRDV=gp.getForm(GlobalPropertiesManagement.POSTOPERATOIRE_CARDIAQUERDV);
 		DDBAndRendezvousForms=gp.getFormList(GlobalPropertiesManagement.HEARTFAILURE_DDB_RDV_FORMS);

@@ -3,7 +3,6 @@ package org.openmrs.module.rwandareports.reporting;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,23 +16,16 @@ import org.openmrs.module.reporting.data.encounter.definition.AuditInfoEncounter
 import org.openmrs.module.reporting.data.encounter.definition.ConvertedEncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.library.BuiltInEncounterDataLibrary;
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
-import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EncounterAndObsDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.query.encounter.definition.BasicEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MappedParametersEncounterQuery;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.rwandareports.dataset.LocationHierachyIndicatorDataSetDefinition;
-import org.openmrs.module.rwandareports.widget.AllLocation;
-import org.openmrs.module.rwandareports.widget.LocationHierarchy;
 
 public class SetupGenericEncounterReport extends SingleSetupReport {
-		
+
 	protected final static Log log = LogFactory.getLog(SetupGenericEncounterReport.class);
 
 	@Override
@@ -50,17 +42,14 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 		Helper.saveReportDesign(designExcel);
 		Helper.saveReportDesign(designCSV);
 	}
-	
+
 	private ReportDefinition createReportDefinition() {
-		Properties properties = new Properties();
-		properties.setProperty("hierarchyFields", "countyDistrict:District");
 
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName(getReportName());
-		reportDefinition.addParameter(new Parameter("startDate", "From Date", Date.class));	
+		reportDefinition.addParameter(new Parameter("startDate", "From Date", Date.class));
 		reportDefinition.addParameter(new Parameter("endDate", "To Date", Date.class));
-//		reportDefinition.addParameter(new Parameter("location", "Health Facility", Location.class));
-//		Parameter location = new Parameter("location", "Location", AllLocation.class, properties);
+		//reportDefinition.addParameter(new Parameter("location", "Health Facility", Location.class));
 		Parameter location = new Parameter("location", "Health Facility", Location.class);
 		location.setRequired(false);
 
@@ -73,39 +62,13 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 		reportDefinition.addParameter(encouterType);
 		reportDefinition.addParameter(form);
 
-		reportDefinition.addDataSetDefinition(createQuarterlyLocationDataSet(reportDefinition),
-				ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
-
-//		createQuarterlyLocationDataSet(reportDefinition);
-
-//		createDataSetDefinition(reportDefinition);
+		createDataSetDefinition(reportDefinition);
 
 		Helper.saveReportDefinition(reportDefinition);
-		
+
 		return reportDefinition;
 	}
 
-	public LocationHierachyIndicatorDataSetDefinition createQuarterlyLocationDataSet(ReportDefinition reportDefinition) {
-
-		LocationHierachyIndicatorDataSetDefinition ldsd = new LocationHierachyIndicatorDataSetDefinition(createQuarterlyBaseDataSet(reportDefinition));
-		ldsd.setName("Encounter Data Set");
-//		ldsd.addBaseDefinition(createQuarterlyBaseDataSet(reportDefinition));
-		ldsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		ldsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		ldsd.addParameter(new Parameter("location", "District", LocationHierarchy.class));
-
-		return ldsd;
-	}
-
-	private EncounterDataSetDefinition createQuarterlyBaseDataSet(ReportDefinition reportDefinition) {
-		EncounterAndObsDataSetDefinition dsd = new EncounterAndObsDataSetDefinition();
-		dsd.setName("Quarterly Cohort Data Set");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		createDataSetDefinition(reportDefinition);
-		return dsd;
-	}
-	
 	private void createDataSetDefinition(ReportDefinition reportDefinition) {
 		EncounterAndObsDataSetDefinition dsd = new EncounterAndObsDataSetDefinition();
 		dsd.setName("dsd");
@@ -114,9 +77,8 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 		BasicEncounterQuery rowFilter = new BasicEncounterQuery();
 		rowFilter.addParameter(new Parameter("onOrAfter", "On Or After", Date.class));
 		rowFilter.addParameter(new Parameter("onOrBefore", "On Or Before", Date.class));
-		rowFilter.addParameter(new Parameter("location", "Health Facility", Location.class));
+		//rowFilter.addParameter(new Parameter("location", "Health Facility", Location.class));
 
-//		Parameter locationList = new Parameter("locationList", "Health Facility", LocationHierarchy.class);
 		Parameter locationList = new Parameter("locationList", "Health Facility", Location.class);
 		locationList.setRequired(false);
 		Parameter encouterType = new Parameter("encounterTypes", "Encounter Type", EncounterType.class);
@@ -129,10 +91,8 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 
 		BuiltInPatientDataLibrary patientData=new BuiltInPatientDataLibrary();
 
-
 		dsd.addColumn("SYSTEM_PATIENT_ID", patientData.getPatientId(), "");
 		dsd.addColumn("IDENTIFIER", patientData.getPreferredIdentifierIdentifier(), "");
-		dsd.addColumn("DATE OF BIRTH", patientData.getBirthdateYmd(), "");
 		dsd.addColumn("AGE", patientData.getAgeOnDateYears(), "");
 		dsd.addColumn("GENDER", patientData.getGender(), "");
 		dsd.addColumn("FAMILY NAME", patientData.getPreferredFamilyName(), "");
@@ -155,21 +115,24 @@ public class SetupGenericEncounterReport extends SingleSetupReport {
 
 
 		reportDefinition.addDataSetDefinition("dsd",Mapped.mapStraightThrough(dsd));
-		
+
 	}
-	
+
 	public List<Parameter> getParameters() {
 		List<Parameter> l = new ArrayList<Parameter>();
 		l.add(new Parameter("startDate", "From Date", Date.class));
 		l.add(new Parameter("endDate", "To Date", Date.class));
-		l.add(new Parameter("location", "Health Facility", Location.class));
+//		l.add(new Parameter("location", "Health Facility", Location.class));
+		Parameter location = new Parameter("location", "Health Facility", Location.class);
+		location.setRequired(false);
 		Parameter encouterType = new Parameter("encounterTypes", "Encounter Type", EncounterType.class);
 		Parameter form = new Parameter("forms", "Form", Form.class);
 		encouterType.setRequired(false);
 		form.setRequired(false);
+		l.add(location);
 		l.add(encouterType);
 		l.add(form);
 		return l;
 	}
-	
+
 }

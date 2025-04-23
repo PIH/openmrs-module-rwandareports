@@ -37,6 +37,8 @@ public class SetupCKDConsultationSheetReport extends SingleSetupReport {
 
     private RelationshipType HBCP;
 
+    List<EncounterType> HF_HTN_CKD_Encounter_TYPE;
+
     public void setup() throws Exception {
         log.info("Setting up report: " + getReportName());
         setupProperties();
@@ -95,9 +97,12 @@ public class SetupCKDConsultationSheetReport extends SingleSetupReport {
         dateFilter.setFinalDateFormat("dd-MMM-yyyy");
 
         //Add Columns
-        dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
+//        dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
+//
+//        dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", null, dateFilter), new HashMap<String, Object>());
 
-        dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", null, dateFilter), new HashMap<String, Object>());
+        dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentEncounterOfSpecificEncountertypeInperiod("nextVisit",gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE),
+                null,null,HF_HTN_CKD_Encounter_TYPE,null,"yyyy/MM/dd"), new HashMap<String, Object>());
 
         dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 
@@ -154,6 +159,8 @@ public class SetupCKDConsultationSheetReport extends SingleSetupReport {
         rendevousForm=gp.getForm(GlobalPropertiesManagement.CKD_RDV_FORM);
 
         CKDEnrollmentForm =gp.getForm(GlobalPropertiesManagement.CKD_ENROLLMENT_FORM);
+
+        HF_HTN_CKD_Encounter_TYPE.add(gp.getEncounterType(GlobalPropertiesManagement.HF_HTN_CKD_ENCOUNTER_TYPE));
 
         DDBAndRendezvousForms.add(rendevousForm);
         DDBAndRendezvousForms.add(CKDEnrollmentForm);

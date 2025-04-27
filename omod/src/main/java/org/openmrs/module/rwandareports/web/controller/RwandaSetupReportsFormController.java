@@ -894,17 +894,17 @@ public class RwandaSetupReportsFormController {
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 
-//		@RequestMapping("/module/rwandareports/register_HMISCancerScreeningIndicatorReport")
-//	public ModelAndView registerHMISCancerScreeningIndicatorReport() throws Exception {
-//		new SetupHMISCancerScreeningMonthlyIndicatorReport().setup();
-//		return new ModelAndView(new RedirectView("rwandareports.form"));
-//	}
-//
-//	@RequestMapping("/module/rwandareports/remove_HMISCancerScreeningIndicatorReport")
-//	public ModelAndView removeHMISCancerScreeningIndicatorReport() throws Exception {
-//		new SetupHMISCancerScreeningMonthlyIndicatorReport().delete();
-//		return new ModelAndView(new RedirectView("rwandareports.form"));
-//	}
+		@RequestMapping("/module/rwandareports/register_HMISCancerScreeningIndicatorReport.form")
+	public ModelAndView registerHMISCancerScreeningIndicatorReport() throws Exception {
+		new SetupHMISCancerScreeningMonthlyIndicatorReport().setup();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
+
+	@RequestMapping("/module/rwandareports/remove_HMISCancerScreeningIndicatorReport.form")
+	public ModelAndView removeHMISCancerScreeningIndicatorReport() throws Exception {
+		new SetupHMISCancerScreeningMonthlyIndicatorReport().delete();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
 		@RequestMapping("/module/rwandareports/register_BreastCancerScreeningConsultationSheetAndMissedVisitReport.form")
 	public ModelAndView registerBreastCancerScreeningConsultationSheetAndMissedVisitReport() throws Exception {
 		new SetupBreastCancerScreeningConsultAndMissedVisit().setup();

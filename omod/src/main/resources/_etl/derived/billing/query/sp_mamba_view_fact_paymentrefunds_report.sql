@@ -9,7 +9,6 @@ BEGIN
     -- Create or Replace View
     SET @select_stmt =
         'CREATE OR REPLACE VIEW mamba_view_fact_paymentrefunds_report AS
-        WITH refund_data AS (
             SELECT
                 mdpr.refund_id,
                 mdpr.bill_payment_id AS payment_id,
@@ -30,22 +29,7 @@ BEGIN
             LEFT JOIN mamba_dim_paid_service_bill mdpsb ON mdpsb.paid_service_bill_id = mdpsbr.paid_item_id
             LEFT JOIN mamba_dim_patient_service_bill mdps ON mdps.patient_service_bill_id = mdpsb.patient_service_bill_id
             LEFT JOIN mamba_dim_billable_service mdbs ON mdbs.billable_service_id = mdps.billable_service_id
-            LEFT JOIN mamba_dim_facility_service_price mdfsp ON mdfsp.facility_service_price_id = mdbs.facility_service_price_id
-        )
-        SELECT
-            refund_id,
-            CASE WHEN rn = 1 THEN payment_id ELSE NULL END AS payment_id,
-            CASE WHEN rn = 1 THEN cashier_name ELSE NULL END AS cashier_name,
-            CASE WHEN rn = 1 THEN submitted_on ELSE NULL END AS submitted_on,
-            CASE WHEN rn = 1 THEN approvedby ELSE NULL END AS approvedby,
-            CASE WHEN rn = 1 THEN confirmed_by ELSE NULL END AS confirmed_by,
-            service_name,
-            qty_paid,
-            refund_qty,
-            unit_price,
-            refund_reason
-        FROM refund_data
-        ORDER BY refund_id, rn;;';
+            LEFT JOIN mamba_dim_facility_service_price mdfsp ON mdfsp.facility_service_price_id = mdbs.facility_service_price_id;';
 
     -- Execute the dynamic SQL statement
     PREPARE select_stmt FROM @select_stmt;

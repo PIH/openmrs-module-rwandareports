@@ -9,17 +9,43 @@ BEGIN
     -- Create or Replace View
     SET @select_stmt =
         'CREATE OR REPLACE VIEW mamba_view_fact_paymentrefunds_report AS
-        SELECT DISTINCT mdpr.refund_id,
-                bill_payment_id payment_id,
-                concat(mdpn.given_name, '''', mdpn.family_name)cashier_names,
-                mdpr.created_date submitted_on,
-                concat(mdpn1.given_name, '''', mdpn1.family_name)approved_by,
-                concat(mdpn.given_name, '''', mdpn.family_name)confirmed_by,
-                refund_reason
-        FROM mamba_dim_payment_refund mdpr
-        LEFT JOIN mamba_dim_person_name mdpn  ON mdpn.person_id = mdpr.refunded_by
-        LEFT JOIN mamba_dim_paid_service_bill_refund mdpsbr  ON mdpsbr.refund_id = mdpr.refund_id
-        LEFT JOIN mamba_dim_person_name mdpn1  ON mdpn1.person_id = mdpsbr.approved_by;';
+        WITH refund_data AS (
+            SELECT
+                mdpr.refund_id,
+                mdpr.bill_payment_id AS payment_id,
+                CONCAT(mdpn.given_name, '' '', mdpn.family_name) AS cashier_name,
+                mdpr.created_date AS submitted_on,
+                CONCAT(mdpn1.given_name, '' '', mdpn1.family_name)AS approvedby,
+                CONCAT(mdpn.given_name, '' '', mdpn.family_name) AS confirmed_by,
+                mdfsp.name service_name,
+                mdpsb.paid_quantity AS qty_paid,
+                mdpsbr.refund_quantity AS refund_qty,
+                mdps.unit_price,
+                COALESCE(mdpsbr.refund_reason, ''No Reason Provided'') AS refund_reason,
+                ROW_NUMBER() OVER (PARTITION BY mdpr.refund_id ORDER BY mdpsbr.refund_quantity DESC) AS rn
+            FROM mamba_dim_payment_refund mdpr
+            LEFT JOIN mamba_dim_person_name mdpn ON mdpn.person_id = mdpr.refunded_by
+            LEFT JOIN mamba_dim_paid_service_bill_refund mdpsbr ON mdpsbr.refund_id = mdpr.refund_id
+            LEFT JOIN mamba_dim_person_name mdpn1 ON mdpn1.person_id = mdpsbr.approved_by
+            LEFT JOIN mamba_dim_paid_service_bill mdpsb ON mdpsb.paid_service_bill_id = mdpsbr.paid_item_id
+            LEFT JOIN mamba_dim_patient_service_bill mdps ON mdps.patient_service_bill_id = mdpsb.patient_service_bill_id
+            LEFT JOIN mamba_dim_billable_service mdbs ON mdbs.billable_service_id = mdps.billable_service_id
+            LEFT JOIN mamba_dim_facility_service_price mdfsp ON mdfsp.facility_service_price_id = mdbs.facility_service_price_id
+        )
+        SELECT
+            refund_id,
+            CASE WHEN rn = 1 THEN payment_id ELSE NULL END AS payment_id,
+            CASE WHEN rn = 1 THEN cashier_name ELSE NULL END AS cashier_name,
+            CASE WHEN rn = 1 THEN submitted_on ELSE NULL END AS submitted_on,
+            CASE WHEN rn = 1 THEN approvedby ELSE NULL END AS approvedby,
+            CASE WHEN rn = 1 THEN confirmed_by ELSE NULL END AS confirmed_by,
+            service_name,
+            qty_paid,
+            refund_qty,
+            unit_price,
+            refund_reason
+        FROM refund_data
+        ORDER BY refund_id, rn;;';
 
     -- Execute the dynamic SQL statement
     PREPARE select_stmt FROM @select_stmt;

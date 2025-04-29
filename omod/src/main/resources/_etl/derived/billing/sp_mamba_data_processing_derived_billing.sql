@@ -36,4 +36,5 @@ CALL sp_mamba_fact_patient_service_bill_flat;
 -- Create View
 CALL sp_mamba_view_fact_insurance_report;
 CALL sp_mamba_view_fact_consommation_report;
+CALL sp_mamba_view_fact_paymentrefunds_report;
 -- $END

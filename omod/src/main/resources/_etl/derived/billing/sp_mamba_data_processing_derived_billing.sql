@@ -37,4 +37,5 @@ CALL sp_mamba_fact_patient_service_bill_flat;
 CALL sp_mamba_view_fact_insurance_report;
 CALL sp_mamba_view_fact_consommation_report;
 CALL sp_mamba_view_fact_paymentrefunds_report;
+CALL sp_mamba_view_fact_deposits_report;
 -- $END

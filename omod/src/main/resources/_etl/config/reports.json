@@ -96,6 +96,32 @@
         ],
         "paginate": true
       }
+    },
+    {
+      "report_name": "Deposits Report",
+      "report_id": "deposits_report",
+      "report_sql": {
+        "sql_query": "SELECT * FROM mamba_view_fact_deposits_report WHERE date BETWEEN start_date AND end_date AND reason = type OR collector = collector",
+        "query_params": [
+          {
+            "name": "collector",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "type",
+            "type": "VARCHAR(255)"
+          },
+          {
+            "name": "start_date",
+            "type": "DATE"
+          },
+          {
+            "name": "end_date",
+            "type": "DATE"
+          }
+        ],
+        "paginate": true
+      }
     }
   ]
 }

@@ -462,10 +462,10 @@
                                     <argument>compile.sh</argument>
 
                                     <!-- The source database (OpenMRS database) -->
-                                    <argument>-d openmrs</argument>
+                                    <argument>-d kibagabaga</argument>
 
                                     <!-- The target or analysis Database where the ETL data is stored -->
-                                    <argument>-a analysis_db</argument>
+                                    <argument>-a analysis_kibagabaga</argument>
 
                                     <!-- File with a list of all files with stored procedures -->
                                     <!-- Remove this argument after automating core to auto-read this -->

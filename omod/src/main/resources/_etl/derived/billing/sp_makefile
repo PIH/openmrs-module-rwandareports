@@ -156,6 +156,7 @@ query/sp_mamba_view_fact_insurance_report.sql
 query/sp_mamba_view_fact_consommation_report.sql
 query/sp_mamba_view_fact_paymentrefunds_report.sql
 query/sp_mamba_view_fact_deposits_report.sql
+query/sp_mamba_view_fact_servicerevenue_report.sql
 
 #############################################################################
 ######## A single stored procedure that invokes (CALLs) the above SPs #######

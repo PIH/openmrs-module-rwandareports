@@ -122,6 +122,24 @@
         ],
         "paginate": true
       }
+    },
+    {
+      "report_name": "Service Revenue Report",
+      "report_id": "servicerevenue_report",
+      "report_sql": {
+        "sql_query": "SELECT * FROM mamba_view_fact_servicerevenue_report WHERE date BETWEEN start_date AND end_date",
+        "query_params": [
+          {
+            "name": "start_date",
+            "type": "DATE"
+          },
+          {
+            "name": "end_date",
+            "type": "DATE"
+          }
+        ],
+        "paginate": true
+      }
     }
   ]
 }

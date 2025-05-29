@@ -37,6 +37,8 @@ BEGIN
     DROP TABLE IF EXISTS mamba_dim_payment_refund;
     DROP TABLE IF EXISTS mamba_dim_recovery;
     DROP TABLE IF EXISTS mamba_dim_transaction;
+    DROP TABLE IF EXISTS mamba_fact_cashier_report;
+    DROP TABLE IF EXISTS mamba_fact_cashier_report_flat;
 
 
 END //

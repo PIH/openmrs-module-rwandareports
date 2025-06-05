@@ -151,11 +151,23 @@ facts/fact_patient_service_bill_flat/sp_mamba_fact_patient_service_bill_flat_ins
 facts/fact_patient_service_bill_flat/sp_mamba_fact_patient_service_bill_flat_update.sql
 facts/fact_patient_service_bill_flat/sp_mamba_fact_patient_service_bill_flat.sql
 
+facts/fact_cashier_report/sp_mamba_fact_cashier_report_create.sql
+facts/fact_cashier_report/sp_mamba_fact_cashier_report_insert.sql
+facts/fact_cashier_report/sp_mamba_fact_cashier_report_update.sql
+facts/fact_cashier_report/sp_mamba_fact_cashier_report.sql
+
+facts/fact_cashier_report_flat/sp_mamba_fact_cashier_report_flat_create.sql
+facts/fact_cashier_report_flat/sp_mamba_fact_cashier_report_flat_insert.sql
+facts/fact_cashier_report_flat/sp_mamba_fact_cashier_report_flat_update.sql
+facts/fact_cashier_report_flat/sp_mamba_fact_cashier_report_flat.sql
+
 query/sp_mamba_fact_insurance_report_query.sql
 query/sp_mamba_view_fact_insurance_report.sql
 query/sp_mamba_view_fact_consommation_report.sql
 query/sp_mamba_view_fact_paymentrefunds_report.sql
 query/sp_mamba_view_fact_deposits_report.sql
+query/sp_mamba_view_fact_servicerevenue_report.sql
+query/sp_mamba_view_fact_cashier_report.sql
 
 #############################################################################
 ######## A single stored procedure that invokes (CALLs) the above SPs #######

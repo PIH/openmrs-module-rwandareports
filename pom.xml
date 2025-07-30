@@ -44,7 +44,7 @@
         <junit4Version>4.13.1</junit4Version>
         <javaxAnnotationVersion>1.3.2</javaxAnnotationVersion>
         <webservicesRestVersion>2.21.0</webservicesRestVersion>
-        <mambaETLCoreVersion>1.0.1-SNAPSHOT</mambaETLCoreVersion>
+        <mambaETLCoreVersion>2.0.1-SNAPSHOT</mambaETLCoreVersion>
     </properties>
 
     <dependencyManagement>

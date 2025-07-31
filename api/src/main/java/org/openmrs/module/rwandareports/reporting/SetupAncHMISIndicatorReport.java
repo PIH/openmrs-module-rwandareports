@@ -1,6 +1,7 @@
 package org.openmrs.module.rwandareports.reporting;
 
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -12,6 +13,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.rwandareports.dataset.LocationHierachyIndicatorDataSetDefinition;
+import org.openmrs.module.rwandareports.indicator.EncounterIndicator;
 import org.openmrs.module.rwandareports.util.GlobalPropertiesManagement;
 import org.openmrs.module.rwandareports.util.Indicators;
 import org.openmrs.module.rwandareports.widget.AllLocation;
@@ -31,24 +33,23 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
     private Concept reasoForReferral;
 
     private List<Concept> pregnanciesRisks=new ArrayList<Concept>();
+    private List<Concept> ultrasoundValues=new ArrayList<Concept>();
+    private List<Concept> ancTT25=new ArrayList<Concept>();
+
 
     private Form HcAncEnrollmentForm;
+    private Form HcAncContactForm;
+    private List<Form> HcAncForms = new ArrayList<Form>();
 
     private Concept gestationalAge;
     private Concept gestationalAgeLMP;
 
     private Concept scarReferred;
-    private Concept ancTT1;
-    private Concept ancTT2;
-    private Concept ancTT3;
-    private Concept ancTT4;
-    private Concept ancTT5;
     private Concept ancTTFull;
     private Concept ironFolicAcidFullReceived;
     private Concept netBeds;
     private Concept muacScreening;
     private Concept anemiaTest;
-    private Concept syphillisTested;
     private Concept ancContact;
     private Concept answerYes;
     private Concept hypertensionDisorders;
@@ -61,7 +62,98 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
     private Concept macrosomia;
     private Concept multiplePregnancy;
     private Concept vaginalBleedingDuringPregnancy;
+    private Concept AgHbs;
+    private Concept AFI;
+    private Concept GWU;
+    private Concept EFW;
+    private Concept FHR;
+    private Concept NF;
+    private Concept RPR;
+    private Concept preventTreatmentAnc;
+    private Concept TT1_MNCH;
+    private Concept TT2_MNCH;
+    private Concept TT3_MNCH;
+    private Concept TT4_MNCH;
+    private Concept TT5_MNCH;
 
+
+    private EncounterType ancVisit;
+
+   
+
+
+
+    private void setUpProperties() {
+        onOrAfterOnOrBefore.add("onOrAfter");
+        onOrAfterOnOrBefore.add("onOrBefore");
+
+        gestationalAge= Context.getConceptService().getConceptByUuid("d616d705-6c11-4b7f-96ec-a8c7994a07bc");
+        gestationalAgeLMP= Context.getConceptService().getConceptByUuid("974d7f4b-4648-4bb5-8d32-397d27038a51");
+        ancContact= Context.getConceptService().getConceptByUuid("bbe69d90-984d-40b4-9ab5-7fe758a58aaf");
+        answerYes= Context.getConceptService().getConceptByUuid("3cd6f600-26fe-102b-80cb-0017a47871b2");
+
+
+        hypertensionDisorders= Context.getConceptService().getConceptByUuid("042d3875-0e29-4d16-bc5b-8c8a40060c92");
+        prematureDelivery= Context.getConceptService().getConceptByUuid("49bed4cd-cad1-4a05-bbca-69e00fc92d2a");
+        birthDisabilities= Context.getConceptService().getConceptByUuid("c83a2371-ce82-4d15-bf0e-9bd8a528e509");
+        previousCS= Context.getConceptService().getConceptByUuid("778553cf-55f8-4173-91de-08616142f17f");
+        stillbirth= Context.getConceptService().getConceptByUuid("1e154024-518d-449c-8f40-6d3965ef120d");
+        RecurrentAbortion3Times= Context.getConceptService().getConceptByUuid("f3429526-d600-4247-b5e1-557dc7c178dc");
+        deliveryNewbornUnder25Kg= Context.getConceptService().getConceptByUuid("f8dbde0c-9915-4942-9d26-047790ce9863");
+        macrosomia= Context.getConceptService().getConceptByUuid("891ca104-be06-4997-87cb-a40ac5a8422d");
+        multiplePregnancy= Context.getConceptService().getConceptByUuid("69f193b7-9f8e-4b7d-be2c-3f82994eb44d");
+        vaginalBleedingDuringPregnancy= Context.getConceptService().getConceptByUuid("e8f52434-9728-4502-b58e-2eb51256d50a");
+
+        AgHbs = Context.getConceptService().getConceptByUuid("0831b054-2b80-4365-8c35-cfa681651b6b");
+        AFI = Context.getConceptService().getConceptByUuid("ee891321-3066-41c4-8fb4-22a8c6d46b5d");
+        GWU = Context.getConceptService().getConceptByUuid("b209fbaa-e240-472f-bb57-0efd2586c0ad");
+        EFW = Context.getConceptService().getConceptByUuid("76f7ba1f-b3d5-4bfa-a75f-d9ab2b7e59f8");
+        FHR = Context.getConceptService().getConceptByUuid("57c934dd-a086-4e73-a9b8-3b9c1abef1b1");
+        NF = Context.getConceptService().getConceptByUuid("f0b20606-a261-4da4-b138-0785399cc850");
+        RPR = Context.getConceptService().getConceptByUuid("3cdb36f2-26fe-102b-80cb-0017a47871b2");
+        anemiaTest = Context.getConceptService().getConceptByUuid("3ccc7158-26fe-102b-80cb-0017a47871b2");
+        muacScreening = Context.getConceptService().getConceptByUuid("4326b04b-3158-417a-bb8d-ad022295b0f4");
+        preventTreatmentAnc = Context.getConceptService().getConceptByUuid("830919a3-dfda-4356-a7a0-80ea2e3cf35b");
+        ironFolicAcidFullReceived = Context.getConceptService().getConceptByUuid("0bd8cc98-0aec-4fa4-89b2-68a0748a1c0e");
+        netBeds = Context.getConceptService().getConceptByUuid("1594849e-f8db-43ec-9294-645ac0ec6e7d");
+        ancTTFull = Context.getConceptService().getConceptByUuid("10cb2549-1b78-4483-9d30-01807b8e61e8");
+        TT1_MNCH = Context.getConceptService().getConceptByUuid("1ee10434-7442-4c6a-9de7-fa06e3f61145");
+        TT2_MNCH = Context.getConceptService().getConceptByUuid("5c95c913-2d15-4640-8ded-0a6a6aaaff01");
+        TT3_MNCH = Context.getConceptService().getConceptByUuid("2344ec1b-1727-4350-849d-8c878dd4d3d7");
+        TT4_MNCH = Context.getConceptService().getConceptByUuid("23e213d6-e7f9-4881-b0e3-950f8ae6de7c");
+        TT5_MNCH = Context.getConceptService().getConceptByUuid("10cb2549-1b78-4483-9d30-01807b8e61e8");
+
+        ancTT25.add(TT2_MNCH);
+        ancTT25.add(TT3_MNCH);
+        ancTT25.add(TT4_MNCH);
+        ancTT25.add(TT5_MNCH);
+
+        ultrasoundValues.add(AFI);
+        ultrasoundValues.add(GWU);
+        ultrasoundValues.add(EFW);
+        ultrasoundValues.add(FHR);
+        ultrasoundValues.add(NF);
+                
+        pregnanciesRisks.add(hypertensionDisorders);
+        pregnanciesRisks.add(prematureDelivery);
+        pregnanciesRisks.add(birthDisabilities);
+        pregnanciesRisks.add(previousCS);
+        pregnanciesRisks.add(stillbirth);
+        pregnanciesRisks.add(RecurrentAbortion3Times);
+        pregnanciesRisks.add(deliveryNewbornUnder25Kg);
+        pregnanciesRisks.add(macrosomia);
+        pregnanciesRisks.add(multiplePregnancy);
+        pregnanciesRisks.add(vaginalBleedingDuringPregnancy);
+
+
+        HcAncEnrollmentForm = Context.getFormService().getFormByUuid("867408ee-3b46-46ee-951f-aa521c47ec0f");
+        HcAncContactForm = Context.getFormService().getFormByUuid("2a9c2299-2e93-4698-a4dd-75ac3a23f508");
+
+        HcAncForms.add(HcAncContactForm);
+        HcAncForms.add(HcAncEnrollmentForm);
+
+        ancVisit = Context.getEncounterService().getEncounterTypeByUuid("a703372d-28b7-4831-9817-ee385c8c47d8");
+    }
 
 
 
@@ -225,11 +317,24 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCFirstStandardContacts12Weeks=new SqlCohortDefinition();
         ANCFirstStandardContacts12Weeks.setName("ANCFirstStandardContacts12Weeks");
-        ANCFirstStandardContacts12Weeks.setQuery("SELECT distinct person_id FROM obs WHERE concept_id = "+ gestationalAge.getConceptId() +" "+
-                "AND value_numeric <=12 AND encounter_id IN " +
-                "(SELECT encounter_id FROM obs WHERE concept_id = "+ ancContact.getConceptId() +" AND value_numeric = 1 AND " +
-                "encounter_id IN (SELECT encounter_id FROM encounter WHERE form_id IN (508))) " +
-                "AND obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) ");
+        String query = "SELECT DISTINCT person_id FROM obs " +
+                "WHERE concept_id = " + gestationalAge.getConceptId() + " " +
+                "AND value_numeric <= 12 " +
+                "AND encounter_id IN ( " +
+                "SELECT encounter_id FROM obs " +
+                "WHERE concept_id = " + ancContact.getConceptId() + " " +
+                "AND value_numeric = 1 " +
+                "AND encounter_id IN ( " +
+                "SELECT encounter_id FROM encounter " +
+                "WHERE form_id IN ( " +
+                "SELECT form_id FROM form WHERE uuid = '2a9c2299-2e93-4698-a4dd-75ac3a23f508' " +
+                ") " +
+                ") " +
+                "AND obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) " +
+                ")";
+
+        ANCFirstStandardContacts12Weeks.setQuery(query);
+
         ANCFirstStandardContacts12Weeks.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCFirstStandardContacts12Weeks.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -244,19 +349,31 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
         //==========================================================================================================//
         SqlCohortDefinition ANC4ContactsStandards =new SqlCohortDefinition();
         ANC4ContactsStandards.setName("ANCRiskPregnancyDetected");
-        ANC4ContactsStandards.setQuery("SELECT DISTINCT o.person_id \n" +
-                "FROM obs o\n" +
-                "JOIN encounter e ON o.encounter_id = e.encounter_id\n" +
-                "WHERE o.encounter_id in (SELECT encounter_id FROM encounter WHERE form_id in (650,511))\n" +
-                "AND o.concept_id = "+ gestationalAgeLMP.getConceptId() +"\n" +
-                "AND o.value_numeric = 30\n" +
-                "AND EXISTS (\n" +
-                "    SELECT 1 FROM obs o2 \n" +
-                "    WHERE o2.encounter_id = o.encounter_id\n" +
-                "    AND o2.concept_id = "+ ancContact.getConceptId() +"\n" +
-                "\tAND o2.value_numeric = 4 \n" +
-                ")\n" +
-                "AND o.obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) ");
+        ANC4ContactsStandards.setQuery(
+                "SELECT DISTINCT o.person_id \n" +
+                        "FROM obs o \n" +
+                        "JOIN encounter e ON o.encounter_id = e.encounter_id \n" +
+                        "WHERE o.encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid = '2a9c2299-2e93-4698-a4dd-75ac3a23f508' \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND o.concept_id = " + gestationalAgeLMP.getConceptId() + " \n" +
+                        "AND o.value_numeric = 30 \n" +
+                        "AND EXISTS ( \n" +
+                        "    SELECT 1 \n" +
+                        "    FROM obs o2 \n" +
+                        "    WHERE o2.encounter_id = o.encounter_id \n" +
+                        "    AND o2.concept_id = " + ancContact.getConceptId() + " \n" +
+                        "    AND o2.value_numeric = 4 \n" +
+                        ") \n" +
+                        "AND o.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY)"
+        );
+
         ANC4ContactsStandards.addParameter(new Parameter("startDate","startDate",Date.class));
         ANC4ContactsStandards.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -287,9 +404,34 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCRiskPregnancyDetected =new SqlCohortDefinition();
         ANCRiskPregnancyDetected.setName("ANCRiskPregnancyDetected");
-        ANCRiskPregnancyDetected.setQuery("select person_id from obs where concept_id " +
-                        "in (161298,161296,161099,161293,161291,161289,161287,161286,161284,161282) and value_coded = "+ answerYes.getConceptId() +" " +
-                        "and obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) and encounter_id in (SELECT encounter_id FROM encounter where form_id = 511) ");
+        ANCRiskPregnancyDetected.setQuery(
+                "SELECT o.person_id \n" +
+                        "FROM obs o \n" +
+                        "JOIN concept c ON o.concept_id = c.concept_id \n" +
+                        "WHERE c.uuid IN ( \n" +
+                        "  '042d3875-0e29-4d16-bc5b-8c8a40060c92',\n" +
+                        "  '49bed4cd-cad1-4a05-bbca-69e00fc92d2a',\n" +
+                        "  'c83a2371-ce82-4d15-bf0e-9bd8a528e509',\n" +
+                        "  '778553cf-55f8-4173-91de-08616142f17f',\n" +
+                        "  '1e154024-518d-449c-8f40-6d3965ef120d',\n" +
+                        "  'f3429526-d600-4247-b5e1-557dc7c178dc',\n" +
+                        "  'f8dbde0c-9915-4942-9d26-047790ce9863',\n" +
+                        "  '891ca104-be06-4997-87cb-a40ac5a8422d',\n" +
+                        "  '69f193b7-9f8e-4b7d-be2c-3f82994eb44d',\n" +
+                        "  'e8f52434-9728-4502-b58e-2eb51256d50a' \n" +
+                        ") \n" +
+                        "AND o.value_coded = " + answerYes.getConceptId() + " \n" +
+                        "AND o.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND o.encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid = '2a9c2299-2e93-4698-a4dd-75ac3a23f508' \n" +
+                        "    ) \n" +
+                        ")"
+        );
         ANCRiskPregnancyDetected.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCRiskPregnancyDetected.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -311,9 +453,21 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCTT1Given =new SqlCohortDefinition();
         ANCTT1Given.setName("ANCTT1Given");
-        ANCTT1Given.setQuery(" select distinct person_id from obs where concept_id in (161358) and obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) " +
-                " and encounter_id in (SELECT encounter_id FROM encounter " +
-                " where form_id = 512) ");
+        ANCTT1Given.setQuery(
+                "SELECT DISTINCT person_id \n" +
+                        "FROM obs \n" +
+                        "WHERE concept_id IN (" + TT1_MNCH.getConceptId() + ") \n" +
+                        "AND obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid = '2a9c2299-2e93-4698-a4dd-75ac3a23f508' \n" +
+                        "    ) \n" +
+                        ")"
+        );
         ANCTT1Given.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCTT1Given.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -329,9 +483,27 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCTT2To5Given =new SqlCohortDefinition();
         ANCTT2To5Given.setName("ANCTT2To5Given");
-        ANCTT2To5Given.setQuery("select distinct person_id from obs where obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) "+
-                "and encounter_id in (SELECT encounter_id FROM encounter where form_id = 512) "+
-                "and concept_id IN (161356, 161355, 161359, 161357) ");
+        ANCTT2To5Given.setQuery(
+                "SELECT DISTINCT o.person_id \n" +
+                        "FROM obs o \n" +
+                        "JOIN concept c ON o.concept_id = c.concept_id \n" +
+                        "WHERE o.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND o.encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid = '2a9c2299-2e93-4698-a4dd-75ac3a23f508' \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND c.uuid IN ( \n" +
+                        "    '2344ec1b-1727-4350-849d-8c878dd4d3d7', \n" +
+                        "    '5c95c913-2d15-4640-8ded-0a6a6aaaff01', \n" +
+                        "    '10cb2549-1b78-4483-9d30-01807b8e61e8', \n" +
+                        "    '23e213d6-e7f9-4881-b0e3-950f8ae6de7c' \n" +
+                        ")"
+        );
         ANCTT2To5Given.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCTT2To5Given.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -347,8 +519,24 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCTTnewregistrationsFullyVaccinated  =new SqlCohortDefinition();
         ANCTTnewregistrationsFullyVaccinated.setName("ANCTTnewregistrationsFullyVaccinated");
-        ANCTTnewregistrationsFullyVaccinated.setQuery("select distinct person_id from obs where obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) " +
-                "and encounter_id in (SELECT encounter_id FROM encounter where form_id in (512,508)) and concept_id = 161357");
+        ANCTTnewregistrationsFullyVaccinated.setQuery(
+                "SELECT DISTINCT person_id \n" +
+                        "FROM obs \n" +
+                        "WHERE obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid IN ( \n" +
+                        "            '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "            '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND concept_id = " + ancTTFull.getConceptId()
+        );
         ANCTTnewregistrationsFullyVaccinated.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCTTnewregistrationsFullyVaccinated.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -365,10 +553,32 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCReceivedFullCourseIronFolicAcid  =new SqlCohortDefinition();
         ANCReceivedFullCourseIronFolicAcid.setName("ANCReceivedFullCourseIronFolicAcid");
-        ANCReceivedFullCourseIronFolicAcid.setQuery("SELECT distinct person_id FROM obs WHERE concept_id = 161354 and value_coded = 160910 " +
-                "AND encounter_id IN (SELECT encounter_id FROM obs WHERE concept_id = "+ ancContact.getConceptId() +" AND value_numeric = 1 AND " +
-                "encounter_id IN (SELECT encounter_id FROM encounter WHERE form_id IN (508,512))) " +
-                "AND obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) ");
+        ANCReceivedFullCourseIronFolicAcid.setQuery(
+                "SELECT DISTINCT person_id \n" +
+                        "FROM obs \n" +
+                        "WHERE concept_id = " + preventTreatmentAnc.getConceptId() + " \n" +
+                        "AND value_coded = " + ironFolicAcidFullReceived.getConceptId() + " \n" +
+                        "AND encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM obs \n" +
+                        "    WHERE concept_id = " + ancContact.getConceptId() + " \n" +
+                        "    AND value_numeric = 1 \n" +
+                        "    AND encounter_id IN ( \n" +
+                        "        SELECT encounter_id \n" +
+                        "        FROM encounter \n" +
+                        "        WHERE form_id IN ( \n" +
+                        "            SELECT form_id \n" +
+                        "            FROM form \n" +
+                        "            WHERE uuid IN ( \n" +
+                        "                '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "                '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "            ) \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY)"
+        );
+
         ANCReceivedFullCourseIronFolicAcid.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCReceivedFullCourseIronFolicAcid.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -384,10 +594,31 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCInsecticideTreatedBedNetsDistributed   =new SqlCohortDefinition();
         ANCInsecticideTreatedBedNetsDistributed.setName("ANCInsecticideTreatedBedNetsDistributed");
-        ANCInsecticideTreatedBedNetsDistributed.setQuery("SELECT distinct person_id FROM obs WHERE concept_id = 161354 and value_coded = 161346 " +
-                "AND encounter_id IN (SELECT encounter_id FROM obs WHERE concept_id = "+ ancContact.getConceptId() +" AND value_numeric = 1 AND " +
-                "encounter_id IN (SELECT encounter_id FROM encounter WHERE form_id IN (508,512))) " +
-                "AND obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) ");
+        ANCInsecticideTreatedBedNetsDistributed.setQuery(
+                "SELECT DISTINCT person_id \n" +
+                        "FROM obs \n" +
+                        "WHERE concept_id = " + preventTreatmentAnc.getConceptId() + " \n" +
+                        "AND value_coded = " + netBeds.getConceptId() + " \n" +
+                        "AND encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM obs \n" +
+                        "    WHERE concept_id = " + ancContact.getConceptId() + " \n" +
+                        "    AND value_numeric = 1 \n" +
+                        "    AND encounter_id IN ( \n" +
+                        "        SELECT encounter_id \n" +
+                        "        FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid IN ( \n" +
+                        "            '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "            '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        ") \n" +
+                        "AND obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY)"
+        );
         ANCInsecticideTreatedBedNetsDistributed.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCInsecticideTreatedBedNetsDistributed.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -404,10 +635,27 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCScreenedForMUAC  =new SqlCohortDefinition();
         ANCScreenedForMUAC.setName("ANCScreenedForMUAC");
-        ANCScreenedForMUAC.setQuery("SELECT DISTINCT o1.person_id FROM obs o1 JOIN obs o2 ON o1.person_id = o2.person_id WHERE o1.concept_id = 1290 " +
-                "AND o1.obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) " +
-                "AND o1.encounter_id IN (SELECT encounter_id FROM encounter WHERE form_id IN (511, 508)) " +
-                "AND o2.concept_id = "+ ancContact.getConceptId() +" AND o2.value_numeric = 1");
+        ANCScreenedForMUAC.setQuery(
+                "SELECT DISTINCT o1.person_id \n" +
+                        "FROM obs o1 \n" +
+                        "JOIN obs o2 ON o1.person_id = o2.person_id \n" +
+                        "WHERE o1.concept_id = " + muacScreening.getConceptId() + " \n" +
+                        "AND o1.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND o1.encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid IN ( \n" +
+                        "            '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "            '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND o2.concept_id = " + ancContact.getConceptId() + " \n" +
+                        "AND o2.value_numeric = 1"
+        );
         ANCScreenedForMUAC.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCScreenedForMUAC.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -423,10 +671,28 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCScreenedForMUACUnder21  =new SqlCohortDefinition();
         ANCScreenedForMUACUnder21.setName("ANCScreenedForMUAC");
-        ANCScreenedForMUACUnder21.setQuery("SELECT DISTINCT o1.person_id FROM obs o1 JOIN obs o2 ON o1.person_id = o2.person_id WHERE o1.concept_id = 1290 AND o1.value_numeric < 21 " +
-                "AND o1.obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) " +
-                "AND o1.encounter_id IN (SELECT encounter_id FROM encounter WHERE form_id IN (511, 508)) " +
-                "AND o2.concept_id = "+ ancContact.getConceptId() +" AND o2.value_numeric = 1");
+        ANCScreenedForMUACUnder21.setQuery(
+                "SELECT DISTINCT o1.person_id \n" +
+                        "FROM obs o1 \n" +
+                        "JOIN obs o2 ON o1.person_id = o2.person_id \n" +
+                        "WHERE o1.concept_id = " + muacScreening.getConceptId() + " \n" +
+                        "AND o1.value_numeric < 21 \n" +
+                        "AND o1.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND o1.encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid IN ( \n" +
+                        "            '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "            '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND o2.concept_id = " + ancContact.getConceptId() + " \n" +
+                        "AND o2.value_numeric = 1"
+        );
         ANCScreenedForMUACUnder21.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCScreenedForMUACUnder21.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -442,20 +708,23 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCTestedForAnemia  =new SqlCohortDefinition();
         ANCTestedForAnemia.setName("ANCTestedForAnemia");
-        ANCTestedForAnemia.setQuery("SELECT DISTINCT e.patient_id \n" +
-                "FROM encounter e\n" +
-                "JOIN obs o ON e.encounter_id = o.encounter_id\n" +
-                "JOIN orders ord ON e.patient_id = ord.patient_id\n" +
-                "WHERE e.encounter_type = 55\n" +
-                "AND EXISTS (\n" +
-                "    SELECT 1 FROM obs o2 \n" +
-                "    WHERE o2.encounter_id = o.encounter_id\n" +
-                "    AND o2.concept_id = "+ ancContact.getConceptId() +" \n" +
-                "    AND o2.value_numeric = 1\n" +
-                ")\n" +
-                "AND ord.concept_id IN (21) -- Replace with actual IDs\n" +
-                "AND DATE(e.encounter_datetime) = DATE(ord.date_activated)\n" +
-                "AND e.encounter_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) ");
+        ANCTestedForAnemia.setQuery(
+                "SELECT DISTINCT e.patient_id \n" +
+                        "FROM encounter e \n" +
+                        "JOIN obs o ON e.encounter_id = o.encounter_id \n" +
+                        "JOIN orders ord ON e.patient_id = ord.patient_id \n" +
+                        "WHERE e.encounter_type = " + ancVisit.getEncounterTypeId() + " \n" +
+                        "AND EXISTS ( \n" +
+                        "    SELECT 1 \n" +
+                        "    FROM obs o2 \n" +
+                        "    WHERE o2.encounter_id = o.encounter_id \n" +
+                        "    AND o2.concept_id = " + ancContact.getConceptId() + " \n" +
+                        "    AND o2.value_numeric = 1 \n" +
+                        ") \n" +
+                        "AND ord.concept_id IN (" + anemiaTest.getConceptId() + ") \n" +
+                        "AND DATE(e.encounter_datetime) = DATE(ord.date_activated) \n" +
+                        "AND e.encounter_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY)"
+        );
         ANCTestedForAnemia.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCTestedForAnemia.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -471,9 +740,18 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCAnemiaUnder11  =new SqlCohortDefinition();
         ANCAnemiaUnder11.setName("ANCAnemiaUnder11");
-        ANCAnemiaUnder11.setQuery("SELECT DISTINCT o.patient_id FROM orders o JOIN encounter e ON o.patient_id = e.patient_id JOIN obs ob ON o.patient_id = ob.person_id\n" +
-                "WHERE o.concept_id = 21 AND e.encounter_type = 55 AND DATE(o.date_activated) = DATE(e.encounter_datetime)\n" +
-                "AND ob.concept_id = 21 AND ob.value_numeric < 9.9 AND o.date_activated BETWEEN :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) ");
+        ANCAnemiaUnder11.setQuery(
+                "SELECT DISTINCT o.patient_id \n" +
+                        "FROM orders o \n" +
+                        "JOIN encounter e ON o.patient_id = e.patient_id \n" +
+                        "JOIN obs ob ON o.patient_id = ob.person_id \n" +
+                        "WHERE o.concept_id = " + anemiaTest.getConceptId() + " \n" +
+                        "AND e.encounter_type = " + ancVisit.getEncounterTypeId() + " \n" +
+                        "AND DATE(o.date_activated) = DATE(e.encounter_datetime) \n" +
+                        "AND ob.concept_id = " + anemiaTest.getConceptId() + " \n" +
+                        "AND ob.value_numeric < 9.9 \n" +
+                        "AND o.date_activated BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY)"
+        );
         ANCAnemiaUnder11.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCAnemiaUnder11.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -489,9 +767,26 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCSyphilisTested  =new SqlCohortDefinition();
         ANCSyphilisTested.setName("ANCSyphilisTested");
-        ANCSyphilisTested.setQuery("SELECT  distinct enc.patient_id FROM orders ord left join encounter enc on enc.patient_id=ord.patient_id  " +
-                "where ord.concept_id=1478 and ord.voided=0 and DATE(ord.date_created) = DATE(enc.date_created)  and enc.form_id in (509,508,511,512) " +
-                "and enc.voided = 0 and  DATE(enc.date_created) >=  DATE(:startDate) and  DATE(enc.date_created) <=  DATE(:endDate) ");
+        ANCSyphilisTested.setQuery(
+                "SELECT DISTINCT enc.patient_id \n" +
+                        "FROM orders ord \n" +
+                        "LEFT JOIN encounter enc ON enc.patient_id = ord.patient_id \n" +
+                        "WHERE ord.concept_id = " + RPR.getConceptId() + " \n" +
+                        "AND ord.voided = 0 \n" +
+                        "AND DATE(ord.date_created) = DATE(enc.date_created) \n" +
+                        "AND enc.form_id IN ( \n" +
+                        "    SELECT form_id \n" +
+                        "    FROM form \n" +
+                        "    WHERE uuid IN ( \n" +
+                        "        '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "        '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND enc.voided = 0 \n" +
+                        "AND DATE(enc.date_created) >= DATE(:startDate) \n" +
+                        "AND DATE(enc.date_created) <= DATE(:endDate)"
+        );
+
         ANCSyphilisTested.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCSyphilisTested.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -507,9 +802,30 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCSyphilisTestedPositive  =new SqlCohortDefinition();
         ANCSyphilisTestedPositive.setName("ANCSyphilisTestedPositive");
-        ANCSyphilisTestedPositive.setQuery("SELECT distinct person_id FROM obs o WHERE o.concept_id = 1478 AND o.obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) " +
-        "AND o.value_coded = 703 AND o.person_id IN (SELECT enc.patient_id FROM orders ord left join encounter enc on enc.patient_id=ord.patient_id " +
-                "where ord.concept_id=1478 and ord.voided=0 and DATE(ord.date_created) = DATE(enc.date_created) and enc.form_id in (509,508,511,512)and enc.voided = 0) ");
+        ANCSyphilisTestedPositive.setQuery(
+                "SELECT DISTINCT person_id \n" +
+                        "FROM obs o \n" +
+                        "WHERE o.concept_id = " + RPR.getConceptId() + " \n" +
+                        "AND o.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND o.value_coded = 703 \n" +
+                        "AND o.person_id IN ( \n" +
+                        "    SELECT enc.patient_id \n" +
+                        "    FROM orders ord \n" +
+                        "    LEFT JOIN encounter enc ON enc.patient_id = ord.patient_id \n" +
+                        "    WHERE ord.concept_id = " + RPR.getConceptId() + " \n" +
+                        "    AND ord.voided = 0 \n" +
+                        "    AND DATE(ord.date_created) = DATE(enc.date_created) \n" +
+                        "AND enc.form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid IN ( \n" +
+                        "            '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "            '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        "    AND enc.voided = 0 \n" +
+                        ")"
+        );
         ANCSyphilisTestedPositive.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCSyphilisTestedPositive.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -525,14 +841,34 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCReceivedUltrasoundScan  =new SqlCohortDefinition();
         ANCReceivedUltrasoundScan.setName("ANCReceivedUltrasoundScan");
-        ANCReceivedUltrasoundScan.setQuery("SELECT DISTINCT o1.person_id " +
-                "FROM obs o1 " +
-                "JOIN obs o2 ON o1.person_id = o2.person_id " +
-                "WHERE o1.concept_id in (161337,161335,161333,161331,161334) " +
-                "AND o1.obs_datetime BETWEEN '2025-01-01' AND DATE_ADD('2025-01-21', INTERVAL 1 DAY) " +
-                "AND o1.encounter_id IN (SELECT encounter_id FROM encounter WHERE form_id IN (511,508)) " +
-                "AND o2.concept_id = "+ ancContact.getConceptId() +"\n" +
-                "AND o2.value_numeric = 1");
+        ANCReceivedUltrasoundScan.setQuery(
+                "SELECT DISTINCT o1.person_id \n" +
+                        "FROM obs o1 \n" +
+                        "JOIN concept c ON o1.concept_id = c.concept_id \n" +
+                        "JOIN obs o2 ON o1.person_id = o2.person_id \n" +
+                        "WHERE c.uuid IN ( \n" +
+                        "    'f0b20606-a261-4da4-b138-0785399cc850', \n" +
+                        "    'ee891321-3066-41c4-8fb4-22a8c6d46b5d', \n" +
+                        "    'b209fbaa-e240-472f-bb57-0efd2586c0ad', \n" +
+                        "    '76f7ba1f-b3d5-4bfa-a75f-d9ab2b7e59f8', \n" +
+                        "    '57c934dd-a086-4e73-a9b8-3b9c1abef1b1' \n" +
+                        ") \n" +
+                        "AND o1.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND o1.encounter_id IN ( \n" +
+                        "    SELECT encounter_id \n" +
+                        "    FROM encounter \n" +
+                        "    WHERE form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid IN ( \n" +
+                        "            '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "            '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND o2.concept_id = " + ancContact.getConceptId() + " \n" +
+                        "AND o2.value_numeric = 1"
+        );
         ANCReceivedUltrasoundScan.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCReceivedUltrasoundScan.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -548,9 +884,26 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCPregnantWomenScreenedForHBV       =new SqlCohortDefinition();
         ANCPregnantWomenScreenedForHBV.setName("ANCPregnantWomenScreenedForHBV");
-        ANCPregnantWomenScreenedForHBV.setQuery("SELECT  distinct enc.patient_id FROM orders ord left join encounter enc on enc.patient_id=ord.patient_id " +
-                "where ord.concept_id=113224 and ord.voided=0 and DATE(ord.date_created) = DATE(enc.date_created)  and enc.form_id in (509,508,511,512) " +
-                        "    and enc.voided = 0 and  DATE(enc.date_created) >=  DATE(:startDate) and  DATE(enc.date_created) <=  DATE(:endDate) ");
+        ANCPregnantWomenScreenedForHBV.setQuery(
+                "SELECT DISTINCT enc.patient_id \n" +
+                        "FROM orders ord \n" +
+                        "LEFT JOIN encounter enc ON enc.patient_id = ord.patient_id \n" +
+                        "WHERE ord.concept_id = " + AgHbs.getConceptId() + " \n" +
+                        "AND ord.voided = 0 \n" +
+                        "AND DATE(ord.date_created) = DATE(enc.date_created) \n" +
+                        "AND enc.form_id IN ( \n" +
+                        "    SELECT form_id \n" +
+                        "    FROM form \n" +
+                        "    WHERE uuid IN ( \n" +
+                        "        '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "        '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "    ) \n" +
+                        ") \n" +
+                        "AND enc.voided = 0 \n" +
+                        "AND DATE(enc.date_created) >= DATE(:startDate) \n" +
+                        "AND DATE(enc.date_created) <= DATE(:endDate)"
+        );
+
         ANCPregnantWomenScreenedForHBV.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCPregnantWomenScreenedForHBV.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -566,9 +919,30 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
         SqlCohortDefinition ANCPregnantWomenScreenedForHBVPositive =new SqlCohortDefinition();
         ANCPregnantWomenScreenedForHBVPositive.setName("ANCPregnantWomenScreenedForHBVPositive");
-        ANCPregnantWomenScreenedForHBVPositive.setQuery("SELECT distinct person_id FROM obs o WHERE o.concept_id = 113224 AND o.obs_datetime between :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY) " +
-                "AND o.value_coded = 703 AND o.person_id IN (SELECT enc.patient_id FROM orders ord left join encounter enc on enc.patient_id=ord.patient_id " +
-                "where ord.concept_id=113224 and ord.voided=0 and DATE(ord.date_created) = DATE(enc.date_created) and enc.form_id in (509,508,511,512)and enc.voided = 0) ");
+        ANCPregnantWomenScreenedForHBVPositive.setQuery(
+                "SELECT DISTINCT person_id \n" +
+                        "FROM obs o \n" +
+                        "WHERE o.concept_id = " + AgHbs.getConceptId() + " \n" +
+                        "AND o.obs_datetime BETWEEN :startDate AND DATE_ADD(:endDate, INTERVAL 1 DAY) \n" +
+                        "AND o.value_coded = 703 \n" +
+                        "AND o.person_id IN ( \n" +
+                        "    SELECT enc.patient_id \n" +
+                        "    FROM orders ord \n" +
+                        "    LEFT JOIN encounter enc ON enc.patient_id = ord.patient_id \n" +
+                        "    WHERE ord.concept_id = " + AgHbs.getConceptId() + " \n" +
+                        "    AND ord.voided = 0 \n" +
+                        "    AND DATE(ord.date_created) = DATE(enc.date_created) \n" +
+                        "AND enc.form_id IN ( \n" +
+                        "        SELECT form_id \n" +
+                        "        FROM form \n" +
+                        "        WHERE uuid IN ( \n" +
+                        "            '2a9c2299-2e93-4698-a4dd-75ac3a23f508', \n" +
+                        "            '867408ee-3b46-46ee-951f-aa521c47ec0f' \n" +
+                        "        ) \n" +
+                        "    ) \n" +
+                        "    AND enc.voided = 0 \n" +
+                        ")"
+        );
         ANCPregnantWomenScreenedForHBVPositive.addParameter(new Parameter("startDate","startDate",Date.class));
         ANCPregnantWomenScreenedForHBVPositive.addParameter(new Parameter("endDate","endDate",Date.class));
 
@@ -585,7 +959,7 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 //        SqlCohortDefinition ANCWomenWithPartnersFourthVisit =new SqlCohortDefinition();
 //        ANCWomenWithPartnersFourthVisit.setName("ANCWomenWithPartnersFourthVisit");
 //        ANCWomenWithPartnersFourthVisit.setQuery("SELECT DISTINCT o.person_id, e.encounter_datetime FROM obs o JOIN encounter e ON o.encounter_id = e.encounter_id\n" +
-//                "WHERE o.concept_id = 6547 AND o.value_coded = "+ answerYes.getConceptId() +" AND e.encounter_type = 55 AND e.encounter_datetime BETWEEN :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY)\n" +
+//                "WHERE o.concept_id = 6547 AND o.value_coded = "+ answerYes.getConceptId() +" AND e.encounter_type  = "+ancVisit.getEncounterTypeId()+" AND e.encounter_datetime BETWEEN :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY)\n" +
 //                "AND EXISTS (SELECT 1 FROM obs o2 WHERE o2.encounter_id = e.encounter_id AND o2.concept_id = "+ ancContact.getConceptId() +" AND o2.value_numeric = 4");
 //        ANCWomenWithPartnersFourthVisit.addParameter(new Parameter("startDate","startDate",Date.class));
 //        ANCWomenWithPartnersFourthVisit.addParameter(new Parameter("endDate","endDate",Date.class));
@@ -603,7 +977,7 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 //        SqlCohortDefinition ANCWomenWithPartnersFirstVisit =new SqlCohortDefinition();
 //        ANCWomenWithPartnersFirstVisit.setName("ANCWomenWithPartnersFirstVisit");
 //        ANCWomenWithPartnersFirstVisit.setQuery("SELECT DISTINCT o.person_id, e.encounter_datetime FROM obs o JOIN encounter e ON o.encounter_id = e.encounter_id\n" +
-//                "WHERE o.concept_id = 6547 AND o.value_coded = "+ answerYes.getConceptId() +" AND e.encounter_type = 55 AND e.encounter_datetime BETWEEN :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY)\n" +
+//                "WHERE o.concept_id = 6547 AND o.value_coded = "+ answerYes.getConceptId() +" AND e.encounter_type  = "+ancVisit.getEncounterTypeId()+" AND e.encounter_datetime BETWEEN :startDate and  DATE_ADD(:endDate, INTERVAL 1 DAY)\n" +
 //                "AND EXISTS (SELECT 1 FROM obs o2 WHERE o2.encounter_id = e.encounter_id AND o2.concept_id = "+ ancContact.getConceptId() +" AND o2.value_numeric = 1");
 //        ANCWomenWithPartnersFirstVisit.addParameter(new Parameter("startDate","startDate",Date.class));
 //        ANCWomenWithPartnersFirstVisit.addParameter(new Parameter("endDate","endDate",Date.class));
@@ -616,40 +990,4 @@ public class SetupAncHMISIndicatorReport extends SingleSetupReport {
 
     }
 
-    private void setUpProperties() {
-        onOrAfterOnOrBefore.add("onOrAfter");
-        onOrAfterOnOrBefore.add("onOrBefore");
-
-        gestationalAge= Context.getConceptService().getConceptByUuid("d616d705-6c11-4b7f-96ec-a8c7994a07bc");
-        gestationalAgeLMP= Context.getConceptService().getConceptByUuid("974d7f4b-4648-4bb5-8d32-397d27038a51");
-        ancContact= Context.getConceptService().getConceptByUuid("bbe69d90-984d-40b4-9ab5-7fe758a58aaf");
-        answerYes= Context.getConceptService().getConceptByUuid("3cd6f600-26fe-102b-80cb-0017a47871b2");
-
-        hypertensionDisorders= Context.getConceptService().getConceptByUuid("042d3875-0e29-4d16-bc5b-8c8a40060c92");
-        prematureDelivery= Context.getConceptService().getConceptByUuid("49bed4cd-cad1-4a05-bbca-69e00fc92d2a");
-        birthDisabilities= Context.getConceptService().getConceptByUuid("c83a2371-ce82-4d15-bf0e-9bd8a528e509");
-        previousCS= Context.getConceptService().getConceptByUuid("778553cf-55f8-4173-91de-08616142f17f");
-        stillbirth= Context.getConceptService().getConceptByUuid("1e154024-518d-449c-8f40-6d3965ef120d");
-        RecurrentAbortion3Times= Context.getConceptService().getConceptByUuid("f3429526-d600-4247-b5e1-557dc7c178dc");
-        deliveryNewbornUnder25Kg= Context.getConceptService().getConceptByUuid("f8dbde0c-9915-4942-9d26-047790ce9863");
-        macrosomia= Context.getConceptService().getConceptByUuid("891ca104-be06-4997-87cb-a40ac5a8422d");
-        multiplePregnancy= Context.getConceptService().getConceptByUuid("69f193b7-9f8e-4b7d-be2c-3f82994eb44d");
-        vaginalBleedingDuringPregnancy= Context.getConceptService().getConceptByUuid("e8f52434-9728-4502-b58e-2eb51256d50a");
-
-
-        pregnanciesRisks.add(hypertensionDisorders);
-        pregnanciesRisks.add(prematureDelivery);
-        pregnanciesRisks.add(birthDisabilities);
-        pregnanciesRisks.add(previousCS);
-        pregnanciesRisks.add(stillbirth);
-        pregnanciesRisks.add(RecurrentAbortion3Times);
-        pregnanciesRisks.add(deliveryNewbornUnder25Kg);
-        pregnanciesRisks.add(macrosomia);
-        pregnanciesRisks.add(multiplePregnancy);
-        pregnanciesRisks.add(vaginalBleedingDuringPregnancy);
-
-
-        HcAncEnrollmentForm = gp.getForm(GlobalPropertiesManagement.HC_ANC_ENROLLMENT_FORM);
-
-    }
 }

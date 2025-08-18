@@ -71,11 +71,11 @@ ELSE
 
                     -- Indexes
                     INDEX mamba_fact_thirdparty_card_number_index (card_number))'
-                    --INDEX mamba_fact_thirdparty_first_closing_date_id_index (first_closing_date_id))'
+                    -- INDEX mamba_fact_thirdparty_first_closing_date_id_index (first_closing_date_id))'
             );
 END IF;
 
-DROP TABLE IF EXISTS `mamba_fact_thirdparty`;
+DROP TABLE IF EXISTS mamba_fact_thirdparty;
 
 PREPARE createtb FROM @create_table;
 EXECUTE createtb;

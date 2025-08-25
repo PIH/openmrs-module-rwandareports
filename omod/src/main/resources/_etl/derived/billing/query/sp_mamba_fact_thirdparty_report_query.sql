@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS sp_mamba_fact_thirdparty_report_query;
 
 CREATE PROCEDURE sp_mamba_fact_thirdparty_report_query(
-    IN insurance_id INT,
+    IN company_name VARCHAR(30),
     IN start_date DATETIME,
     IN end_date DATETIME)
 
@@ -37,28 +37,28 @@ BEGIN
     WHERE report_type = 'INSURANCE'
       AND group_column_name = 'PROCED.';
 
-    SET @select_stmt = CONCAT('SELECT bill.first_closing_date_id,
-           bill.admission_date,
-           bill.closing_date,
-           bill.beneficiary_name,
-           bill.household_head_name,
-           bill.family_code,
-           bill.beneficiary_level,
-           bill.card_number,
-           bill.company_name,
-           bill.age,
-           bill.birth_date,
-           bill.gender,
-           bill.doctor_name,
-           bill.insurance_id,
-           bill.global_bill_id,
-           bill.global_bill_identifier,
-           ', @insurance_report_columns, ',
-           (', @imaging_report_columns, ') AS `IMAGING`,
-           (', @proced_report_columns, ') AS `PROCED.`
-        FROM mamba_fact_patient_service_bill_flat bill
-    WHERE bill.insurance_id = ', insurance_id,
-                              ' AND bill.admission_date BETWEEN ''', start_date, ''' AND ''', end_date, ''';');
+SET @select_stmt = CONCAT('INSERT INTO mamba_fact_thirdparty SELECT
+        bill.first_closing_date_id,
+        bill.admission_date,
+        bill.card_number,
+        bill.age,
+        bill.gender,
+        bill.beneficiary_name,
+        bill.company_name, ',
+        @insurance_report_columns, ',
+        (', @imaging_report_columns, ') AS IMAGING,
+        (', @proced_report_columns, ') AS PROCED,
+        d.amount AS amount_100_percent,
+        (d.amount * c.rate) / 100 AS insurance_amount,
+        (d.amount * (100 - c.rate)) / 100 AS third_party_amount
+    FROM mamba_fact_patient_service_bill_flat bill
+    INNER JOIN mamba_dim_consommation b ON  bill.global_bill_id = b.global_bill_id
+    INNER JOIN mamba_dim_patient_bill d ON d.patient_bill_id =b.patient_bill_id
+    INNER JOIN mamba_dim_insurance_rate c ON  bill.insurance_id = c.insurance_id
+    WHERE bill.company_name = ''', @company_name,'''
+      AND bill.admission_date BETWEEN ''', @start_date,
+     ''' AND ''', @end_date, ''';'
+);
 
     PREPARE select_stmt FROM @select_stmt;
     EXECUTE select_stmt;

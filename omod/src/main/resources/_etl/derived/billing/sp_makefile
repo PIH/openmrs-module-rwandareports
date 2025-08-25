@@ -3,7 +3,7 @@
 #############################################################################
 dimensions/dim_third_party/sp_mamba_dim_third_party_create.sql
 dimensions/dim_third_party/sp_mamba_dim_third_party_insert.sql
-dimensions/dim_third_party/sp_mamba_dim_third_party_update.sql
+# dimensions/dim_third_party/sp_mamba_dim_third_party_update.sql
 dimensions/dim_third_party/sp_mamba_dim_third_party.sql
 
 dimensions/dim_department/sp_mamba_dim_department_create.sql
@@ -128,7 +128,7 @@ dimensions/dim_payment_refund/sp_mamba_dim_payment_refund.sql
 
 dimensions/dim_recovery/sp_mamba_dim_recovery_create.sql
 dimensions/dim_recovery/sp_mamba_dim_recovery_insert.sql
-dimensions/dim_recovery/sp_mamba_dim_recovery_update.sql
+# dimensions/dim_recovery/sp_mamba_dim_recovery_update.sql
 dimensions/dim_recovery/sp_mamba_dim_recovery.sql
 
 dimensions/dim_transaction/sp_mamba_dim_transaction_create.sql

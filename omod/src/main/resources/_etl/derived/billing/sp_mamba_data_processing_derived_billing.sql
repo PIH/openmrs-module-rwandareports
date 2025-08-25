@@ -42,6 +42,6 @@ CALL sp_mamba_view_fact_insurance_report;
 CALL sp_mamba_view_fact_consommation_report;
 CALL sp_mamba_view_fact_paymentrefunds_report;
 CALL sp_mamba_view_fact_deposits_report;
-CALL sp_mamba_view_fact_servicerevenue_report;
+CALL sp_mamba_view_fact_service_report;
 CALL sp_mamba_view_fact_cashier_report;
 -- $END

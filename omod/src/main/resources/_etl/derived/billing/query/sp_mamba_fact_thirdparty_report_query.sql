@@ -9,33 +9,33 @@ CREATE PROCEDURE sp_mamba_fact_thirdparty_report_query(
 
 BEGIN
 
-    SET session group_concat_max_len = 20000;
-    SET @insurance_report_columns := NULL;
-    SET @imaging_report_columns := NULL;
-    SET @proced_report_columns := NULL;
+  SET session group_concat_max_len = 20000;
+  SET @insurance_report_columns := NULL;
+  SET @imaging_report_columns := NULL;
+  SET @proced_report_columns := NULL;
 
-    SELECT GROUP_CONCAT(DISTINCT CONCAT('IFNULL (bill.`', hop_service_id, '`, 0) AS ', '`', column_name, '`') ORDER BY
-                        id ASC SEPARATOR ', ')
-    INTO @insurance_report_columns
-    FROM mamba_dim_billing_report_columns
-    WHERE report_type = 'INSURANCE'
-      AND group_column_name = 'INSURANCE';
+  SELECT GROUP_CONCAT(DISTINCT CONCAT('IFNULL (bill.`', hop_service_id, '`, 0) AS ', '`', column_name, '`') ORDER BY
+            id ASC SEPARATOR ', ')
+  INTO @insurance_report_columns
+  FROM mamba_dim_billing_report_columns
+  WHERE report_type = 'INSURANCE'
+   AND group_column_name = 'INSURANCE';
 
-    -- Imaging Columns TODO: improve this area
-    SELECT (GROUP_CONCAT(DISTINCT CONCAT('IFNULL (bill.`', hop_service_id, '`, 0)') ORDER BY
-                         id ASC SEPARATOR ' + ')) AS 'group_column_name'
-    INTO @imaging_report_columns
-    FROM mamba_dim_billing_report_columns
-    WHERE report_type = 'INSURANCE'
-      AND group_column_name = 'IMAGING';
+  -- Imaging Columns TODO: improve this area
+  SELECT (GROUP_CONCAT(DISTINCT CONCAT('IFNULL (bill.`', hop_service_id, '`, 0)') ORDER BY
+             id ASC SEPARATOR ' + ')) AS 'group_column_name'
+  INTO @imaging_report_columns
+  FROM mamba_dim_billing_report_columns
+  WHERE report_type = 'INSURANCE'
+   AND group_column_name = 'IMAGING';
 
-    -- Proceed Columns TODO: improve this area
-    SELECT GROUP_CONCAT(DISTINCT CONCAT('IFNULL (bill.`', hop_service_id, '`, 0)') ORDER BY
-                        id ASC SEPARATOR ' + ')
-    INTO @proced_report_columns
-    FROM mamba_dim_billing_report_columns
-    WHERE report_type = 'INSURANCE'
-      AND group_column_name = 'PROCED.';
+  -- Proceed Columns TODO: improve this area
+  SELECT GROUP_CONCAT(DISTINCT CONCAT('IFNULL (bill.`', hop_service_id, '`, 0)') ORDER BY
+            id ASC SEPARATOR ' + ')
+  INTO @proced_report_columns
+  FROM mamba_dim_billing_report_columns
+  WHERE report_type = 'INSURANCE'
+   AND group_column_name = 'PROCED.';
 
 SET @select_stmt = CONCAT('INSERT INTO mamba_fact_thirdparty SELECT
         bill.first_closing_date_id,
@@ -60,9 +60,9 @@ SET @select_stmt = CONCAT('INSERT INTO mamba_fact_thirdparty SELECT
      ''' AND ''', @end_date, ''';'
 );
 
-    PREPARE select_stmt FROM @select_stmt;
-    EXECUTE select_stmt;
-    DEALLOCATE PREPARE select_stmt;
+  PREPARE select_stmt FROM @select_stmt;
+  EXECUTE select_stmt;
+  DEALLOCATE PREPARE select_stmt;
 
 END //
 

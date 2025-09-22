@@ -1086,4 +1086,25 @@ public class RwandaSetupReportsFormController {
 		new SetupAncHMISIndicatorReport().delete();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
+    @RequestMapping("/module/rwandareports/register_HCHMISMonthlyReport.form")
+    public ModelAndView registerHCHMISMonthlyReport() throws Exception{
+        new SetupHealtCenterHMISIndicatorMonthlyReport().setup();
+        return new ModelAndView(new RedirectView("rwandareports.form"));
+    }
+    @RequestMapping("/module/rwandareports/remove_HCHMISMonthlyReport.form")
+    public ModelAndView removeHCHMISMonthlyReport() throws Exception{
+        new SetupHealtCenterHMISIndicatorMonthlyReport().delete();
+        return new ModelAndView(new RedirectView("rwandareports.form"));
+    }
+
+	@RequestMapping("/module/rwandareports/register_ramaInsuranceReport.form")
+	public ModelAndView registerRamaInsuranceReport() throws Exception{
+		new SetupRamaInsuranceReport().setup();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
+	@RequestMapping("/module/rwandareports/remove_ramaInsuranceReport.form")
+	public ModelAndView rempveRamaInsuranceReport() throws Exception{
+		new SetupRamaInsuranceReport().delete();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
 }

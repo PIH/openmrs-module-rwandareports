@@ -667,12 +667,26 @@ $(document).ready(function(){
 </tr>
 
 <tr >
-<td class="tabletd"> HC Indicator Reports </td>
+<td rowspan="2" class="tabletd"> HC Indicator Reports </td>
 <td> HC - ANC Monthly Indicator Report </td>
 <td>At site</td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/register_AncHmisIndicatorReport.form" onclick=msgreg(this)>(Re) register</a></td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_AncHmisIndicatorReport.form" onclick=msgrem(this)>Remove</a></td>
 </tr>
+<tr >
+<td> Health Center Monthly Indicator Report </td>
+<td>At site</td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/register_HCHMISMonthlyReport.form" onclick=msgreg(this)>(Re) register</a></td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_HCHMISMonthlyReport.form" onclick=msgrem(this)>Remove</a></td>
+</tr>
+<tr >
+<td class="tabletd"> RAMA Insurance report </td>
+<td> Billing - RAMA Insurance Report </td>
+<td>At site</td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/register_ramaInsuranceReport.form" onclick=msgreg(this)>(Re) register</a></td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_ramaInsuranceReport.form" onclick=msgrem(this)>Remove</a></td>
+</tr>
+
 
 
 </table>

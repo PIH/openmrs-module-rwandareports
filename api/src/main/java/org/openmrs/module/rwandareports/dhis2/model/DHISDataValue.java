@@ -15,10 +15,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import javax.annotation.Generated;
-
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@Generated("org.jsonschema2pojo")
+//@Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
 		"dataElement",
 		"value",

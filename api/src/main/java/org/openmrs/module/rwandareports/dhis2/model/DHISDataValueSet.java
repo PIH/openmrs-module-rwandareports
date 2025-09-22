@@ -15,12 +15,11 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@Generated("org.jsonschema2pojo")
+//@Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
     "dataSet",
     "completeData",

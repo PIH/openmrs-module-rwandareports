@@ -782,14 +782,6 @@ String insurance_card_no="CONCAT('%', ip.insurance_card_no ,'%')";
 
 		SqlCohortDefinition foodPoisoningPatient= patientWithICDCodeObsByStartDateAndEndDate("A05",caseStatus,newCase);
 
-				//new SqlCohortDefinition("select o.person_id from obs o where o.value_coded in (select distinct concept_id from concept_name where name like '%A05%') and o.value_coded in (select distinct concept_id from concept where class_id="+ICDConceptClassId+") and o.voided=0 and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate");
-
-	//SqlCohortDefinition foodPoisoningPatient=new SqlCohortDefinition("select o.person_id from obs o where o.value_coded in (10201) and o.voided=0 and o.obs_datetime>= :startDate and o.obs_datetime<= :endDate");
-		//SqlCohortDefinition foodPoisoningPatient=new SqlCohortDefinition("select o.person_id from obs o,concept c where c.class_id=19 and o.value_coded=c.concept_id and o.voided=0 and o.obs_datetime>='2019-01-01' and o.obs_datetime<='2019-04-05'");
-		/*foodPoisoningPatient.setName("foodPoisoningPatient");
-		foodPoisoningPatient.addParameter(new Parameter("startDate", "startDate", Date.class));
-		foodPoisoningPatient.addParameter(new Parameter("endDate", "endDate", Date.class));*/
-
 
 		CompositionCohortDefinition maleBelow5FoodPoisoningPatient = new CompositionCohortDefinition();
 		maleBelow5FoodPoisoningPatient.setName("maleBelow5FoodPoisoningPatient");

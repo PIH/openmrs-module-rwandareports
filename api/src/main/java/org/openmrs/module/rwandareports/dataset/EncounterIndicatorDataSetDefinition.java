@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openmrs.module.reporting.dataset.definition.BaseDataSetDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.rwandareports.indicator.EncounterIndicator;
 
 
@@ -40,5 +41,9 @@ public class EncounterIndicatorDataSetDefinition extends BaseDataSetDefinition {
 
     public void setColumns(List<EncounterIndicator> columns) {
     	this.columns = columns;
+    }
+
+    public void addColumn(String key, String label, Mapped<EncounterIndicator> encounterIndicatorMapped, Object o) {
+
     }
 }

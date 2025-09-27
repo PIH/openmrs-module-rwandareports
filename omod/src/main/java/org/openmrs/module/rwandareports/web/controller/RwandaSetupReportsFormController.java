@@ -1075,4 +1075,15 @@ public class RwandaSetupReportsFormController {
 		new SetupIncomeGroupedByInsurance().delete();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
+
+	@RequestMapping("/module/rwandareports/register_AncHmisIndicatorReport.form")
+	public ModelAndView registerAncHmisIndicatorReport() throws Exception{
+		new SetupAncHMISIndicatorReport().setup();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
+	@RequestMapping("/module/rwandareports/remove_AncHmisIndicatorReport.form")
+	public ModelAndView removeAncHmisIndicatorReport() throws Exception{
+		new SetupAncHMISIndicatorReport().delete();
+		return new ModelAndView(new RedirectView("rwandareports.form"));
+	}
 }

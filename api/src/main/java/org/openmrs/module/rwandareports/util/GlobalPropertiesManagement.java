@@ -1184,6 +1184,10 @@ public class GlobalPropertiesManagement {
 
 	public final static String BIOPSYNEGATIVE = "reports.biopsyNegative";
 
+	public final static String HC_ANC_ENROLLMENT_FORM = "reports.hcAncEnrollment";
+
+
+
 
 
 

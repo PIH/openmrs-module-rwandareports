@@ -110,10 +110,13 @@ public class SetupAsthmaConsultationSheet extends SingleSetupReport {
 		//Add Columns
 		
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
-		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", "dd-MMM-yyyy", null), new HashMap<String, Object>());
-		
+//		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
+//
+//		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", "dd-MMM-yyyy", null), new HashMap<String, Object>());
+
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentEncounterOfSpecificEncountertypeInperiod("nextVisit",gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE),
+				null,null,asthmaEncounter,null,"yyyy/MM/dd"), new HashMap<String, Object>());
+
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFirstNameColumn("givenName"), new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getFamilyNameColumn("familyName"), new HashMap<String, Object>());

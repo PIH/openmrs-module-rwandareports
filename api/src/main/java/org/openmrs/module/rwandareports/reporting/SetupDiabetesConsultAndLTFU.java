@@ -50,6 +50,8 @@ public class SetupDiabetesConsultAndLTFU implements SetupReport {
 
 	private RelationshipType HBCP;
 
+
+
 	GlobalPropertiesManagement gp = new GlobalPropertiesManagement();
 
 	/**
@@ -192,7 +194,9 @@ public class SetupDiabetesConsultAndLTFU implements SetupReport {
 		addCommonColumns(dataSetDefinition);
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextRDV", "yyyy/MM/dd", null), new HashMap<String, Object>());
-		
+
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentEncounterOfSpecificEncountertypeInperiod("nextVisit",gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE),
+				null,null,diabetesEncouters,null,"yyyy/MM/dd"), new HashMap<String, Object>());
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getGender("Sex"), new HashMap<String, Object>());
 		
@@ -257,8 +261,9 @@ public class SetupDiabetesConsultAndLTFU implements SetupReport {
 		
 		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentCreatinine("RecentCreatinine", "@ddMMMyy"), new HashMap<String, Object>());
 		
-		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", "dd-MMM-yyyy", null), new HashMap<String, Object>());
-
+//		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentReturnVisitDate("nextVisit", "dd-MMM-yyyy", null), new HashMap<String, Object>());
+		dataSetDefinition.addColumn(RowPerPatientColumns.getMostRecentEncounterOfSpecificEncountertypeInperiod("nextVisit",gp.getConcept(GlobalPropertiesManagement.RETURN_VISIT_DATE),
+				null,null,diabetesEncouters,null,"yyyy/MM/dd"), new HashMap<String, Object>());
 
 	}
 	

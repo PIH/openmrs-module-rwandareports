@@ -844,7 +844,7 @@ public class SetupHealtCenterHMISIndicatorMonthlyReport implements SetupReport {
         males.setName("male Patients");
         males.setMaleIncluded(true);
 
-// Age bands
+        // Age bands
         AgeCohortDefinition age0to19  = patientWithAgeBetween(0, 19);
         AgeCohortDefinition age20to39 = patientWithAgeBetween(20, 39);
 
@@ -856,21 +856,17 @@ public class SetupHealtCenterHMISIndicatorMonthlyReport implements SetupReport {
         addDiagByBands(dsd, "II.F.3",  "Infectious conjunctivitis",    "infect conjunct", caseStatus, newCase, age0to19, age20to39, age40plus, males);
         addDiagByBands(dsd, "II.F.4",  "Eye problem other",            "eye",          caseStatus, newCase, age0to19, age20to39, age40plus, males);  // broad; refine if needed
 
-// Ear diseases
+        // Ear diseases
         addDiagByBands(dsd, "II.F.5",  "Otitis externa (unspecified)", "otitis externa", caseStatus, newCase, age0to19, age20to39, age40plus, males);
         addDiagByBands(dsd, "II.F.6",  "External ear disorder (unspec)","external ear", caseStatus, newCase, age0to19, age20to39, age40plus, males);
         addDiagByBands(dsd, "II.F.7",  "Suppurative otitis media",     "otitis media", caseStatus, newCase, age0to19, age20to39, age40plus, males);
         addDiagByBands(dsd, "II.F.8",  "Hearing impairment/deafness",  "hearing|deaf", caseStatus, newCase, age0to19, age20to39, age40plus, males); // use REGEXP if you enabled it
         addDiagByBands(dsd, "II.F.9",  "Other ear diseases",           "ear disease",  caseStatus, newCase, age0to19, age20to39, age40plus, males);
 
-// Oral & dental
+        // Oral & dental
         addDiagByBands(dsd, "II.F.10", "Dental caries",                "caries",       caseStatus, newCase, age0to19, age20to39, age40plus, males);
         addDiagByBands(dsd, "II.F.11", "Periodontal disease",          "periodont",    caseStatus, newCase, age0to19, age20to39, age40plus, males);
         addDiagByBands(dsd, "II.F.12", "Other oral/teeth diseases",    "oral|buccal",  caseStatus, newCase, age0to19, age20to39, age40plus, males); // REGEXP recommended
-
-
-
-
     }
 
 

@@ -1103,8 +1103,19 @@ public class RwandaSetupReportsFormController {
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
 	@RequestMapping("/module/rwandareports/remove_ramaInsuranceReport.form")
-	public ModelAndView rempveRamaInsuranceReport() throws Exception{
+	public ModelAndView removeRamaInsuranceReport() throws Exception{
 		new SetupRamaInsuranceReport().delete();
 		return new ModelAndView(new RedirectView("rwandareports.form"));
 	}
+    @RequestMapping("/module/rwandareports/register_mmiInsuranceReport.form")
+    public ModelAndView registerMmiInsuranceReport() throws Exception{
+        new SetupMmiInsuranceReport().setup();
+        return new ModelAndView(new RedirectView("rwandareports.form"));
+    }
+    @RequestMapping("/module/rwandareports/remove_mmiInsuranceReport.form")
+    public ModelAndView removeMmiInsuranceReport() throws Exception{
+        new SetupMmiInsuranceReport().delete();
+        return new ModelAndView(new RedirectView("rwandareports.form"));
+    }
+
 }

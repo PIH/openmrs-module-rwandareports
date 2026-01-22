@@ -71,21 +71,21 @@ public class SetupIncomeGroupedByInsurance {
 				"concat(COALESCE(c.given_name,''),\" \",COALESCE(c.middle_name,''),\" \",COALESCE(c.family_name,'')) as Doctor,\n" +
 				"concat(COALESCE(np.given_name,''),\" \",COALESCE(np.middle_name,''),\" \",COALESCE(np.family_name,'')) as Cashier\n" +
 				"FROM moh_bill_patient_bill pb\n" +
-				"inner join moh_bill_payment bp on pb.patient_bill_id=bp.patient_bill_id\n" +
-				"inner join moh_bill_consommation cn on pb.patient_bill_id=cn.patient_bill_id\n" +
-				"inner join moh_bill_beneficiary bn on cn.beneficiary_id=bn.beneficiary_id\n" +
-				"inner join moh_bill_global_bill gb on cn.global_bill_id=gb.global_bill_id\n" +
-				"inner join moh_bill_insurance_policy e on bn.insurance_policy_id = e.insurance_policy_id \n" +
-				"inner join moh_bill_insurance i on e.insurance_id = i.insurance_id\n" +
-				"inner join moh_bill_department dp on cn.department_id=dp.department_id\n" +
-				"inner join moh_bill_insurance_rate ir on i.insurance_id = ir.insurance_id\n" +
-				"inner join patient_identifier pi on bn.patient_id = pi.patient_id \n" +
-				"inner join person p on bn.patient_id = p.person_id\n" +
-				"inner join users b on pb.creator = b.user_id \n" +
-				"inner join person_name c on b.person_id = c.person_id\n" +
-				"inner join person_name pn on bn.patient_id = pn.person_id\n" +
-				"inner join users u on bp.creator = u.user_id\n" +
-				"inner join person_name np on u.person_id = np.person_id\n" +
+				"left join moh_bill_payment bp on pb.patient_bill_id=bp.patient_bill_id\n" +
+				"left join moh_bill_consommation cn on pb.patient_bill_id=cn.patient_bill_id\n" +
+				"left join moh_bill_beneficiary bn on cn.beneficiary_id=bn.beneficiary_id\n" +
+				"left join moh_bill_global_bill gb on cn.global_bill_id=gb.global_bill_id\n" +
+				"left join moh_bill_insurance_policy e on bn.insurance_policy_id = e.insurance_policy_id \n" +
+				"left join moh_bill_insurance i on e.insurance_id = i.insurance_id\n" +
+				"left join moh_bill_department dp on cn.department_id=dp.department_id\n" +
+				"left join moh_bill_insurance_rate ir on i.insurance_id = ir.insurance_id\n" +
+				"left join patient_identifier pi on bn.patient_id = pi.patient_id \n" +
+				"left join person p on bn.patient_id = p.person_id\n" +
+				"left join users b on pb.creator = b.user_id \n" +
+				"left join person_name c on b.person_id = c.person_id\n" +
+				"left join person_name pn on bn.patient_id = pn.person_id\n" +
+				"left join users u on bp.creator = u.user_id\n" +
+				"left join person_name np on u.person_id = np.person_id\n" +
 				"WHERE pb.voided=0\n" +
 				"and ir.retired=0\n" +
 				"and DATE(pb.created_date) between :startDate  and :endDate\n" +

@@ -680,14 +680,18 @@ $(document).ready(function(){
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_HCHMISMonthlyReport.form" onclick=msgrem(this)>Remove</a></td>
 </tr>
 <tr >
-<td class="tabletd"> RAMA Insurance report </td>
-<td> Billing - RAMA Insurance Report </td>
+<td rowspan="2" class="tabletd"> Insurance reports </td>
+<td> Billing - Insurance Report </td>
 <td>At site</td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/register_ramaInsuranceReport.form" onclick=msgreg(this)>(Re) register</a></td>
 <td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_ramaInsuranceReport.form" onclick=msgrem(this)>Remove</a></td>
 </tr>
-
-
+<tr >
+<td> Billing - MMI Insurance Report </td>
+<td>At site</td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/register_mmiInsuranceReport.form" onclick=msgreg(this)>(Re) register</a></td>
+<td><a href="${pageContext.request.contextPath}/module/rwandareports/remove_mmiInsuranceReport.form" onclick=msgrem(this)>Remove</a></td>
+</tr>
 
 </table>
 

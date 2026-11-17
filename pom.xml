@@ -26,12 +26,6 @@
 		<reportingVersion>1.24.0</reportingVersion>
 		<rowperpatientreportsVersion>2.0.0</rowperpatientreportsVersion>
 		<serializationVersion>0.2.15</serializationVersion>
-
-		<pihMavenPluginVersion>1.6.0</pihMavenPluginVersion>
-		<dependencyReportClassifier>dependencies</dependencyReportClassifier>
-		<dependencyReportExtension>txt</dependencyReportExtension>
-		<dependenciesFile>${project.build.directory}/${project.artifactId}-${project.version}-${dependencyReportClassifier}.${dependencyReportExtension}</dependenciesFile>
-
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>Rwanda Reports</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
@@ -298,22 +292,6 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>3.1.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.pih.maven.plugin</groupId>
-					<artifactId>pih-maven-plugin</artifactId>
-					<version>${pihMavenPluginVersion}</version>
-					<configuration>
-						<outputFile>${dependenciesFile}</outputFile>
-					</configuration>
-					<executions>
-						<execution>
-							<phase>generate-resources</phase>
-							<goals>
-								<goal>dependency-report</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

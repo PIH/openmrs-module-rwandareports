@@ -11,10 +11,6 @@
 	<name>Rwanda Reports OMOD</name>
 	<description>OpenMRS module project for Rwanda Reports</description>
 
-	<properties>
-		<dependenciesFile>${project.build.directory}/${project.artifactId}-${project.version}-dependencies.txt</dependenciesFile>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
@@ -99,10 +95,6 @@
 			<plugin>
 				<groupId>org.openmrs.maven.plugins</groupId>
 				<artifactId>maven-openmrs-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.pih.maven.plugin</groupId>
-				<artifactId>pih-maven-plugin</artifactId>
 			</plugin>
 
 			<plugin>

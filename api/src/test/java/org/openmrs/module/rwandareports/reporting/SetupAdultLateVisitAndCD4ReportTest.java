@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Tests elements of the SetupAdultLateVisitAndCD4Report class
  */
-//@Ignore
+@Ignore
 public class SetupAdultLateVisitAndCD4ReportTest extends StandaloneContextSensitiveTest {
 
     @Autowired

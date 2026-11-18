@@ -2775,20 +2775,22 @@ SqlCohortDefinition screenedForCervicalCancerWithHPVResult=Cohorts.getPatientsWi
         screeningExaminationForms.add(OncologyCervicalScreeningFollowUp);
 
 
+        oncologyScreeningLabResultsForm=Context.getFormService().getFormByUuid("d7e4f3e6-2462-427d-83df-97d8488a53aa");
+        muzimaOncologyScreeningLabResults=Context.getFormService().getFormByUuid("3a0e1a09-c88a-4412-99c6-cdbd7add50fd");
+
         screeningCervicalForms.add(oncologyCervicalScreeningExamination);
         screeningCervicalForms.add(mUzimaBreastScreening);
         screeningCervicalForms.add(mUzimaCervicalScreening);
         screeningCervicalForms.add(mUzimaCervicalCancerScreeningFollowup);
         screeningCervicalForms.add(OncologyCervicalScreeningFollowUp);
+        screeningCervicalForms.add(oncologyScreeningLabResultsForm);
+        screeningCervicalForms.add(muzimaOncologyScreeningLabResults);
 
 
 
         screeningType=Context.getConceptService().getConceptByUuid("7e4e6554-d6c5-4ca3-b371-49806a754992");
         HPV=Context.getConceptService().getConceptByUuid("f7c2d59d-2043-42ce-b04d-08564d54b0c7");
 
-
-        oncologyScreeningLabResultsForm=Context.getFormService().getFormByUuid("d7e4f3e6-2462-427d-83df-97d8488a53aa");
-        muzimaOncologyScreeningLabResults=Context.getFormService().getFormByUuid("3a0e1a09-c88a-4412-99c6-cdbd7add50fd");
 
         oncologyScreeningLabResultsForms.add(oncologyScreeningLabResultsForm);
         oncologyScreeningLabResultsForms.add(muzimaOncologyScreeningLabResults);
